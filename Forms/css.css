@@ -1,0 +1,69 @@
+body {
+	background: rgb(50,200,200);
+}
+
+h1 {
+	font-family: "Helvetica", Helvetica;
+	border: 2px solid rgb(50,150,150);
+}
+div {
+	border: 1px solid rgb(50,150,150);
+	font-family: "Helvetica, Helvetica"
+}
+
+input[type=submit] {
+
+  appearance: none;
+  background: #d95a2b;
+  border: 0;
+  border-radius: 10em;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 1em calc( 1.5em + 32px ) 0.9em 1.5em;
+  position: relative;
+  text-align: center;
+  text-transform: uppercase;
+  transition: background-color 200ms ease-in-out;
+
+  &:hover,
+  &:focus,
+  &:active {
+    background: #8c3c2a;
+  }
+
+ &::after {
+    background: center / 24px 24px no-repeat; // Shorthand for: background-position, background-size, background-repeat
+    border-radius: 100em;
+    bottom: 0;
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 40px;
+  }
+
+  &--download {
+
+    &::after {
+      background-image: url( 'data:image/svg+xml;utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="30.544" height="25.294" viewBox="0 0 30.544 25.294"><g transform="translate(-991.366 -1287.5)"><path d="M1454.5,1298.922l6.881,6.881-6.881,6.881" transform="translate(2312.404 -157.556) rotate(90)" fill="none" stroke="%23fff" stroke-width="3"/><path d="M8853.866,5633.57v9.724h27.544v-9.724" transform="translate(-7861 -4332)" fill="none" stroke="%23fff" stroke-linejoin="round" stroke-width="3"/><line y2="14" transform="translate(1006.5 1287.5)" fill="none" stroke="%23fff" stroke-width="3"/></g></svg>' );
+      }
+    }
+
+  &--external {
+
+    &::after {
+      background-image: url( 'data:image/svg+xml;utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="31.408" height="33.919" viewBox="0 0 31.408 33.919"><g transform="translate(-1008.919 -965.628)"><g transform="translate(1046.174 2398.574) rotate(-135)"><path d="M0,0,7.879,7.879,0,15.759" transform="translate(1025.259 990.17) rotate(90)" fill="none" stroke="%23fff" stroke-width="3"/><line y2="16.032" transform="translate(1017.516 980.5)" fill="none" stroke="%23fff" stroke-width="3"/></g><path d="M10683.643,5322.808v10.24h-20.386v-21.215h7.446" transform="translate(-9652.838 -4335)" fill="none" stroke="%23fff" stroke-width="3"/></g></svg>' );
+    }
+  }
+
+  &--caret-right {
+
+    &::after {
+      background-image: url( 'data:image/svg+xml;utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.129 34.016"><path d="M1454.5,1298.922l15.947,15.947-15.947,15.947" transform="translate(-1453.439 -1297.861)" fill="none" stroke="%23fff" stroke-width="3"/></svg>' );
+    }
+  }
+}
