@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
 
 @WebServlet(name = "Servlet", urlPatterns = {"/Servlet"})
 public class Servlet extends HttpServlet {
@@ -15,8 +16,30 @@ public class Servlet extends HttpServlet {
             printNav(out);
             String firstname = request.getParameter("firstName");
             String lastName = request.getParameter("lastName");
+            String email = request.getParameter("email");
+            String day = request.getParameter("day");
+            String month = request.getParameter("month");
+            String year = request.getParameter("year");
+            String action = request.getParameter("action");
+            String dob = day + "/" + month + "/" + year;
 
-            out.println(firstname + lastName);
+
+            System.out.println(firstname + lastName + email + day + action + dob);
+
+            if (action.contains("register")) {
+                DbTool dbtool = new DbTool();
+               Connection connection = dbtool.dbLogIn(out);
+               DbFunctionality dbFunctionality = new DbFunctionality();
+               dbFunctionality.addUser(firstname,lastName,email,dob, out, connection);
+                out.println(firstname + "has been added to db");
+
+            }
+            else {
+                out.print("something went wrong");
+            }
+
+
+
             out.println("<script\n" +
                     "        src=\"https://code.jquery.com/jquery-3.4.1.js\"\n" +
                     "        integrity=\"sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=\"\n" +
@@ -27,6 +50,7 @@ public class Servlet extends HttpServlet {
 
         }
     }
+
 
     public void printNav(PrintWriter out){
         out.println(
