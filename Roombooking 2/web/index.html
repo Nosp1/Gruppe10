@@ -3,19 +3,27 @@
 <head>
     <title>register form</title>
     <link rel="stylesheet" type="text/css" href="bootstrap.css">
+    <meta charset="utf-8">
     <style type="text/css">
+        #collapseExample {
+            background: #2b542c;
+        }
+
         .jumbotron {
-            color: #236b15;
-            text-underline-color: #5e5e5e;
+            color: rgb(41, 187, 48);
+            text-shadow: rgba(252, 117, 0, 0) 0px 0px 10px;
+
+
             background-image: url("https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80");
             background-size: 100%;
         }
+
         .navbar-brand {
             background: #216732;
         }
 
         body {
-            background-color: rgb(83, 140, 19);
+            background-color: rgb(41, 187, 105);
             text-align: center;
         }
 
@@ -23,9 +31,7 @@
             background-color: orange;
         }
 
-        .container {
-            margin: auto;
-        }
+
         h1 {
             margin-bottom: 10px;
         }
@@ -92,117 +98,125 @@
     <div class="jumbotron">
         <h1 class="special-text">Welcome to Roombooking</h1>
         <button class="btn btn-success btn-lg">Log in</button>
-        <button class="btn btn-success btn-lg">Register
+        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseExample" role="button"
+                aria-expanded="false" aria-controls="collapseExample">Register
         </button>
     </div>
-    <div>
-<h1 class="container">Register</h1>
+
 </div>
-<form class="container" action="./Servlet" method="post">
-    <div>
-        <label for="firstName">First name</label>
-        <input id="firstName" type="text" name="firstName" placeholder="John" required>
-    </div>
-    <div>
-        <label for="lastName">Last name</label>
-        <input id="lastName" type="text" name="lastName" placeholder="Smith" required>
-    </div>
+<form class="container form-horizontal" action="./Servlet" method="post">
 
-    <div>
-        <label for="male">Male</label>
-        <input id="male" type="radio" name="genderchoice" value="other">
+    <div class="collapse col-lg-12 form-group" id="collapseExample">
+        <h1>Register</h1>
+        <div class="form-group">
+            <label for="firstName">First name</label>
+            <input id="firstName" type="text" name="firstName" placeholder="John" required>
+        </div>
+        <div class="form-group">
+            <label for="lastName">Last name</label>
+            <input id="lastName" type="text" name="lastName" placeholder="Smith" required>
+        </div>
 
-        <label for="female">Female</label>
-        <input id="female" type="radio" name="genderchoice" value="female">
+        <div class="form-group">
+            <label for="male">Male</label>
+            <input id="male" type="radio" name="genderchoice" value="male">
 
-        <label for="other">Other</label>
-        <input id="other" type="radio" name="genderchoice" value="other">
-    </div>
+            <label for="female">Female</label>
+            <input id="female" type="radio" name="genderchoice" value="female">
 
-    <div>
-        <label for="email">Email</label>
-        <input id="email" type="email" name="email" required placeholder="JohnS@example.com">
-    </div>
-    <div>
-        <label for="password">Password (min 8 length)</label>
-        <input type="password" name="password" placeholder="min 8 length;" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-               required id="password"
-               title="must atleast contain one uppercase letter and one lowercase letter, and one number">
-    </div>
+            <label for="other">Other</label>
+            <input id="other" type="radio" name="genderchoice" value="other">
+        </div>
 
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input id="email" type="email" name="email" required placeholder="JohnS@example.com">
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" name="password" placeholder="min 8 length;"
+                   pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                   required id="password"
+                   title="must atleast contain one uppercase letter and one lowercase letter, and one number">
+            <!-- <div class="form-group">
+                 <label for="dob">Date Of birth</label>
+                 <input id="dob" type="date">
+             </div> <!-->
+        </div>
+        <div>
+            <label for="dateofbirth">Date of Birth</label>
+            <select id="dateofbirth" name="day">
+                <option>Day</option>
+                <option>01</option>
+                <option>02</option>
+                <option>03</option>
+                <option value="4">04</option>
+                <option value="5">05</option>
+                <option value="6">06</option>
+                <option>07</option>
+                <option>08</option>
+                <option>09</option>
+                <option>10</option>
+                <option>11</option>
+                <option>12</option>
+                <option>13</option>
+                <option>14</option>
+                <option>15</option>
+                <option>16</option>
+                <option>17</option>
+                <option>18</option>
+                <option>19</option>
+                <option>20</option>
+                <option>21</option>
+                <option>22</option>
+                <option>21</option>
+                <option>22</option>
+                <option>23</option>
+                <option>24</option>
+                <option>25</option>
+                <option>26</option>
+                <option>27</option>
+            </select>
+            <select name="month">
+                <option>Month</option>
+                <option value="January">January</option>
+                <option value="February">February</option>
+                <option>March</option>
+                <option>April</option>
+                <option>May</option>
+                <option>June</option>
+                <option>July</option>
+                <option>August</option>
+                <option>September</option>
+                <option>October</option>
+                <option>November</option>
+                <option>December</option>
+            </select>
 
-    <div>
-        <label for="dateofbirth">Date of Birth</label>
-        <select id="dateofbirth" name="day">
-            <option>Day</option>
-            <option value="1">01</option>
-            <option value="2">02</option>
-            <option value="3">03</option>
-            <option value="4">04</option>
-            <option value="5">05</option>
-            <option value="6">06</option>
-            <option>07</option>
-            <option>08</option>
-            <option>09</option>
-            <option>10</option>
-            <option>11</option>
-            <option>12</option>
-            <option>13</option>
-            <option>14</option>
-            <option>15</option>
-            <option>16</option>
-            <option>17</option>
-            <option>18</option>
-            <option>19</option>
-            <option>20</option>
-            <option>21</option>
-            <option>22</option>
-            <option>21</option>
-            <option>22</option>
-            <option>23</option>
-            <option>24</option>
-            <option>25</option>
-            <option>26</option>
-            <option>27</option>
-        </select>
-        <select name="month">
-            <option>Month</option>
-            <option value="January">January</option>
-            <option value="February">February</option>
-            <option>March</option>
-            <option>April</option>
-            <option>May</option>
-            <option>June</option>
-            <option>July</option>
-            <option>August</option>
-            <option>September</option>
-            <option>October</option>
-            <option>November</option>
-            <option>December</option>
-        </select>
+            <select name="year">
+                <option>Year</option>
+                <option value="1993">1993</option>
+                <option value="1994">1994</option>
+                <option value="1995">1995</option>
+                <option>1996</option>
+                <option>1997</option>
+                <option>1998</option>
+                <option>1999</option>
+                <option>2000</option>
+                <option>2001</option>
+                <option>2002</option>
 
-        <select name="year">
-            <option>Year</option>
-            <option value="1993">1993</option>
-            <option value="1994">1994</option>
-            <option value="1995">1995</option>
-            <option>1996</option>
-            <option>1997</option>
-            <option>1998</option>
-            <option>1999</option>
-            <option>2000</option>
-            <option>2001</option>
-            <option>2002</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="terms">I agree the Terms of Use</label>
+            <input type="checkbox" name="checkbox" id="terms" required>
+        </div>
+        <div class="form-group">
+            <input class="submit btn-default btn-lg" type="submit" name="action" value="Register">
+            <input class="submit btn-default btn lg" type="submit" name="action" value="Database">
+        </div>
 
-        </select>
-    </div>
-    <div>
-        <label for="terms">I agree the Terms of Use</label>
-        <input type="checkbox" name="checkbox" id="terms" required>
-    </div>
-    <div id="test">
-        <input class="submit btn-default btn-lg" type="submit" name="action" value="Register">
-        <input class="submit btn-default btn lg" type="submit" name="action" value="Database">
     </div>
 </form>
 <script
