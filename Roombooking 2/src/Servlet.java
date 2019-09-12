@@ -7,14 +7,21 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+/**
+ * @author trym
+ * @see java.io.Serializable
+ * @see javax.servlet.Servlet
+ *
+
+ */
 
 @WebServlet(name = "Servlet", urlPatterns = {"/Servlet"})
 public class Servlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try(PrintWriter out = response.getWriter()) {
+        try (PrintWriter out = response.getWriter()) {
             printNav(out);
-            String firstname = request.getParameter("firstName");
+            String firstName = request.getParameter("firstName");
             String lastName = request.getParameter("lastName");
             String email = request.getParameter("email");
             String day = request.getParameter("day");
@@ -23,21 +30,18 @@ public class Servlet extends HttpServlet {
             String action = request.getParameter("action");
             String dob = day + "/" + month + "/" + year;
 
-
-            System.out.println(firstname + lastName + email + day + action + dob);
-
-            if (action.contains("register")) {
+            if (action.toLowerCase().contains("register")) {
                 DbTool dbtool = new DbTool();
-               Connection connection = dbtool.dbLogIn(out);
-               DbFunctionality dbFunctionality = new DbFunctionality();
-               dbFunctionality.addUser(firstname,lastName,email,dob, out, connection);
-                out.println(firstname + "has been added to db");
-
-            }
-            else {
+                Connection connection = dbtool.dbLogIn(out);
+                DbFunctionality dbFunctionality = new DbFunctionality();
+                dbFunctionality.addUser(firstName, lastName, email, dob, out, connection);
+                out.println("<p> You have successfully registered</p>");
+                out.println("<button class=\"submit btn-default btn-lg\">\n" +
+                        "\t\t\t<a href=\"index.html\">return</a>\n" +
+                        "\t\t</button>");
+            } else {
                 out.print("something went wrong");
             }
-
 
 
             out.println("<script\n" +
@@ -52,7 +56,7 @@ public class Servlet extends HttpServlet {
     }
 
 
-    public void printNav(PrintWriter out){
+    public void printNav(PrintWriter out) {
         out.println(
                 "<!DOCTYPE html>\n" +
                         "<html>\n" +
@@ -127,5 +131,4 @@ public class Servlet extends HttpServlet {
                         "</nav>"
         );
     }
-
 }

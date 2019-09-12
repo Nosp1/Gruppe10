@@ -26,7 +26,6 @@ public class DbTool {
     }
     public void printResults (PrintWriter out) throws SQLException {
         String strSelect = "Select * from Rooms";
-        out.println("yo");
         ResultSet resultSet = statement.executeQuery(strSelect);
         while (resultSet.next()) {
             out.print("Your results are:" + "\n");
