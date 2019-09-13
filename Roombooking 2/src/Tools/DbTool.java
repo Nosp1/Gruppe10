@@ -26,12 +26,15 @@ public class DbTool {
         }
         return connection;
     }
-    public void printResults (PrintWriter out) throws SQLException {
-        String strSelect = "Select * from Rooms";
+
+    public void printResults(PrintWriter out) throws SQLException {
+        out.print("yo");
+        String strSelect = "Select * from User";
+        statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery(strSelect);
+        out.print("Your results are:" + "\n");
         while (resultSet.next()) {
-            out.print("Your results are:" + "\n");
-            out.print(resultSet.getString(1));
+            out.print(resultSet.getString("User_firstName"));
 
         }
         out.print("query complete");

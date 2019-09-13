@@ -3,39 +3,9 @@
 <head>
     <title>register form</title>
     <link rel="stylesheet" type="text/css" href="bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="roombooking.css">
     <meta charset="utf-8">
-    <style type="text/css">
-        #collapseExample {
-            background: #2b542c;
-        }
 
-        .jumbotron {
-            color: rgb(41, 187, 48);
-            text-shadow: rgba(252, 117, 0, 0) 0px 0px 10px;
-
-
-            background-image: url("https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80");
-            background-size: 100%;
-        }
-
-        .navbar-brand {
-            background: #216732;
-        }
-
-        body {
-            background-color: rgb(41, 187, 105);
-            text-align: center;
-        }
-
-        .btn-default {
-            background-color: orange;
-        }
-
-
-        h1 {
-            margin-bottom: 10px;
-        }
-    </style>
 </head>
 <body>
 <nav class="navbar navbar-default">
@@ -97,53 +67,57 @@
 <div class="container">
     <div class="jumbotron">
         <h1 class="special-text">Welcome to Roombooking</h1>
-        <button class="btn btn-success btn-lg">Log in</button>
+        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseLogin" role="button" aria-expanded="false"
+        aria-controls="#collapseLogin">Log in</button>
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseExample" role="button"
                 aria-expanded="false" aria-controls="collapseExample">Register
         </button>
     </div>
 
 </div>
-<form class="container form-horizontal" action="./Servlets.Servlet" method="post">
 
-    <div class="collapse col-lg-12 form-group" id="collapseExample">
+
+<div class="collapse container" id="collapseExample">
+    <form action="./Servlets.Servlet" method="post">
         <h1>Register</h1>
-        <div class="form-group">
+        <div>
             <label for="firstName">First name</label>
             <input id="firstName" type="text" name="firstName" placeholder="John" required>
         </div>
-        <div class="form-group">
+        <div>
             <label for="lastName">Last name</label>
             <input id="lastName" type="text" name="lastName" placeholder="Smith" required>
         </div>
+        <div>
+            <label for="gender">Gender</label>
+        </div>
+        <div id="gender" class="btn-group" role="group" aria-label="Basic example">
 
-        <div class="form-group">
-            <label for="male">Male</label>
-            <input id="male" type="radio" name="genderchoice" value="male">
+            <button value="male" name="genderChoice" type="button" class=" submit btn btn-secondary">Male</button>
+            <button value="female" name="genderChoice" type="button" class=" submit btn btn-secondary">Female</button>
+            <button value="other" name="genderChoice" type="button" class=" submit btn btn-secondary">Other</button>
 
-            <label for="female">Female</label>
-            <input id="female" type="radio" name="genderchoice" value="female">
-
-            <label for="other">Other</label>
-            <input id="other" type="radio" name="genderchoice" value="other">
         </div>
 
-        <div class="form-group">
+
+        <div>
             <label for="email">Email</label>
             <input id="email" type="email" name="email" required placeholder="JohnS@example.com">
         </div>
-        <div class="form-group">
+        <div>
             <label for="password">Password</label>
             <input type="password" name="password" placeholder="min 8 length;"
                    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
                    required id="password"
-                   title="must atleast contain one uppercase letter and one lowercase letter, and one number">
-            <!-- <div class="form-group">
-                 <label for="dob">Date Of birth</label>
-                 <input id="dob" type="date">
-             </div> <!-->
+                   title="must at least contain one uppercase letter and one lowercase letter, and one number">
+
         </div>
+
         <div>
+            <label for="dob">Date Of birth</label>
+            <input id="dob" type="date" name="dob" required>
+        </div>
+        <!--<div>
             <label for="dateofbirth">Date of Birth</label>
             <select id="dateofbirth" name="day">
                 <option>Day</option>
@@ -207,18 +181,40 @@
                 <option>2002</option>
 
             </select>
+        </div> <!-->
+        <div>
+            <label for="terms">I agree the Terms of Use
+                <input type="checkbox" name="checkbox" id="terms" required>
+            </label>
         </div>
-        <div class="form-group">
-            <label for="terms">I agree the Terms of Use</label>
-            <input type="checkbox" name="checkbox" id="terms" required>
-        </div>
-        <div class="form-group">
+        <div>
             <input class="submit btn-default btn-lg" type="submit" name="action" value="Register">
             <input class="submit btn-default btn lg" type="submit" name="action" value="Database">
         </div>
+    </form>
+</div>
+<!-- testing  login function on same html -->
 
-    </div>
-</form>
+<div class="collapse container" id="collapseLogin">
+    <form action="./Servlets.ServletLogin" method="post">
+        <h1>Log in</h1>
+
+
+        <div>
+            <label for="userName">Username</label>
+            <input type="text" id="userName" name="username">
+        </div>
+        <div>
+            <label for="loginpassword">Password</label>
+            <input type="password" id="loginpassword" name="password">
+        </div>
+        <div>
+            <input class="submit btn-default btn-lg" type="submit" name="action" value="login">
+        </div>
+
+    </form>
+</div>
+
 <script
         src="https://code.jquery.com/jquery-3.4.1.js"
         integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
