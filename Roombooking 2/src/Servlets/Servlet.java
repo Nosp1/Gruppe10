@@ -11,12 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.SQLException;
+
 /**
  * @author trym
  * @see java.io.Serializable
  * @see javax.servlet.Servlet
- *
-
  */
 
 @WebServlet(name = "Servlets.Servlet", urlPatterns = {"/Servlets.Servlet"})
@@ -28,11 +28,11 @@ public class Servlet extends HttpServlet {
             String firstName = request.getParameter("firstName");
             String lastName = request.getParameter("lastName");
             String email = request.getParameter("email");
-            String day = request.getParameter("day");
-            String month = request.getParameter("month");
-            String year = request.getParameter("year");
+            //  String day = request.getParameter("day");
+            //String month = request.getParameter("month");
+            // String year = request.getParameter("year");
             String action = request.getParameter("action");
-            String dob = day + "/" + month + "/" + year;
+            String dob = request.getParameter("dob");
 
             if (action.toLowerCase().contains("register")) {
                 DbTool dbtool = new DbTool();
@@ -43,6 +43,13 @@ public class Servlet extends HttpServlet {
                 out.println("<button class=\"submit btn-default btn-lg\">\n" +
                         "\t\t\t<a href=\"index.html\">return</a>\n" +
                         "\t\t</button>");
+
+            } else if (action.toLowerCase().contains("database")) {
+                DbTool dbTool = new DbTool();
+                Connection connection = dbTool.dbLogIn(out);
+                dbTool.printResults(out);
+
+
             } else {
                 out.print("something went wrong");
             }
@@ -56,6 +63,8 @@ public class Servlet extends HttpServlet {
             out.println("</body>");
             out.println("</html>");
 
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -67,39 +76,9 @@ public class Servlet extends HttpServlet {
                         "<head>\n" +
                         "    <title>register form</title>\n" +
                         "    <link rel=\"stylesheet\" type=\"text/css\" href=\"bootstrap.css\">\n" +
+                        "    <link rel=\"stylesheet\" type=\"text/css\" href=\"roombooking.css\">\n" +
                         "    <meta charset=\"utf-8\">\n" +
-                        "    <style type=\"text/css\">\n" +
-                        "        #collapseExample {\n" +
-                        "            background: #2b542c;\n" +
-                        "        }\n" +
                         "\n" +
-                        "        .jumbotron {\n" +
-                        "            color: rgb(41, 187, 48);\n" +
-                        "            text-shadow: rgba(252, 117, 0, 0) 0px 0px 10px;\n" +
-                        "\n" +
-                        "\n" +
-                        "            background-image: url(\"https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80\");\n" +
-                        "            background-size: 100%;\n" +
-                        "        }\n" +
-                        "\n" +
-                        "        .navbar-brand {\n" +
-                        "            background: #216732;\n" +
-                        "        }\n" +
-                        "\n" +
-                        "        body {\n" +
-                        "            background-color: rgb(41, 187, 105);\n" +
-                        "            text-align: center;\n" +
-                        "        }\n" +
-                        "\n" +
-                        "        .btn-default {\n" +
-                        "            background-color: orange;\n" +
-                        "        }\n" +
-                        "\n" +
-                        "\n" +
-                        "        h1 {\n" +
-                        "            margin-bottom: 10px;\n" +
-                        "        }\n" +
-                        "    </style>\n" +
                         "</head>\n" +
                         "<body>\n" +
                         "<nav class=\"navbar navbar-default\">\n" +
