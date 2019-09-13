@@ -1,4 +1,8 @@
-import javax.servlet.ServletContext;
+package Servlets;
+
+import Tools.DbFunctionality;
+import Tools.DbTool;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,7 +19,7 @@ import java.sql.Connection;
 
  */
 
-@WebServlet(name = "Servlet", urlPatterns = {"/Servlet"})
+@WebServlet(name = "Servlets.Servlet", urlPatterns = {"/Servlets.Servlet"})
 public class Servlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
