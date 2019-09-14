@@ -32,8 +32,11 @@ public class ServletLogin extends HttpServlet {
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
-                dbFunctionality.checkUser(userName, out, connection);
+                dbFunctionality.checkUser(userName.toLowerCase(), out, connection);
                 //out.print(userName + password);
+                out.print("<button class=\"btn-default btn-lg submit\">\n" +
+                        "                <a href=\"index.html\"> return</a>\n" +
+                        "            </button>\n");
 
             }
 

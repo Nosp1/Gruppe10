@@ -35,7 +35,7 @@ public class DbFunctionality {
         //stmt.execute();
         ResultSet resultSet = stmt.executeQuery();
         while (resultSet.next()) {
-            if (resultSet.getString("User_email").matches(userName)) {
+            if (resultSet.getString("User_email").toLowerCase().matches(userName)) {
                 out.print("Welcome " + userName);
             }
         }
