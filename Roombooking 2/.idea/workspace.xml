@@ -144,6 +144,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/web/login.html" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/web/index.html" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/web/login.html" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -212,13 +213,13 @@
             <path>
               <item name="Roombooking 2" type="b2602c69:ProjectViewProjectNode" />
               <item name="Roombooking 2" type="462c0819:PsiDirectoryNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="Tools" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="Roombooking 2" type="b2602c69:ProjectViewProjectNode" />
               <item name="Roombooking 2" type="462c0819:PsiDirectoryNode" />
               <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="META-INF" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />

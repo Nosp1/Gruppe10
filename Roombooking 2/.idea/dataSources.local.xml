@@ -9,7 +9,7 @@
       <case-sensitivity plain-identifiers="mixed" quoted-identifiers="mixed" />
       <secret-storage>master_key</secret-storage>
       <user-name>root</user-name>
-      <introspection-schemas>*:Museum,Roombooking</introspection-schemas>
+      <introspection-schemas>*:Roombooking</introspection-schemas>
     </data-source>
   </component>
 </project>
