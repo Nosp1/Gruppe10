@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dataSource name="@localhost">
+<dataSource name="Roombooking@localhost">
   <database-model serializer="dbm" dbms="MYSQL" family-id="MYSQL" format-version="4.14">
     <root id="1">
       <ServerVersion>8.0.17</ServerVersion>
@@ -8,10 +8,10 @@
       <DefaultCasing>mixed/mixed</DefaultCasing>
     </root>
     <schema id="2" parent="1" name="Museum">
-      <Visible>1</Visible>
       <Collation>utf8mb4_general_ci</Collation>
     </schema>
     <schema id="3" parent="1" name="Roombooking">
+      <Current>1</Current>
       <Visible>1</Visible>
       <Collation>utf8mb4_general_ci</Collation>
     </schema>
@@ -1116,292 +1116,50 @@
       <Charset>utf8mb4</Charset>
       <DefaultForCharset>0</DefaultForCharset>
     </collation>
-    <table id="280" parent="2" name="Art"/>
-    <table id="281" parent="2" name="Artist"/>
-    <table id="282" parent="2" name="Gallery"/>
-    <table id="283" parent="2" name="Loan"/>
-    <table id="284" parent="2" name="Location"/>
-    <table id="285" parent="2" name="Travel_Show"/>
-    <table id="286" parent="3" name="Rooms"/>
-    <table id="287" parent="3" name="User"/>
-    <column id="288" parent="280" name="Art_ID">
-      <Position>1</Position>
-      <DataType>varchar(8)|0s</DataType>
-      <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="289" parent="280" name="title">
-      <Position>2</Position>
-      <DataType>varchar(60)|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="290" parent="280" name="art_Type">
-      <Position>3</Position>
-      <DataType>varchar(50)|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="291" parent="280" name="size">
-      <Position>4</Position>
-      <DataType>double|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="292" parent="280" name="state">
-      <Position>5</Position>
-      <DataType>varchar(20)|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="293" parent="280" name="Loc_id">
-      <Position>6</Position>
-      <DataType>varchar(8)|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <index id="294" parent="280" name="Art_loc_ID__fk">
-      <ColNames>Loc_id</ColNames>
-      <Type>btree</Type>
-    </index>
-    <key id="295" parent="280" name="PRIMARY">
-      <NameSurrogate>1</NameSurrogate>
-      <ColNames>Art_ID</ColNames>
-      <Primary>1</Primary>
-    </key>
-    <foreign-key id="296" parent="280" name="Art_loc_ID__fk">
-      <ColNames>Loc_id</ColNames>
-      <RefSchemaName>museum</RefSchemaName>
-      <RefTableName>Location</RefTableName>
-      <RefColNames>Loc_id</RefColNames>
-    </foreign-key>
-    <column id="297" parent="281" name="Artist_ID">
-      <Position>1</Position>
-      <DataType>varchar(8)|0s</DataType>
-      <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="298" parent="281" name="Artist_name">
-      <Position>2</Position>
-      <DataType>varchar(60)|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="299" parent="281" name="Artist_DOB">
-      <Position>3</Position>
-      <DataType>date|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="300" parent="281" name="Artist_DOD">
-      <Position>4</Position>
-      <DataType>date|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="301" parent="281" name="Art_ID">
-      <Position>5</Position>
-      <DataType>varchar(8)|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <index id="302" parent="281" name="Artist_Art_ID">
-      <ColNames>Art_ID</ColNames>
-      <Type>btree</Type>
-    </index>
-    <key id="303" parent="281" name="PRIMARY">
-      <NameSurrogate>1</NameSurrogate>
-      <ColNames>Artist_ID</ColNames>
-      <Primary>1</Primary>
-    </key>
-    <foreign-key id="304" parent="281" name="Artist_Art_ID">
-      <ColNames>Art_ID</ColNames>
-      <RefSchemaName>museum</RefSchemaName>
-      <RefTableName>Art</RefTableName>
-      <RefColNames>Art_ID</RefColNames>
-    </foreign-key>
-    <column id="305" parent="282" name="G_ID">
-      <Position>1</Position>
-      <DataType>varchar(4)|0s</DataType>
-      <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="306" parent="282" name="G_Name">
-      <Position>2</Position>
-      <DataType>varchar(60)|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="307" parent="282" name="G_City">
-      <Position>3</Position>
-      <DataType>varchar(25)|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="308" parent="282" name="L_ID">
-      <Position>4</Position>
-      <DataType>varchar(5)|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <index id="309" parent="282" name="G_L_ID_FK">
-      <ColNames>L_ID</ColNames>
-      <Type>btree</Type>
-    </index>
-    <key id="310" parent="282" name="PRIMARY">
-      <NameSurrogate>1</NameSurrogate>
-      <ColNames>G_ID</ColNames>
-      <Primary>1</Primary>
-    </key>
-    <foreign-key id="311" parent="282" name="G_L_ID_FK">
-      <ColNames>L_ID</ColNames>
-      <RefSchemaName>museum</RefSchemaName>
-      <RefTableName>Loan</RefTableName>
-      <RefColNames>L_ID</RefColNames>
-    </foreign-key>
-    <column id="312" parent="283" name="L_ID">
-      <Position>1</Position>
-      <DataType>varchar(6)|0s</DataType>
-      <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="313" parent="283" name="DOL">
-      <Position>2</Position>
-      <DataType>date|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="314" parent="283" name="DOR">
-      <Position>3</Position>
-      <DataType>date|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="315" parent="283" name="Art_ID">
-      <Position>4</Position>
-      <DataType>varchar(8)|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="316" parent="283" name="TS_ID">
-      <Position>5</Position>
-      <DataType>varchar(5)|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="317" parent="283" name="G_ID">
-      <Position>6</Position>
-      <DataType>varchar(4)|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <index id="318" parent="283" name="L_Art_ID">
-      <ColNames>Art_ID</ColNames>
-      <Type>btree</Type>
-    </index>
-    <key id="319" parent="283" name="PRIMARY">
-      <NameSurrogate>1</NameSurrogate>
-      <ColNames>L_ID</ColNames>
-      <Primary>1</Primary>
-    </key>
-    <foreign-key id="320" parent="283" name="L_Art_ID">
-      <ColNames>Art_ID</ColNames>
-      <RefSchemaName>museum</RefSchemaName>
-      <RefTableName>Art</RefTableName>
-      <RefColNames>Art_ID</RefColNames>
-    </foreign-key>
-    <column id="321" parent="284" name="Loc_id">
-      <Position>1</Position>
-      <DataType>varchar(8)|0s</DataType>
-      <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="322" parent="284" name="Art_ID">
-      <Position>2</Position>
-      <DataType>varchar(8)|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <index id="323" parent="284" name="Location_Art_ID_fk">
-      <ColNames>Art_ID</ColNames>
-      <Type>btree</Type>
-    </index>
-    <key id="324" parent="284" name="PRIMARY">
-      <NameSurrogate>1</NameSurrogate>
-      <ColNames>Loc_id</ColNames>
-      <Primary>1</Primary>
-    </key>
-    <foreign-key id="325" parent="284" name="Location_Art_ID_fk">
-      <ColNames>Art_ID</ColNames>
-      <RefSchemaName>museum</RefSchemaName>
-      <RefTableName>Art</RefTableName>
-      <RefColNames>Art_ID</RefColNames>
-    </foreign-key>
-    <column id="326" parent="285" name="TS_ID">
-      <Position>1</Position>
-      <DataType>varchar(5)|0s</DataType>
-      <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="327" parent="285" name="TS_CITY">
-      <Position>2</Position>
-      <DataType>varchar(25)|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="328" parent="285" name="TS_DAT_ST">
-      <Position>3</Position>
-      <DataType>date|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="329" parent="285" name="TS_DAT_END">
-      <Position>4</Position>
-      <DataType>date|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="330" parent="285" name="L_ID">
-      <Position>5</Position>
-      <DataType>varchar(6)|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <index id="331" parent="285" name="TS_L_ID_FK">
-      <ColNames>L_ID</ColNames>
-      <Type>btree</Type>
-    </index>
-    <key id="332" parent="285" name="PRIMARY">
-      <NameSurrogate>1</NameSurrogate>
-      <ColNames>TS_ID</ColNames>
-      <Primary>1</Primary>
-    </key>
-    <foreign-key id="333" parent="285" name="TS_L_ID_FK">
-      <ColNames>L_ID</ColNames>
-      <RefSchemaName>museum</RefSchemaName>
-      <RefTableName>Loan</RefTableName>
-      <RefColNames>L_ID</RefColNames>
-    </foreign-key>
-    <column id="334" parent="286" name="roomFloor">
+    <table id="280" parent="3" name="Rooms"/>
+    <table id="281" parent="3" name="User"/>
+    <column id="282" parent="280" name="roomFloor">
       <Position>1</Position>
       <DataType>varchar(255)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="335" parent="286" name="roomID">
+    <column id="283" parent="280" name="roomID">
       <Position>2</Position>
       <DataType>varchar(255)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="336" parent="287" name="User_ID">
+    <column id="284" parent="281" name="User_ID">
       <Position>1</Position>
       <DataType>int(11)|0s</DataType>
       <NotNull>1</NotNull>
       <SequenceIdentity>1</SequenceIdentity>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="337" parent="287" name="User_firstName">
+    <column id="285" parent="281" name="User_firstName">
       <Position>2</Position>
       <DataType>varchar(20)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="338" parent="287" name="User_lastName">
+    <column id="286" parent="281" name="User_lastName">
       <Position>3</Position>
       <DataType>varchar(35)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="339" parent="287" name="User_email">
+    <column id="287" parent="281" name="User_email">
       <Position>4</Position>
       <DataType>varchar(40)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="340" parent="287" name="User_dob">
+    <column id="288" parent="281" name="User_dob">
       <Position>5</Position>
       <DataType>varchar(40)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <key id="341" parent="287" name="PRIMARY">
+    <key id="289" parent="281" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>User_ID</ColNames>
       <Primary>1</Primary>
