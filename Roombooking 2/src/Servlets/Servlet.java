@@ -33,12 +33,18 @@ public class Servlet extends HttpServlet {
             // String year = request.getParameter("year");
             String action = request.getParameter("action");
             String dob = request.getParameter("dob");
+            String password = request.getParameter("password");
+                if(password != null) {
+                    out.print(password);
+                }
+
 
             if (action.toLowerCase().contains("register")) {
+                System.out.println("hello" + password);
                 DbTool dbtool = new DbTool();
                 Connection connection = dbtool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
-                dbFunctionality.addUser(firstName, lastName, email, dob, out, connection);
+                dbFunctionality.addUser(firstName, lastName, email, password, dob, out, connection);
                 out.println("<p> You have successfully registered</p>");
                 out.println("<button class=\"submit btn-default btn-lg\">\n" +
                         "\t\t\t<a href=\"index.html\">return</a>\n" +

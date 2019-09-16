@@ -67,8 +67,10 @@
 <div class="container">
     <div class="jumbotron">
         <h1 class="special-text">Welcome to Roombooking</h1>
-        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseLogin" role="button" aria-expanded="false"
-        aria-controls="#collapseLogin">Log in</button>
+        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseLogin" role="button"
+                aria-expanded="false"
+                aria-controls="#collapseLogin">Log in
+        </button>
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseExample" role="button"
                 aria-expanded="false" aria-controls="collapseExample">Register
         </button>
@@ -101,87 +103,22 @@
 
 
         <div>
-            <label for="email">Email</label>
+            <label for="email">Email yo</label>
             <input id="email" type="email" name="email" required placeholder="JohnS@example.com">
         </div>
+
         <div>
             <label for="password">Password</label>
-            <input type="password" name="password" placeholder="min 8 length;"
-                   pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-                   required id="password"
-                   title="must at least contain one uppercase letter and one lowercase letter, and one number">
-
+            <input type="password" name="password" placeholder="password; minimum 8 characters" pattern=".{8,0}"
+                   id="password"
+                   required title="must atleast contain 8 symbols">
         </div>
 
         <div>
             <label for="dob">Date Of birth</label>
             <input id="dob" type="date" name="dob" required>
         </div>
-        <!--<div>
-            <label for="dateofbirth">Date of Birth</label>
-            <select id="dateofbirth" name="day">
-                <option>Day</option>
-                <option>01</option>
-                <option>02</option>
-                <option>03</option>
-                <option value="4">04</option>
-                <option value="5">05</option>
-                <option value="6">06</option>
-                <option>07</option>
-                <option>08</option>
-                <option>09</option>
-                <option>10</option>
-                <option>11</option>
-                <option>12</option>
-                <option>13</option>
-                <option>14</option>
-                <option>15</option>
-                <option>16</option>
-                <option>17</option>
-                <option>18</option>
-                <option>19</option>
-                <option>20</option>
-                <option>21</option>
-                <option>22</option>
-                <option>21</option>
-                <option>22</option>
-                <option>23</option>
-                <option>24</option>
-                <option>25</option>
-                <option>26</option>
-                <option>27</option>
-            </select>
-            <select name="month">
-                <option>Month</option>
-                <option value="January">January</option>
-                <option value="February">February</option>
-                <option>March</option>
-                <option>April</option>
-                <option>May</option>
-                <option>June</option>
-                <option>July</option>
-                <option>August</option>
-                <option>September</option>
-                <option>October</option>
-                <option>November</option>
-                <option>December</option>
-            </select>
 
-            <select name="year">
-                <option>Year</option>
-                <option value="1993">1993</option>
-                <option value="1994">1994</option>
-                <option value="1995">1995</option>
-                <option>1996</option>
-                <option>1997</option>
-                <option>1998</option>
-                <option>1999</option>
-                <option>2000</option>
-                <option>2001</option>
-                <option>2002</option>
-
-            </select>
-        </div> <!-->
         <div>
             <label for="terms">I agree the Terms of Use
                 <input type="checkbox" name="checkbox" id="terms" required>
@@ -206,7 +143,7 @@
         </div>
         <div>
             <label for="loginpassword">Password</label>
-            <input type="password" id="loginpassword" name="password">
+            <input type="password" id="loginpassword" name="loginpassword">
         </div>
         <div>
             <input class="submit btn-default btn-lg" type="submit" name="action" value="login">
