@@ -1,0 +1,55 @@
+
+#collapseExample {
+    background: #2b542c;
+    width: border-box;
+    /*text-align: center; */
+}
+#collapseLogin {
+    background: #2b542c;
+    width: border-box;
+}
+
+.jumbotron {
+    color: rgb(41, 187, 48);
+    text-shadow: rgba(252, 117, 0, 0) 0px 0px 10px;
+
+
+    background-image: url("https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80");
+    background-size: 100%;
+}
+
+.navbar-brand {
+    background: #216732;
+}
+
+body {
+    background-color: rgb(41, 187, 105);
+    text-align: center;
+    text-shadow: rgba(252,117,0,0);
+}
+form {
+    display: inline-block;
+}
+.btn-secondary{
+    background-color: orange;
+
+}
+.btn-default {
+    background-color: orange;
+}
+
+
+h1 {
+    margin-bottom: 10px;
+}
+
+
+
+#collapseExample input {
+    width: 100%;
+    clear: both;
+}
+
+
+
+
