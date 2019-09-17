@@ -18,12 +18,12 @@ import java.sql.SQLException;
  */
 
 @WebServlet(name = "Servlets.ServletLogin", urlPatterns = {"/Servlets.ServletLogin"})
-public class ServletLogin extends HttpServlet {
+public class ServletLogin extends AbstractServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            Servlet servlet = new Servlet();
-            servlet.printNav(out);
+
+            printNav(out);
             String userName = request.getParameter("username");
             String password = request.getParameter("loginpassword");
             String action = request.getParameter("action");
@@ -40,7 +40,7 @@ public class ServletLogin extends HttpServlet {
 
             }
 
-            servlet.scriptBootstrap(out);
+            scriptBootstrap(out);
             out.print("</body>");
             out.print("</html>");
         } catch (SQLException e) {
