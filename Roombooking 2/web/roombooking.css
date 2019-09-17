@@ -34,8 +34,12 @@ body {
 #collapseLogin {
     color:white;
 }
+
 form {
     display: inline-block;
+    color: white;
+}
+input {
     color: black;
 }
 .btn-secondary{
