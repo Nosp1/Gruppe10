@@ -34,13 +34,8 @@ public class Servlet extends HttpServlet {
             String action = request.getParameter("action");
             String dob = request.getParameter("dob");
             String password = request.getParameter("password");
-                if(password != null) {
-                    out.print(password);
-                }
-
 
             if (action.toLowerCase().contains("register")) {
-                System.out.println("hello" + password);
                 DbTool dbtool = new DbTool();
                 Connection connection = dbtool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
@@ -55,11 +50,9 @@ public class Servlet extends HttpServlet {
                 Connection connection = dbTool.dbLogIn(out);
                 dbTool.printResults(out);
 
-
             } else {
                 out.print("something went wrong");
             }
-
 
             out.println("<script\n" +
                     "        src=\"https://code.jquery.com/jquery-3.4.1.js\"\n" +
@@ -73,7 +66,6 @@ public class Servlet extends HttpServlet {
             e.printStackTrace();
         }
     }
-
 
     public void printNav(PrintWriter out) {
         out.println(
