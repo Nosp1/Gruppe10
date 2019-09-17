@@ -13,7 +13,14 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 /**
- * @author trym
+ * Handles Login from index.html and parses String parameters to {@code DbFunctionality} to check for
+ * {@code String} is existing in Database.
+ * @see Servlets.AbstractServlet
+ * @see javax.servlet.http.HttpServlet
+ * @see javax.servlet.GenericServlet
+ * @see DbFunctionality
+ * @see DbTool
+ * @author trym Brisdalen
  *
  */
 
@@ -33,7 +40,6 @@ public class ServletLogin extends AbstractServlet {
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
                 dbFunctionality.checkUser(userName.toLowerCase(), out, connection);
-                //out.print(userName + password);
                 out.print("<button class=\"btn-default btn-lg submit\">\n" +
                         "                <a href=\"index.html\"> return</a>\n" +
                         "            </button>\n");

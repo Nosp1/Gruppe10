@@ -27,7 +27,7 @@ public class Servlet extends AbstractServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            printNav(out);
+            printNav(out); //void method that prints start of html from parent class AbstractServlet
             String firstName = request.getParameter("firstName");
             String lastName = request.getParameter("lastName");
             String email = request.getParameter("email");
@@ -58,7 +58,7 @@ public class Servlet extends AbstractServlet {
             }
 
 
-            scriptBootstrap(out);
+            scriptBootstrap(out); // Prints Javascript connection to Bootstrap.js and other dependencies. See AbstractServlet
             out.println("</body>");
             out.println("</html>");
 
