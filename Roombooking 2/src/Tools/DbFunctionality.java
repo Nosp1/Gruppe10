@@ -23,7 +23,6 @@ public class DbFunctionality {
             insertNewUser.setString(3, email);
             insertNewUser.setString(4, dob);
             String hashing = passwordHashAndCheck.stringToSaltedHash(passWord);
-            System.out.println(hashing);
             //split by ":" because method returns <salts>:<hashed password>
             String[] hashParts = hashing.split(":");
             insertNewUser.setString(5,hashParts[1]);
