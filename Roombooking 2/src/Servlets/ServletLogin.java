@@ -40,7 +40,7 @@ public class ServletLogin extends HttpServlet {
 
             }
 
-
+            servlet.scriptBootstrap(out);
             out.print("</body>");
             out.print("</html>");
         } catch (SQLException e) {

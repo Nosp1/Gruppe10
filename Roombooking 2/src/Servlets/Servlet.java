@@ -62,17 +62,21 @@ public class Servlet extends HttpServlet {
             }
 
 
-            out.println("<script\n" +
-                    "        src=\"https://code.jquery.com/jquery-3.4.1.js\"\n" +
-                    "        integrity=\"sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=\"\n" +
-                    "        crossorigin=\"anonymous\"></script>\n" +
-                    "<script src=\"bootstrap.js\"></script>");
+            scriptBootstrap(out);
             out.println("</body>");
             out.println("</html>");
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public void scriptBootstrap(PrintWriter out) {
+        out.println("<script\n" +
+                "        src=\"https://code.jquery.com/jquery-3.4.1.js\"\n" +
+                "        integrity=\"sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=\"\n" +
+                "        crossorigin=\"anonymous\"></script>\n" +
+                "<script src=\"bootstrap.js\"></script>");
     }
 
 
