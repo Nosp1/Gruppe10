@@ -1,3 +1,4 @@
+Create DATABASE Roombooking;
 create table Rooms
 (
   roomFloor varchar(255) null,

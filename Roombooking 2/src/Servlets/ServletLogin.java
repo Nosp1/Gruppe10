@@ -25,7 +25,7 @@ public class ServletLogin extends HttpServlet {
             Servlet servlet = new Servlet();
             servlet.printNav(out);
             String userName = request.getParameter("username");
-            String password = request.getParameter("password");
+            String password = request.getParameter("loginpassword");
             String action = request.getParameter("action");
 
             if (action.toLowerCase().contains("login")) {
