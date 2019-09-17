@@ -1,4 +1,4 @@
-Create DATABASE IF NOT EXISTS Roombooking;
+CREATE DATABASE IF NOT EXISTS Roombooking;
 USE Roombooking;
 
 CREATE TABLE IF NOT EXISTS Rooms
