@@ -14,6 +14,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
+ * Handles the Register form.
+ * Adds user to db
  * @author trym
  * @see java.io.Serializable
  * @see javax.servlet.Servlet
@@ -40,7 +42,6 @@ public class Servlet extends HttpServlet {
 
 
             if (action.toLowerCase().contains("register")) {
-                System.out.println("hello" + password);
                 DbTool dbtool = new DbTool();
                 Connection connection = dbtool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
