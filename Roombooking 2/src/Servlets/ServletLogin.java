@@ -15,17 +15,24 @@ import java.security.spec.InvalidKeySpecException;
 import java.sql.Connection;
 import java.sql.SQLException;
 /**
- * @author trym
+ * Handles Login from index.html and parses String parameters to {@code DbFunctionality} to check for
+ * {@code String} is existing in Database.
+ * @see Servlets.AbstractServlet
+ * @see javax.servlet.http.HttpServlet
+ * @see javax.servlet.GenericServlet
+ * @see DbFunctionality
+ * @see DbTool
+ * @author trym Brisdalen
  *
  */
 
 @WebServlet(name = "Servlets.ServletLogin", urlPatterns = {"/Servlets.ServletLogin"})
-public class ServletLogin extends HttpServlet {
+public class ServletLogin extends AbstractServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            Servlet servlet = new Servlet();
-            servlet.printNav(out);
+
+            printNav(out);
             String userName = request.getParameter("username");
             String lowercaseUsername = userName.toLowerCase();
             String password = request.getParameter("loginpassword");
@@ -54,6 +61,7 @@ public class ServletLogin extends HttpServlet {
 
             }
 
+            scriptBootstrap(out);
             out.print("</body>");
             out.print("</html>");
         } catch (SQLException e) {
