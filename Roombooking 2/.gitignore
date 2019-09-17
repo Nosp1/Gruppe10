@@ -70,3 +70,25 @@ fabric.properties
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
 
+
+Roombooking 2/web/META-INF/context.xml
+
+*.class
+
+Roombooking 2/.idea/dataSources.local.xml
+
+Roombooking 2/.idea/dataSources.xml
+
+Roombooking 2/.idea/dataSources/20ed1bff-d50d-4ed7-9a43-a577b4fa5ee7.xml
+
+Roombooking 2/.idea/misc.xml
+
+Roombooking 2/.idea/modules.xml
+
+Roombooking 2/.idea/Roombooking 2.iml
+
+Roombooking 2/.idea/vcs.xml
+
+Roombooking 2/.idea/web/WEB-INF/web.xml
+
+Roombooking 2/.idea/workspace.xml

@@ -11,22 +11,26 @@ public class DbFunctionality {
     Statement statement;
     PasswordHashAndCheck passwordHashAndCheck;
 
+    public DbFunctionality() {
+        passwordHashAndCheck = new PasswordHashAndCheck();
+    }
+
     public void addUser(String firstName, String lastName, String email, String passWord, String dob, PrintWriter out, Connection conn) {
         PreparedStatement insertNewUser;
-        passwordHashAndCheck = new PasswordHashAndCheck();
         try {
 
-            String ins = "insert into User (User_firstName, User_lastName, User_email, User_dob,User_password, User_salt) values (?,?,?,?,?,?)";
+            String ins = "insert into User (User_firstName, User_lastName, User_email, User_dob, User_password, User_salt) values (?,?,?,?,?,?)";
             insertNewUser = conn.prepareStatement(ins);
             insertNewUser.setString(1, firstName);
             insertNewUser.setString(2, lastName);
             insertNewUser.setString(3, email);
             insertNewUser.setString(4, dob);
             String hashing = passwordHashAndCheck.stringToSaltedHash(passWord);
-            System.out.println(hashing);
-            //split by ":" because method returns <salts>:<hashed password>
+            // store the whole string in the database
+            insertNewUser.setString(5, hashing);
+            // split by ":" because method returns <salts>:<hashed password>
             String[] hashParts = hashing.split(":");
-            insertNewUser.setString(5,hashParts[1]);
+            // store the salt in the databse
             insertNewUser.setString(6, hashParts[0]);
             insertNewUser.execute();
 
@@ -39,10 +43,7 @@ public class DbFunctionality {
         }
     }
 
-    /*
-    Needs fix
-     */
-    public void checkUser(String userName, PrintWriter out, Connection connection) throws SQLException {
+    public boolean checkUser(String userName, String password, PrintWriter out, Connection connection) throws SQLException, InvalidKeySpecException, NoSuchAlgorithmException {
         PreparedStatement stmt;
         String query = "select * from user where User_email = ?";
         stmt = connection.prepareStatement(query);
@@ -52,8 +53,14 @@ public class DbFunctionality {
         ResultSet resultSet = stmt.executeQuery();
         while (resultSet.next()) {
             if (resultSet.getString("User_email").toLowerCase().matches(userName)) {
-                out.print("Welcome " + userName);
+                String storedPassword = resultSet.getString("User_password");
+                return passwordHashAndCheck.validatePassword(password, storedPassword);
+            } else {
+                // No user with that email found
+                return false;
             }
         }
+        // If there is no result set(?)
+        return false;
     }
 }

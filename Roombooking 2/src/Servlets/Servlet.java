@@ -35,8 +35,6 @@ public class Servlet extends AbstractServlet {
             String dob = request.getParameter("dob");
             String password = request.getParameter("password");
 
-
-
             if (action.toLowerCase().contains("register")) {
                 DbTool dbtool = new DbTool();
                 Connection connection = dbtool.dbLogIn(out);
@@ -52,11 +50,9 @@ public class Servlet extends AbstractServlet {
                 Connection connection = dbTool.dbLogIn(out);
                 dbTool.printResults(out);
 
-
             } else {
                 out.print("something went wrong");
             }
-
 
             scriptBootstrap(out); // Prints Javascript connection to Bootstrap.js and other dependencies. See AbstractServlet
             out.println("</body>");
@@ -66,10 +62,6 @@ public class Servlet extends AbstractServlet {
             e.printStackTrace();
         }
     }
-
-
-
-
 
 
 }

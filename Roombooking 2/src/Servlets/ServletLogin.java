@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.Connection;
 import java.sql.SQLException;
 /**
@@ -32,6 +34,7 @@ public class ServletLogin extends AbstractServlet {
 
             printNav(out);
             String userName = request.getParameter("username");
+            String lowercaseUsername = userName.toLowerCase();
             String password = request.getParameter("loginpassword");
             String action = request.getParameter("action");
 
@@ -39,7 +42,19 @@ public class ServletLogin extends AbstractServlet {
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
-                dbFunctionality.checkUser(userName.toLowerCase(), out, connection);
+
+                if(dbFunctionality.checkUser(lowercaseUsername, password, out, connection)) {
+                    // If successful login
+                    System.out.println("success!");
+                    out.print("Welcome " + lowercaseUsername + "!");
+                    out.print("<br>");
+                } else {
+                    // If not
+                    System.out.println("fail");
+                    out.println("Sorry, we do not recognize \"" + lowercaseUsername + "\".");
+                    out.print("<br>");
+                }
+
                 out.print("<button class=\"btn-default btn-lg submit\">\n" +
                         "                <a href=\"index.html\"> return</a>\n" +
                         "            </button>\n");
@@ -50,6 +65,10 @@ public class ServletLogin extends AbstractServlet {
             out.print("</body>");
             out.print("</html>");
         } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
     }
