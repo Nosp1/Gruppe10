@@ -72,6 +72,8 @@ fabric.properties
 
 *.class
 
+Roombooking 2/web/META-INF/context.xml
+
 Roombooking 2/.idea/dataSources.local.xml
 
 Roombooking 2/.idea/dataSources.xml
