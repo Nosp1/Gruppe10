@@ -42,10 +42,10 @@ public class DbFunctionality {
             e.printStackTrace();
         }
     }
+
     /**
-     *
-     * @param username The user's attempted login email
-     * @param password The user's attempted password
+     * @param username   The user's attempted login email
+     * @param password   The user's attempted password
      * @param connection The Connection object to a given database
      * @return true if the input password matches the stored password for a given email
      * @throws SQLException
@@ -59,8 +59,8 @@ public class DbFunctionality {
         stmt.setString(1, username);
         // Check if the attempted email matches any emails in the database
         ResultSet resultSet = stmt.executeQuery();
-        while(resultSet.next()) {
-            if(resultSet.getString("User_email").toLowerCase().matches(username)) {
+        while (resultSet.next()) {
+            if (resultSet.getString("User_email").toLowerCase().matches(username)) {
                 // If the email is found, store the hashed string in the variabled "storedPassword"
                 String storedPassword = resultSet.getString("User_password");
                 /* Return true or false if the input password matches the stored password
@@ -82,7 +82,7 @@ public class DbFunctionality {
         stmt.setString(1, username);
         ResultSet resultSet = stmt.executeQuery();
 
-        if(resultSet.wasNull()) {
+        if (resultSet.wasNull()) {
             System.out.println(true);
         } else {
             System.out.println(false);
