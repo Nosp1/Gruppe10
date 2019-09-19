@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Context path="/HelloServlet">
-    <Resource name="jdbc/localhost/Roombooking" type="javax.sql.DataSource" auth="Container"
-              username="root" password="dennIS93" driverClassName="com.mysql.jdbc.Driver"
-              url="jdbc:mysql://localhost:3306/Roombooking">
-    </Resource>
-
-</Context>

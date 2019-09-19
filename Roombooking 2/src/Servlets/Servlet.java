@@ -52,7 +52,6 @@ public class Servlet extends AbstractPostServlet {
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 dbTool.printResults(out);
-
             } else {
                 out.print("something went wrong");
             }
