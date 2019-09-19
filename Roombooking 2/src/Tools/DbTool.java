@@ -23,6 +23,7 @@ public class DbTool {
             return connection;
         } catch (NamingException | SQLException e) {
             e.printStackTrace();
+            out.print("naming error" + e);
         }
         return connection;
     }

@@ -50,7 +50,7 @@ public class ServletLogin extends AbstractServlet {
                     out.print("Welcome " + lowercaseUsername + "!");
                     out.print("<br>");
                 } else {
-                    // If not
+                    // If not TODO: Add outprint error message for wrong password vs email
                     System.out.println("fail");
                     out.println("Sorry, we do not recognize \"" + lowercaseUsername + "\".");
                     out.print("<br>");
