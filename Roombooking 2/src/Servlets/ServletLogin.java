@@ -14,16 +14,17 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.Connection;
 import java.sql.SQLException;
+
 /**
  * Handles Login from index.html and parses String parameters to {@code DbFunctionality} to check for
  * {@code String} is existing in Database.
+ *
+ * @author trym Brisdalen
  * @see Servlets.AbstractServlet
  * @see javax.servlet.http.HttpServlet
  * @see javax.servlet.GenericServlet
  * @see DbFunctionality
  * @see DbTool
- * @author trym Brisdalen
- *
  */
 
 @WebServlet(name = "Servlets.ServletLogin", urlPatterns = {"/Servlets.ServletLogin"})
@@ -43,7 +44,7 @@ public class ServletLogin extends AbstractServlet {
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
 
-                if(dbFunctionality.checkUser(lowercaseUsername, password, out, connection)) {
+                if (dbFunctionality.checkUser(lowercaseUsername, password, out, connection)) {
                     // If successful login
                     System.out.println("success!");
                     out.print("Welcome " + lowercaseUsername + "!");
