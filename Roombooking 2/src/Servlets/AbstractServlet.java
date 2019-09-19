@@ -1,6 +1,10 @@
 package Servlets;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
@@ -11,13 +15,11 @@ import java.io.PrintWriter;
  */
 
 public abstract class AbstractServlet extends HttpServlet {
-/**
- * Method allows all children of  {@code AbstractServlet}
- to call the bootstrap.js ref and jquery for responsive Navbar.
- * @param out
-
- */
-
+    /**
+    * Method allows all children of  {@code AbstractServlet}
+    to call the bootstrap.js ref and jquery for responsive Navbar.
+    * @param out
+    */
      void scriptBootstrap(PrintWriter out) {
         out.println("<script\n" +
                 "        src=\"https://code.jquery.com/jquery-3.4.1.js\"\n" +

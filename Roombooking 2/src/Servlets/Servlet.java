@@ -23,7 +23,7 @@ import java.sql.SQLException;
  */
 
 @WebServlet(name = "Servlets.Servlet", urlPatterns = {"/Servlets.Servlet"})
-public class Servlet extends AbstractServlet {
+public class Servlet extends AbstractPostServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
@@ -62,6 +62,5 @@ public class Servlet extends AbstractServlet {
             e.printStackTrace();
         }
     }
-
 
 }
