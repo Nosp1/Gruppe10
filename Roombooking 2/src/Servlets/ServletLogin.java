@@ -43,7 +43,7 @@ public class ServletLogin extends AbstractServlet {
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
 
-                if(dbFunctionality.checkUser(lowercaseUsername, password, out, connection)) {
+                if(dbFunctionality.checkUser(lowercaseUsername, password, connection)) {
                     // If successful login
                     System.out.println("success!");
                     out.print("Welcome " + lowercaseUsername + "!");

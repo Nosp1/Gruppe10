@@ -46,14 +46,13 @@ public class DbFunctionality {
      *
      * @param username The user's attempted login email
      * @param password The user's attempted password
-     * @param out The PrintWriter that writes you write HTML to, referenced from a HttpServletResponse object
      * @param connection The Connection object to a given database
      * @return true if the input password matches the stored password for a given email
      * @throws SQLException
      * @throws InvalidKeySpecException
      * @throws NoSuchAlgorithmException
      */
-    public boolean checkUser(String username, String password, PrintWriter out, Connection connection) throws SQLException, InvalidKeySpecException, NoSuchAlgorithmException {
+    public boolean checkUser(String username, String password, Connection connection) throws SQLException, InvalidKeySpecException, NoSuchAlgorithmException {
         PreparedStatement stmt;
         String query = "select * from user where User_email = ?";
         stmt = connection.prepareStatement(query);
