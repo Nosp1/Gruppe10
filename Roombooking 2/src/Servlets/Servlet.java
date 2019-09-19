@@ -44,6 +44,9 @@ public class Servlet extends AbstractServlet {
                 out.println("<button class=\"submit btn-default btn-lg\">\n" +
                         "\t\t\t<a href=\"index.html\">return</a>\n" +
                         "\t\t</button>");
+                out.print("<p> Or you can login here:\n" +
+                        "<button class=\"submit btn-default btn-lg\">\n" + "<a href=#>Login</a\n" +
+                        "</button");
 
             } else if (action.toLowerCase().contains("database")) {
                 DbTool dbTool = new DbTool();

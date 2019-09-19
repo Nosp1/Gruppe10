@@ -38,7 +38,7 @@ public abstract class AbstractServlet extends HttpServlet {
                         "<html>\n" +
                         "<head>\n" +
                         "    <title>register form</title>\n" +
-                        "    <link rel=\"stylesheet\" type=\"text/css\" href=\"bootstrap.css\">\n" +
+                        "    <link rel=\"stylesheet\" type=\"text/css\" href=\"./css/bootstrap.css\">" +
                         "    <link rel=\"stylesheet\" type=\"text/css\" href=\"roombooking.css\">\n" +
                         "    <meta charset=\"utf-8\">\n" +
                         "\n" +
