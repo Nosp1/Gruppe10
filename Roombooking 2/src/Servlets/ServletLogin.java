@@ -3,6 +3,7 @@ package Servlets;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -49,6 +50,9 @@ public class ServletLogin extends AbstractServlet {
                     System.out.println("success!");
                     out.print("Welcome " + lowercaseUsername + "!");
                     out.print("<br>");
+                    ServletContext servletContext = getServletContext();
+                    servletContext.getRequestDispatcher("/loggedIn.html").forward(request,response);
+
                 } else {
                     // If not TODO: Add outprint error message for wrong password vs email
                     System.out.println("fail");

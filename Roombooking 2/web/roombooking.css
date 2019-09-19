@@ -9,7 +9,8 @@
     width: border-box;
 }
 #welcome{
-    text-shadow:10px, black;
+    -webkit-text-stroke: 1px black;
+    text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
     margin-bottom: 10px;
 }
 .jumbotron {
