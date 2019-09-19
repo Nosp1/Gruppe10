@@ -28,7 +28,6 @@ public class DbTool {
     }
 
     public void printResults(PrintWriter out) throws SQLException {
-        out.print("yo");
         String strSelect = "Select * from User";
         statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery(strSelect);

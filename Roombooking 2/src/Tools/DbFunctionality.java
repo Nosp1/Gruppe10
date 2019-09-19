@@ -42,25 +42,53 @@ public class DbFunctionality {
             e.printStackTrace();
         }
     }
-
-    public boolean checkUser(String userName, String password, PrintWriter out, Connection connection) throws SQLException, InvalidKeySpecException, NoSuchAlgorithmException {
+    /**
+     *
+     * @param username The user's attempted login email
+     * @param password The user's attempted password
+     * @param out The PrintWriter that writes you write HTML to, referenced from a HttpServletResponse object
+     * @param connection The Connection object to a given database
+     * @return true if the input password matches the stored password for a given email
+     * @throws SQLException
+     * @throws InvalidKeySpecException
+     * @throws NoSuchAlgorithmException
+     */
+    public boolean checkUser(String username, String password, PrintWriter out, Connection connection) throws SQLException, InvalidKeySpecException, NoSuchAlgorithmException {
         PreparedStatement stmt;
         String query = "select * from user where User_email = ?";
         stmt = connection.prepareStatement(query);
-        stmt.setString(1, userName);
-        statement = connection.createStatement();
-        //stmt.execute();
+        stmt.setString(1, username);
+        // Check if the attempted email matches any emails in the database
         ResultSet resultSet = stmt.executeQuery();
-        while (resultSet.next()) {
-            if (resultSet.getString("User_email").toLowerCase().matches(userName)) {
+        while(resultSet.next()) {
+            if(resultSet.getString("User_email").toLowerCase().matches(username)) {
+                // If the email is found, store the hashed string in the variabled "storedPassword"
                 String storedPassword = resultSet.getString("User_password");
+                /* Return true or false if the input password matches the stored password
+                   after hashing. */
                 return passwordHashAndCheck.validatePassword(password, storedPassword);
             } else {
                 // No user with that email found
                 return false;
             }
         }
-        // If there is no result set(?)
+        // Return false if there is no result set(?)
         return false;
+    }
+
+    public boolean deleteUser(String username, Connection connection) throws SQLException {
+        PreparedStatement stmt;
+        String query = "delete from user where User_email = ?";
+        stmt = connection.prepareStatement(query);
+        stmt.setString(1, username);
+        ResultSet resultSet = stmt.executeQuery();
+
+        if(resultSet.wasNull()) {
+            System.out.println(true);
+        } else {
+            System.out.println(false);
+        }
+
+        return true;
     }
 }
