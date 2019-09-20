@@ -71,15 +71,26 @@
 <div class="container">
     <div class="jumbotron">
         <h1 id="welcome" class="special-text">Welcome to Roombooking</h1>
-        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseLogin" role="button"
+        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseBrowse" role="button"
                 aria-expanded="false"
-                aria-controls="#collapseLogin">Browse Rooms
+                aria-controls="#collapseBrowse">Browse Rooms
         </button>
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseExample" role="button"
                 aria-expanded="false" aria-controls="collapseExample">Go to profile
         </button>
     </div>
 
+</div>
+
+<div class="collapse container" id="collapseBrowse">
+    <form action="./Servlets.ServletRoomOptions" method="post">
+        <h1>Click beneath to show all rooms</h1>
+
+        <div>
+            <input class="submit btn-default btn-lg" type="submit" name="action" value="Show all rooms">
+        </div>
+
+    </form>
 </div>
 
 <script

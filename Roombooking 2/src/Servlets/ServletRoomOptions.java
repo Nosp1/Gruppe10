@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 @WebServlet(name = "Servlets.ServletRoomOptions", urlPatterns = {"/Servlets.ServletRoomOptions"})
 public class ServletRoomOptions extends AbstractPostServlet {
@@ -18,6 +19,7 @@ public class ServletRoomOptions extends AbstractPostServlet {
         try (PrintWriter out = response.getWriter()) {
 
             printNav(out);
+                                        // TODO: Gjør dette andre steder også?
             String action = request.getParameter("action").toLowerCase();
             // TODO: Lag HTML side med action som legger til et rom
             if(action.contains("add")) {
@@ -42,11 +44,18 @@ public class ServletRoomOptions extends AbstractPostServlet {
 
 
                 addHomeButton(out);
+            } else if(action.contains("show")) {
+                DbTool dbTool = new DbTool();
+                Connection connection = dbTool.dbLogIn(out);
+                DbFunctionality dbFunctionality = new DbFunctionality();
+                dbFunctionality.printRooms(out, connection);
             }
 
             scriptBootstrap(out);
             out.print("</body>");
             out.print("</html>");
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

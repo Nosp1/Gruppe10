@@ -20,7 +20,7 @@ import java.sql.SQLException;
  * Handles Login from index.html and parses String parameters to {@code DbFunctionality} to check for
  * {@code String} is existing in Database.
  *
- * @author trym Brisdalen
+ * @author trym, brisdalen
  * @see Servlets.AbstractServlet
  * @see javax.servlet.http.HttpServlet
  * @see javax.servlet.GenericServlet

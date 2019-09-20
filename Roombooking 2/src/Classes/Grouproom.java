@@ -1,5 +1,8 @@
 package Classes;
 
+/**
+ * @author brisdalen
+ */
 public class Grouproom extends AbstractRoom {
 
     // lowMaxCapacity is the lowest value maxCapacity can be set to.
