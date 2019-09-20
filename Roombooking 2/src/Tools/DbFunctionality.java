@@ -1,5 +1,6 @@
 package Tools;
 
+import Classes.AbstractRoom;
 import Passwords.PasswordHashAndCheck;
 
 import java.io.PrintWriter;
@@ -17,8 +18,8 @@ public class DbFunctionality {
 
     public void addUser(String firstName, String lastName, String email, String passWord, String dob, PrintWriter out, Connection conn) {
         PreparedStatement insertNewUser;
-        try {
 
+        try {
             String ins = "insert into User (User_firstName, User_lastName, User_email, User_dob, User_password, User_salt) values (?,?,?,?,?,?)";
             insertNewUser = conn.prepareStatement(ins);
             insertNewUser.setString(1, firstName);
@@ -89,5 +90,25 @@ public class DbFunctionality {
         }
 
         return true;
+    }
+
+    /**
+     *
+     * @param room The room to be added to the database. Must be a subclass of AbstractRoom.
+     * @param connection The connection to the database.
+     */
+    public void addRoom(AbstractRoom room, Connection connection) {
+        PreparedStatement insertNewRoom;
+
+        try {
+            String ins = "insert into Rooms (roomID, roomFloor) values (?,?)";
+            insertNewRoom = connection.prepareStatement(ins);
+            insertNewRoom.setString(1, room.getRoomId());
+            insertNewRoom.setString(2, room.getRoomFloor());
+            insertNewRoom.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

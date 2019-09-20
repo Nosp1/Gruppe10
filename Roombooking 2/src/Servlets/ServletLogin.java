@@ -60,9 +60,7 @@ public class ServletLogin extends AbstractServlet {
                     out.print("<br>");
                 }
 
-                out.print("<button class=\"btn-default btn-lg submit\">\n" +
-                        "                <a href=\"index.html\"> return</a>\n" +
-                        "            </button>\n");
+                addHomeButton(out);
 
             }
 
