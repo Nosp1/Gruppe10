@@ -1,5 +1,8 @@
 package Classes;
 
+/**
+ * @author brisdalen
+ */
 public abstract class AbstractRoom {
 
     protected String roomId;

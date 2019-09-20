@@ -10,6 +10,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+ * @author trym
+ */
 public class DbTool {
     Connection connection;
     Statement statement;
@@ -32,7 +35,7 @@ public class DbTool {
         String strSelect = "Select * from User";
         statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery(strSelect);
-        out.print("Your results are:" + "\n");
+        out.print("Your results are:" + "<br>");
         while (resultSet.next()) {
             out.print(resultSet.getString("User_firstName"));
 

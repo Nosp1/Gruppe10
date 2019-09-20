@@ -7,7 +7,9 @@ import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.*;
-
+/**
+ * @author trym, brisdalen
+ */
 public class DbFunctionality {
     Statement statement;
     PasswordHashAndCheck passwordHashAndCheck;
@@ -109,6 +111,16 @@ public class DbFunctionality {
 
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void printRooms(PrintWriter out, Connection connection) throws SQLException {
+        String strSelect = "Select * from Rooms";
+        PreparedStatement statement = connection.prepareStatement(strSelect);
+        ResultSet resultSet = statement.executeQuery(strSelect);
+        out.print("Your results are:" + "<br>");
+        while (resultSet.next()) {
+            out.print(resultSet.getString("roomID") + " : " + resultSet.getString("roomFloor") + "<br>");
         }
     }
 }
