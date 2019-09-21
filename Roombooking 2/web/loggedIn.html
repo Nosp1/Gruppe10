@@ -71,23 +71,71 @@
 <div class="container">
     <div class="jumbotron">
         <h1 id="welcome" class="special-text">Welcome to Roombooking</h1>
+        <!-- Browse Rooms collapse button -->
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseBrowse" role="button"
                 aria-expanded="false"
                 aria-controls="#collapseBrowse">Browse Rooms
         </button>
+        <!-- Go to profile collapse button -->
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseExample" role="button"
                 aria-expanded="false" aria-controls="collapseExample">Go to profile
+        </button>
+        <!-- Add a room collapse button -->
+        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseAddRoom" role="button"
+                aria-controls="#collapseAddRoom">Add a room
+        </button>
+        <!-- Delete a collapse room button -->
+        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseDeleteRoom" role="button"
+                aria-controls="#collapseDeleteRoom">Delete a room
         </button>
     </div>
 
 </div>
-
+<!-- Submit button for Browse -->
 <div class="collapse container" id="collapseBrowse">
     <form action="./Servlets.ServletRoomOptions" method="post">
         <h1>Click beneath to show all rooms</h1>
 
         <div>
             <input class="submit btn-default btn-lg" type="submit" name="action" value="Show all rooms">
+        </div>
+
+    </form>
+</div>
+<!-- Form for Add a room -->
+<div class="collapse container" id="collapseAddRoom">
+    <form action="./Servlets.ServletRoomOptions" method="post">
+        <h1>Add a room</h1>
+
+        <div>
+            <label for="Add_roomID">Room ID</label>
+            <input type="text" id="Add_roomID" name="Add_roomID">
+        </div>
+        <div>
+            <label for="Add_roomFloor">Floor ID</label>
+            <input type="text" id="Add_roomFloor" name="Add_roomFloor">
+        </div>
+        <div>
+            <label for="maxCapacity">Max capacity</label>
+            <input type="text" id="maxCapacity" name="maxCapacity">
+        </div>
+        <div>
+            <input class="submit btn-default btn-lg" type="submit" name="action" value="Add room">
+        </div>
+
+    </form>
+</div>
+<!-- Form for Delete a room -->
+<div class="collapse container" id="collapseDeleteRoom">
+    <form action="./Servlets.ServletRoomOptions" method="post">
+        <h1>Delete a room</h1>
+
+        <div>
+            <label for="Delete_roomID">Room ID</label>
+            <input type="text" id="Delete_roomID" name="Delete_roomID">
+        </div>
+        <div>
+            <input class="submit btn-default btn-lg" type="submit" name="action" value="Delete room">
         </div>
 
     </form>

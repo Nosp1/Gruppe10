@@ -103,11 +103,27 @@ public class DbFunctionality {
         PreparedStatement insertNewRoom;
 
         try {
-            String ins = "insert into Rooms (roomID, roomFloor) values (?,?)";
+            String ins = "insert into Rooms (roomID, roomFloor, maxCapacity) values (?,?,?)";
             insertNewRoom = connection.prepareStatement(ins);
             insertNewRoom.setString(1, room.getRoomId());
             insertNewRoom.setString(2, room.getRoomFloor());
+            insertNewRoom.setString(3, String.valueOf(room.getMaxCapacity()));
             insertNewRoom.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteRoom(String roomID, Connection connection) {
+        PreparedStatement deleteRoom;
+
+        try {
+            String del = "delete from Rooms where roomID = ?";
+            deleteRoom = connection.prepareStatement(del);
+            System.out.println(roomID);
+            deleteRoom.setString(1, roomID);
+            deleteRoom.execute();
 
         } catch (SQLException e) {
             e.printStackTrace();

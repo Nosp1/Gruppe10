@@ -26,10 +26,12 @@ public class Grouproom extends AbstractRoom {
         // TODO: bestemme hva en øvre grense for grupperom skal være. 2 og 12 kan være midlertidig.
         if(maxCapacity > highMaxCapacity) {
             this.maxCapacity = highMaxCapacity;
-        }
 
-        if(maxCapacity < lowMaxCapacity) {
+        } else if(maxCapacity < lowMaxCapacity) {
             this.maxCapacity = lowMaxCapacity;
+
+        } else {
+            this.maxCapacity = maxCapacity;
         }
     }
 }

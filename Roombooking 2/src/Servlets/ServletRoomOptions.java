@@ -1,5 +1,7 @@
 package Servlets;
 
+import Classes.AbstractRoom;
+import Classes.Grouproom;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 
@@ -21,29 +23,36 @@ public class ServletRoomOptions extends AbstractPostServlet {
             printNav(out);
                                         // TODO: Gjør dette andre steder også?
             String action = request.getParameter("action").toLowerCase();
+
             // TODO: Lag HTML side med action som legger til et rom
             if(action.contains("add")) {
+                String roomID = request.getParameter("Add_roomID");
+                String roomFloor = request.getParameter("Add_roomFloor");
+                String maxCapacity = request.getParameter("maxCapacity");
+
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
-                /*
-                Rest of the code ---
-                 */
 
+                int parsedMaxCapacity = Integer.parseInt(maxCapacity);
+                AbstractRoom room = new Grouproom(roomID, roomFloor, parsedMaxCapacity);
+                // TODO: Bruker kun grupperom typen for nå
+                dbFunctionality.addRoom(room, connection);
 
                 addHomeButton(out);
 
             // TODO: Lag HTML side med action som fjerner et rom
             } else if(action.contains("delete")) {
+                String roomID = request.getParameter("Delete_roomID");
+
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
-                /*
-                Rest of the code ---
-                 */
 
+                dbFunctionality.deleteRoom(roomID, connection);
 
                 addHomeButton(out);
+
             } else if(action.contains("show")) {
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
@@ -58,4 +67,5 @@ public class ServletRoomOptions extends AbstractPostServlet {
             e.printStackTrace();
         }
     }
+
 }
