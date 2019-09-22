@@ -1,12 +1,15 @@
 package Tools;
 
+import Classes.AbstractRoom;
 import Passwords.PasswordHashAndCheck;
 
 import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.*;
-
+/**
+ * @author trym, brisdalen
+ */
 public class DbFunctionality {
     Statement statement;
     PasswordHashAndCheck passwordHashAndCheck;
@@ -17,8 +20,8 @@ public class DbFunctionality {
 
     public void addUser(String firstName, String lastName, String email, String passWord, String dob, PrintWriter out, Connection conn) {
         PreparedStatement insertNewUser;
-        try {
 
+        try {
             String ins = "insert into User (User_firstName, User_lastName, User_email, User_dob, User_password, User_salt) values (?,?,?,?,?,?)";
             insertNewUser = conn.prepareStatement(ins);
             insertNewUser.setString(1, firstName);
@@ -89,5 +92,51 @@ public class DbFunctionality {
         }
 
         return true;
+    }
+
+    /**
+     *
+     * @param room The room to be added to the database. Must be a subclass of AbstractRoom.
+     * @param connection The connection to the database.
+     */
+    public void addRoom(AbstractRoom room, Connection connection) {
+        PreparedStatement insertNewRoom;
+
+        try {
+            String ins = "insert into Rooms (roomID, roomFloor, maxCapacity) values (?,?,?)";
+            insertNewRoom = connection.prepareStatement(ins);
+            insertNewRoom.setString(1, room.getRoomId());
+            insertNewRoom.setString(2, room.getRoomFloor());
+            insertNewRoom.setString(3, String.valueOf(room.getMaxCapacity()));
+            insertNewRoom.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteRoom(String roomID, Connection connection) {
+        PreparedStatement deleteRoom;
+
+        try {
+            String del = "delete from Rooms where roomID = ?";
+            deleteRoom = connection.prepareStatement(del);
+            System.out.println(roomID);
+            deleteRoom.setString(1, roomID);
+            deleteRoom.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void printRooms(PrintWriter out, Connection connection) throws SQLException {
+        String strSelect = "Select * from Rooms";
+        PreparedStatement statement = connection.prepareStatement(strSelect);
+        ResultSet resultSet = statement.executeQuery(strSelect);
+        out.print("Your results are:" + "<br>");
+        while (resultSet.next()) {
+            out.print(resultSet.getString("roomID") + " : " + resultSet.getString("roomFloor") + "<br>");
+        }
     }
 }

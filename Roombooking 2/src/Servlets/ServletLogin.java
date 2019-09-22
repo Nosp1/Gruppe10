@@ -3,6 +3,7 @@ package Servlets;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,7 +20,7 @@ import java.sql.SQLException;
  * Handles Login from index.html and parses String parameters to {@code DbFunctionality} to check for
  * {@code String} is existing in Database.
  *
- * @author trym Brisdalen
+ * @author trym, brisdalen
  * @see Servlets.AbstractServlet
  * @see javax.servlet.http.HttpServlet
  * @see javax.servlet.GenericServlet
@@ -49,6 +50,9 @@ public class ServletLogin extends AbstractServlet {
                     System.out.println("success!");
                     out.print("Welcome " + lowercaseUsername + "!");
                     out.print("<br>");
+                    ServletContext servletContext = getServletContext();
+                    servletContext.getRequestDispatcher("/loggedIn.html").forward(request,response);
+
                 } else {
                     // If not TODO: Add outprint error message for wrong password vs email
                     System.out.println("fail");
@@ -56,9 +60,7 @@ public class ServletLogin extends AbstractServlet {
                     out.print("<br>");
                 }
 
-                out.print("<button class=\"btn-default btn-lg submit\">\n" +
-                        "                <a href=\"index.html\"> return</a>\n" +
-                        "            </button>\n");
+                addHomeButton(out);
 
             }
 

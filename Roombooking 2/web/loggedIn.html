@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="no">
+<html lang="en">
 <head>
-    <title>register form</title>
-    <link rel="stylesheet" type="text/css" href="./css/bootstrap.css">
+    <title>loggedIn</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="roombooking.css">
     <meta charset="utf-8">
 
@@ -71,86 +71,71 @@
 <div class="container">
     <div class="jumbotron">
         <h1 id="welcome" class="special-text">Welcome to Roombooking</h1>
-        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseLogin" role="button"
+        <!-- Browse Rooms collapse button -->
+        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseBrowse" role="button"
                 aria-expanded="false"
-                aria-controls="#collapseLogin">Login
+                aria-controls="#collapseBrowse">Browse Rooms
         </button>
+        <!-- Go to profile collapse button -->
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseExample" role="button"
-                aria-expanded="false" aria-controls="collapseExample">Register
+                aria-expanded="false" aria-controls="collapseExample">Go to profile
+        </button>
+        <!-- Add a room collapse button -->
+        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseAddRoom" role="button"
+                aria-controls="#collapseAddRoom">Add a room
+        </button>
+        <!-- Delete a collapse room button -->
+        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseDeleteRoom" role="button"
+                aria-controls="#collapseDeleteRoom">Delete a room
         </button>
     </div>
 
 </div>
-
-
-<div class="collapse container" id="collapseExample">
-    <form action="./Servlets.Servlet" method="post">
-        <h1>Register</h1>
-        <div>
-            <label for="firstName">First name</label>
-            <input id="firstName" type="text" name="firstName" placeholder="John" required>
-        </div>
-        <div>
-            <label for="lastName">Last name</label>
-            <input id="lastName" type="text" name="lastName" placeholder="Smith" required>
-        </div>
-        <div>
-            <label for="gender">Gender</label>
-        </div>
-        <div id="gender" class="btn-group" role="group" aria-label="Basic example">
-
-            <button value="male" name="genderChoice" type="button" class=" submit btn btn-secondary">Male</button>
-            <button value="female" name="genderChoice" type="button" class=" submit btn btn-secondary">Female</button>
-            <button value="other" name="genderChoice" type="button" class=" submit btn btn-secondary">Other</button>
-
-        </div>
-
+<!-- Submit button for Browse -->
+<div class="collapse container" id="collapseBrowse">
+    <form action="./Servlets.ServletRoomOptions" method="post">
+        <h1>Click beneath to show all rooms</h1>
 
         <div>
-            <label for="email">Email</label>
-            <input id="email" type="email" name="email" required placeholder="JohnS@example.com">
+            <input class="submit btn-default btn-lg" type="submit" name="action" value="Show all rooms">
         </div>
 
-        <div>
-            <label for="password">Password</label>
-            <input type="password" name="password" placeholder="password; minimum 8 characters" pattern=".{8,0}"
-                   id="password"
-                   required title="must atleast contain 8 symbols">
-        </div>
-
-        <div>
-            <label for="dob">Date Of birth</label>
-            <input id="dob" type="date" name="dob" required>
-        </div>
-
-        <div>
-            <label for="terms">I agree the Terms of Use
-                <input type="checkbox" name="checkbox" id="terms" required>
-            </label>
-        </div>
-        <div>
-            <input class="submit btn-default btn-lg" type="submit" name="action" value="Register">
-            <input class="submit btn-default btn lg" type="submit" name="action" value="Database">
-        </div>
     </form>
 </div>
-<!-- testing  login function on same html -->
-
-<div class="collapse container" id="collapseLogin">
-    <form action="./Servlets.ServletLogin" method="post">
-        <h1>Log in</h1>
-
+<!-- Form for Add a room -->
+<div class="collapse container" id="collapseAddRoom">
+    <form action="./Servlets.ServletRoomOptions" method="post">
+        <h1>Add a room</h1>
 
         <div>
-            <label for="userName">Username</label>
-            <input type="text" id="userName" name="username">
+            <label for="Add_roomID">Room ID</label>
+            <input type="text" id="Add_roomID" name="Add_roomID">
         </div>
         <div>
-            <label for="loginpassword">Password</label>
-            <input type="password" id="loginpassword" name="loginpassword">
+            <label for="Add_roomFloor">Floor ID</label>
+            <input type="text" id="Add_roomFloor" name="Add_roomFloor">
         </div>
         <div>
-            <input class="submit btn-default btn-lg" type="submit" name="action" value="login">
+            <label for="maxCapacity">Max capacity</label>
+            <input type="text" id="maxCapacity" name="maxCapacity">
+        </div>
+        <div>
+            <input class="submit btn-default btn-lg" type="submit" name="action" value="Add room">
+        </div>
+
+    </form>
+</div>
+<!-- Form for Delete a room -->
+<div class="collapse container" id="collapseDeleteRoom">
+    <form action="./Servlets.ServletRoomOptions" method="post">
+        <h1>Delete a room</h1>
+
+        <div>
+            <label for="Delete_roomID">Room ID</label>
+            <input type="text" id="Delete_roomID" name="Delete_roomID">
+        </div>
+        <div>
+            <input class="submit btn-default btn-lg" type="submit" name="action" value="Delete room">
         </div>
 
     </form>

@@ -20,12 +20,19 @@ public abstract class AbstractServlet extends HttpServlet {
     to call the bootstrap.js ref and jquery for responsive Navbar.
     * @param out
     */
-     void scriptBootstrap(PrintWriter out) {
+    // TODO: Finnes det et mer forklarende metode-navn her?
+    void scriptBootstrap(PrintWriter out) {
         out.println("<script\n" +
                 "        src=\"https://code.jquery.com/jquery-3.4.1.js\"\n" +
                 "        integrity=\"sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=\"\n" +
                 "        crossorigin=\"anonymous\"></script>\n" +
                 "<script src=\"bootstrap.js\"></script>");
+    }
+
+    void addHomeButton(PrintWriter out) {
+        out.print("<button class=\"btn-default btn-lg submit\">\n" +
+                "                <a href=\"index.html\"> return</a>\n" +
+                "            </button>\n");
     }
 
     /**

@@ -8,14 +8,11 @@
     background: #2b542c;
     width: border-box;
 }
-#welcome{
-    -webkit-text-stroke: 1px black;
-    text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-    margin-bottom: 10px;
-}
+
 .jumbotron {
     color: rgb(41, 187, 48);
-    text-shadow: 10px, black;
+    text-shadow: rgba(252, 117, 0, 0) 0px 0px 10px;
+
 
     background-image: url("https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80");
     background-size: 100%;
@@ -28,20 +25,10 @@
 body {
     background-color: rgb(41, 187, 105);
     text-align: center;
+    text-shadow: rgba(252,117,0,0);
 }
-#collapseExample {
-    color: white;
-}
-#collapseLogin {
-    color:white;
-}
-
 form {
     display: inline-block;
-    color: white;
-}
-input {
-    color: black;
 }
 .btn-secondary{
     background-color: orange;
@@ -52,7 +39,9 @@ input {
 }
 
 
-
+h1 {
+    margin-bottom: 10px;
+}
 
 
 
