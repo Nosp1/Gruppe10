@@ -54,7 +54,7 @@ public class ServletLogin extends AbstractServlet {
                     servletContext.getRequestDispatcher("/loggedIn.html").forward(request,response);
 
                 } else {
-                    // If not TODO: Add outprint error message for wrong password vs email
+                    // If not TODO: Add out.print error message for wrong password vs email
                     System.out.println("fail");
                     out.println("Sorry, we do not recognize \"" + lowercaseUsername + "\".");
                     out.print("<br>");
