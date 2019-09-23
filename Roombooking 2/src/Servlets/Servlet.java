@@ -39,7 +39,7 @@ public class Servlet extends AbstractPostServlet {
                 DbTool dbtool = new DbTool();
                 Connection connection = dbtool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
-                dbFunctionality.addUser(firstName, lastName, email, password, dob, out, connection);
+                dbFunctionality.addUser(firstName, lastName, email, password, dob, connection);
                 out.println("<p> You have successfully registered</p>");
                 out.println("<button class=\"submit btn-default btn-lg\">\n" +
                         "\t\t\t<a href=\"index.html\">return</a>\n" +

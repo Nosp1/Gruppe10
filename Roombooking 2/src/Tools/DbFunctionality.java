@@ -18,7 +18,7 @@ public class DbFunctionality {
         passwordHashAndCheck = new PasswordHashAndCheck();
     }
 
-    public void addUser(String firstName, String lastName, String email, String passWord, String dob, PrintWriter out, Connection conn) {
+    public void addUser(String firstName, String lastName, String email, String passWord, String dob, Connection conn) {
         PreparedStatement insertNewUser;
 
         try {
@@ -79,19 +79,13 @@ public class DbFunctionality {
     }
 
     public boolean deleteUser(String username, Connection connection) throws SQLException {
-        PreparedStatement stmt;
-        String query = "delete from user where User_email = ?";
-        stmt = connection.prepareStatement(query);
-        stmt.setString(1, username);
-        ResultSet resultSet = stmt.executeQuery();
-
-        if (resultSet.wasNull()) {
-            System.out.println(true);
-        } else {
-            System.out.println(false);
-        }
-
-        return true;
+        PreparedStatement deleteUser;
+        String delete = "delete from user where User_email = ?";
+        deleteUser = connection.prepareStatement(delete);
+        deleteUser.setString(1, username);
+        int result = deleteUser.executeUpdate();
+        // result er 1 hvis noe blir slettet, eller 0 hvis ingenting ble affected
+        return result == 1;
     }
 
     /**
@@ -99,35 +93,25 @@ public class DbFunctionality {
      * @param room The room to be added to the database. Must be a subclass of AbstractRoom.
      * @param connection The connection to the database.
      */
-    public void addRoom(AbstractRoom room, Connection connection) {
+    public void addRoom(AbstractRoom room, Connection connection) throws SQLException {
         PreparedStatement insertNewRoom;
 
-        try {
-            String ins = "insert into Rooms (roomID, roomFloor, maxCapacity) values (?,?,?)";
-            insertNewRoom = connection.prepareStatement(ins);
-            insertNewRoom.setString(1, room.getRoomId());
-            insertNewRoom.setString(2, room.getRoomFloor());
-            insertNewRoom.setString(3, String.valueOf(room.getMaxCapacity()));
-            insertNewRoom.execute();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        String ins = "insert into Rooms (roomID, roomFloor, maxCapacity) values (?,?,?)";
+        insertNewRoom = connection.prepareStatement(ins);
+        insertNewRoom.setString(1, room.getRoomId());
+        insertNewRoom.setString(2, room.getRoomFloor());
+        insertNewRoom.setString(3, String.valueOf(room.getMaxCapacity()));
+        insertNewRoom.execute();
     }
 
-    public void deleteRoom(String roomID, Connection connection) {
+    public boolean deleteRoom(String roomID, Connection connection) throws SQLException {
         PreparedStatement deleteRoom;
-
-        try {
-            String del = "delete from Rooms where roomID = ?";
-            deleteRoom = connection.prepareStatement(del);
-            System.out.println(roomID);
-            deleteRoom.setString(1, roomID);
-            deleteRoom.execute();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        String delete = "delete from Rooms where roomID = ?";
+        deleteRoom = connection.prepareStatement(delete);
+        deleteRoom.setString(1, roomID);
+        int result = deleteRoom.executeUpdate();
+        // result er 1 hvis noe blir slettet, eller 0 hvis ingenting ble affected
+        return result == 1;
     }
 
     public void printRooms(PrintWriter out, Connection connection) throws SQLException {
