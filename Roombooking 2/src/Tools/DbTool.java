@@ -5,10 +5,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 /**
  * @author trym
@@ -28,6 +25,18 @@ public class DbTool {
             e.printStackTrace();
             out.print("naming error" + e);
         }
+        return connection;
+    }
+
+    public Connection dbLogIn() {
+        // dbLogIn without PrintWriter, used for testing
+        connection = null;
+        try {
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Roombooking?autoReconnect=true&useSSL=false", "root", "toor");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         return connection;
     }
 
