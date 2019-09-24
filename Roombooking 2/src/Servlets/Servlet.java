@@ -43,20 +43,13 @@ public class Servlet extends AbstractPostServlet {
                 out.println("<p> You have successfully registered</p>");
                 addHomeButton(out);
 
-            } else if (action.toLowerCase().contains("database")) {
-                DbTool dbTool = new DbTool();
-                Connection connection = dbTool.dbLogIn(out);
-                dbTool.printResults(out);
+
             } else {
                 out.print("something went wrong");
             }
-
             scriptBootstrap(out); // Prints Javascript connection to Bootstrap.js and other dependencies. See AbstractServlet
             out.println("</body>");
             out.println("</html>");
-
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
