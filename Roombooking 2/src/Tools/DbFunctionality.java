@@ -37,11 +37,7 @@ public class DbFunctionality {
             insertNewUser.setString(6, hashParts[0]);
             insertNewUser.execute();
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidKeySpecException e) {
+        } catch (SQLException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
         }
     }

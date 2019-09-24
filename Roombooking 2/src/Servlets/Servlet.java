@@ -28,22 +28,20 @@ public class Servlet extends AbstractPostServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             printNav(out); //void method that prints start of html from parent class AbstractServlet
-            String firstName = request.getParameter("firstName");
-            String lastName = request.getParameter("lastName");
-            String email = request.getParameter("email");
-            String action = request.getParameter("action");
-            String dob = request.getParameter("dob");
+            String firstName = request.getParameter("firstName").toLowerCase();
+            String lastName = request.getParameter("lastName").toLowerCase();
+            String email = request.getParameter("email").toLowerCase();
+            String action = request.getParameter("action").toLowerCase();
+            String dob = request.getParameter("dob").toLowerCase();
             String password = request.getParameter("password");
 
-            if (action.toLowerCase().contains("register")) {
+            if (action.contains("register")) {
                 DbTool dbtool = new DbTool();
                 Connection connection = dbtool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
                 dbFunctionality.addUser(firstName, lastName, email, password, dob, connection);
                 out.println("<p> You have successfully registered</p>");
-                out.println("<button class=\"submit btn-default btn-lg\">\n" +
-                        "\t\t\t<a href=\"index.html\">return</a>\n" +
-                        "\t\t</button>");
+                addHomeButton(out);
 
             } else if (action.toLowerCase().contains("database")) {
                 DbTool dbTool = new DbTool();

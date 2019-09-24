@@ -35,12 +35,12 @@ public class ServletLogin extends AbstractServlet {
         try (PrintWriter out = response.getWriter()) {
 
             printNav(out);
-            String userName = request.getParameter("username");
+            String userName = request.getParameter("username").toLowerCase();
             String lowercaseUsername = userName.toLowerCase();
             String password = request.getParameter("loginpassword");
-            String action = request.getParameter("action");
+            String action = request.getParameter("action").toLowerCase();
 
-            if (action.toLowerCase().contains("login")) {
+            if (action.contains("login")) {
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
@@ -66,11 +66,7 @@ public class ServletLogin extends AbstractServlet {
             scriptBootstrap(out);
             out.print("</body>");
             out.print("</html>");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (InvalidKeySpecException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
+        } catch (SQLException | InvalidKeySpecException | NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
     }
