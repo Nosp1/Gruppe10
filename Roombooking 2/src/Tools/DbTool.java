@@ -9,6 +9,7 @@ import java.sql.*;
 
 /**
  * @author trym
+ * @author brisdalen
  */
 public class DbTool {
     Connection connection;

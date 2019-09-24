@@ -19,7 +19,7 @@ import java.sql.SQLException;
 
 import static org.junit.Assert.assertEquals;
 
-public class MyFirstJUnitJupiterTests {
+public class RoombookingTests {
 
     DbTool dbTool;
     DbFunctionality dbFunctionality;
