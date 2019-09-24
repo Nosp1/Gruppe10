@@ -8,7 +8,6 @@ create table if not exists Rooms
     Room_maxCapacity int          null,
     CONSTRAINT Room_RoomID_PK PRIMARY KEY (Room_ID)
 );
-
 create table if not exists User
 (
     User_ID        int auto_increment unique,

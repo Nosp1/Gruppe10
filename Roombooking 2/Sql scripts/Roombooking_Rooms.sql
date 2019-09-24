@@ -4,7 +4,7 @@ CREATE TABLE Roombooking.`Order`
     userID int(11),
     roomID varchar(255),
     CONSTRAINT O_userID_FK FOREIGN KEY (userID) REFERENCES User,
-    CONSTRAINT O_roomID_FK FOREIGN KEY (roomID) REFERENCES Rooms
+    CONSTRAINT O_roomID_FK FOREIGN KEY (roomID) REFERENCES Rooms,
 );
 CREATE INDEX O_userID_FK ON Roombooking.`Order` (userID);
 CREATE INDEX O_roomID_FK ON Roombooking.`Order` (roomID);
