@@ -46,13 +46,12 @@ public class ServletLogin extends AbstractServlet {
                 DbFunctionality dbFunctionality = new DbFunctionality();
 
                 if (dbFunctionality.checkUser(lowercaseUsername, password, connection)) {
-                    // If successful login
+                    // If successful login TODO: make it pop-up
                     System.out.println("success!");
                     out.print("Welcome " + lowercaseUsername + "!");
                     out.print("<br>");
                     ServletContext servletContext = getServletContext();
-                    servletContext.getRequestDispatcher("/loggedIn.html").forward(request,response);
-
+                    servletContext.getRequestDispatcher("/loggedIn.html").forward(request, response);
                 } else {
                     // If not TODO: Add out.print error message for wrong password vs email
                     System.out.println("fail");

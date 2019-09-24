@@ -38,7 +38,7 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 AbstractRoom room = new Grouproom(roomID, roomFloor, parsedMaxCapacity);
                 // TODO: Bruker kun grupperom typen for nå
                 dbFunctionality.addRoom(room, connection);
-
+                //TODO: legg til annen knapp for å forbli logget inn.
                 addHomeButton(out);
 
             // TODO: Lag HTML side med action som fjerner et rom
