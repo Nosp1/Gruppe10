@@ -27,7 +27,7 @@ public class MyFirstJUnitJupiterTests {
 
     String testUserEmail = "ola.nordmann@gmail.com";
 
-    String testRoomID = "TEST001";
+    String testRoomName = "TEST001";
 
     @Before
     public void init() {
@@ -74,16 +74,16 @@ public class MyFirstJUnitJupiterTests {
 
     @Test
     public void testAddRoom() {
-        AbstractRoom testRoom = new Grouproom(testRoomID, "TEST_FLOOR", 10);
+        AbstractRoom testRoom = new Grouproom(testRoomName, "TEST_FLOOR", 10);
         try {
             dbFunctionality.addRoom(testRoom, testConnection);
-            String statement = "SELECT roomID FROM Rooms WHERE roomID = ?";
+            String statement = "SELECT Room_name FROM Rooms WHERE Room_name = ?";
             PreparedStatement preparedStatement = testConnection.prepareStatement(statement);
-            preparedStatement.setString(1, testRoomID);
+            preparedStatement.setString(1, testRoomName);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()) {
-                assertEquals(resultSet.getString("roomID"), testRoomID);
+                assertEquals(resultSet.getString("Room_name"), testRoomName);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -93,7 +93,7 @@ public class MyFirstJUnitJupiterTests {
     @Test
     public void testDeleteRoom() {
         try {
-            assertEquals(dbFunctionality.deleteRoom(testRoomID, testConnection), true);
+            assertEquals(dbFunctionality.deleteRoom(testRoomName, testConnection), true);
         } catch (SQLException e) {
             e.printStackTrace();
         }

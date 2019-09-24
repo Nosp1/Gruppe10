@@ -92,19 +92,19 @@ public class DbFunctionality {
     public void addRoom(AbstractRoom room, Connection connection) throws SQLException {
         PreparedStatement insertNewRoom;
 
-        String ins = "insert into Rooms (roomID, roomFloor, maxCapacity) values (?,?,?)";
+        String ins = "insert into Rooms (Room_name, Room_building, Room_maxCapacity) values (?,?,?)";
         insertNewRoom = connection.prepareStatement(ins);
-        insertNewRoom.setString(1, room.getRoomId());
-        insertNewRoom.setString(2, room.getRoomFloor());
+        insertNewRoom.setString(1, room.getRoomName());
+        insertNewRoom.setString(2, room.getRoomBuilding());
         insertNewRoom.setString(3, String.valueOf(room.getMaxCapacity()));
         insertNewRoom.execute();
     }
 
-    public boolean deleteRoom(String roomID, Connection connection) throws SQLException {
+    public boolean deleteRoom(String roomName, Connection connection) throws SQLException {
         PreparedStatement deleteRoom;
-        String delete = "delete from Rooms where roomID = ?";
+        String delete = "delete from Rooms where Room_name = ?";
         deleteRoom = connection.prepareStatement(delete);
-        deleteRoom.setString(1, roomID);
+        deleteRoom.setString(1, roomName);
         int result = deleteRoom.executeUpdate();
         // result er 1 hvis noe blir slettet, eller 0 hvis ingenting ble affected
         return result == 1;
@@ -116,7 +116,7 @@ public class DbFunctionality {
         ResultSet resultSet = statement.executeQuery(strSelect);
         out.print("Your results are:" + "<br>");
         while (resultSet.next()) {
-            out.print(resultSet.getString("roomID") + " : " + resultSet.getString("roomFloor") + "<br>");
+            out.print(resultSet.getString("Room_ID") + " : " + resultSet.getString("Room_building") + "<br>");
         }
     }
 }

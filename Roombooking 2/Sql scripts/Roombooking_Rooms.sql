@@ -3,10 +3,10 @@ USE Roombooking;
 
 CREATE TABLE IF NOT EXISTS Rooms
 (
-  roomID    VARCHAR(255) UNIQUE,
-  roomFloor VARCHAR(255) NULL,
-  maxCapacity int NULL,
-  CONSTRAINT R_roomID_PK PRIMARY KEY (roomID)
+  Room_ID int UNIQUE not null,
+  Room_building VARCHAR(255) NULL,
+  Room_maxCapacity int NULL,
+  CONSTRAINT R_roomID_PK PRIMARY KEY (Room_ID)
 );
 
 INSERT INTO Roombooking.Rooms (roomID, roomFloor) VALUES ('E102', 'Floor 1');

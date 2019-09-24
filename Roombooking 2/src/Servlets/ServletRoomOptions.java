@@ -26,7 +26,7 @@ public class ServletRoomOptions extends AbstractPostServlet {
 
             // TODO: Lag HTML side med action som legger til et rom
             if(action.contains("add")) {
-                String roomID = request.getParameter("Add_roomID");
+                String roomName = request.getParameter("Add_roomID");
                 String roomFloor = request.getParameter("Add_roomFloor");
                 String maxCapacity = request.getParameter("maxCapacity");
 
@@ -35,7 +35,7 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 DbFunctionality dbFunctionality = new DbFunctionality();
 
                 int parsedMaxCapacity = Integer.parseInt(maxCapacity);
-                AbstractRoom room = new Grouproom(roomID, roomFloor, parsedMaxCapacity);
+                AbstractRoom room = new Grouproom(roomName, roomFloor, parsedMaxCapacity);
                 // TODO: Bruker kun grupperom typen for nå
                 dbFunctionality.addRoom(room, connection);
                 //TODO: legg til annen knapp for å forbli logget inn.
@@ -43,13 +43,12 @@ public class ServletRoomOptions extends AbstractPostServlet {
 
             // TODO: Lag HTML side med action som fjerner et rom
             } else if(action.contains("delete")) {
-                String roomID = request.getParameter("Delete_roomID");
-
+                String roomName = request.getParameter("Delete_roomID");
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
 
-                dbFunctionality.deleteRoom(roomID, connection);
+                dbFunctionality.deleteRoom(roomName, connection);
 
                 addHomeButton(out);
 

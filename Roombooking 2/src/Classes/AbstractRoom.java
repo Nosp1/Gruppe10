@@ -5,31 +5,31 @@ package Classes;
  */
 public abstract class AbstractRoom {
 
-    protected String roomId;
-    protected String roomFloor;
+    protected String roomName;
+    protected String roomBuilding;
     protected RoomType roomType;
     protected int maxCapacity;
 
-    public AbstractRoom(String roomId, String roomFloor, RoomType roomType) {
-        this.roomId = roomId;
-        this.roomFloor = roomFloor;
+    public AbstractRoom(String roomName, String roomBuilding, RoomType roomType) {
+        this.roomName = roomName;
+        this.roomBuilding = roomBuilding;
         this.roomType = roomType;
     }
 
-    public String getRoomId() {
-        return roomId;
+    public String getRoomName() {
+        return roomName;
     }
 
-    public void setRoomId(String roomId) {
-        this.roomId = roomId;
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
     }
 
-    public String getRoomFloor() {
-        return roomFloor;
+    public String getRoomBuilding() {
+        return roomBuilding;
     }
 
-    public void setRoomFloor(String roomFloor) {
-        this.roomFloor = roomFloor;
+    public void setRoomBuilding(String roomBuilding) {
+        this.roomBuilding = roomBuilding;
     }
 
     public RoomType getRoomType() {

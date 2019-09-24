@@ -34,7 +34,6 @@ public class Servlet extends AbstractPostServlet {
             String action = request.getParameter("action").toLowerCase();
             String dob = request.getParameter("dob").toLowerCase();
             String password = request.getParameter("password");
-
             if (action.contains("register")) {
                 DbTool dbtool = new DbTool();
                 Connection connection = dbtool.dbLogIn(out);
@@ -42,8 +41,6 @@ public class Servlet extends AbstractPostServlet {
                 dbFunctionality.addUser(firstName, lastName, email, password, dob, connection);
                 out.println("<p> You have successfully registered</p>");
                 addHomeButton(out);
-
-
             } else {
                 out.print("something went wrong");
             }
