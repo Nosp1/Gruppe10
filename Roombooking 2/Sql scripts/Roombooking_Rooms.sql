@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS Rooms
 (
   roomID    VARCHAR(255) UNIQUE,
   roomFloor VARCHAR(255) NULL,
+  maxCapacity int NULL,
   CONSTRAINT R_roomID_PK PRIMARY KEY (roomID)
 );
 

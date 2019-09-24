@@ -58,11 +58,7 @@ public class MyFirstJUnitJupiterTests {
     public void testLoginUser() {
         try {
             assertEquals(dbFunctionality.checkUser(testUserEmail, "1234", testConnection), true);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (InvalidKeySpecException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
+        } catch (SQLException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
         }
     }
