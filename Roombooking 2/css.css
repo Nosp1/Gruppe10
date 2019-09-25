@@ -1,0 +1,11 @@
+.container {
+    padding-top: 60px;
+}
+
+.form-search {
+    width: 200px;
+}
+
+.input-group-prepend > label {
+    margin: 0;
+}
