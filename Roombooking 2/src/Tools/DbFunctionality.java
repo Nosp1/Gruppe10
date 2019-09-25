@@ -1,6 +1,7 @@
 package Tools;
 
 import Classes.AbstractRoom;
+import Classes.Order;
 import Passwords.PasswordHashAndCheck;
 
 import java.io.PrintWriter;
@@ -92,19 +93,20 @@ public class DbFunctionality {
     public void addRoom(AbstractRoom room, Connection connection) throws SQLException {
         PreparedStatement insertNewRoom;
 
-        String ins = "insert into Rooms (Room_name, Room_building, Room_maxCapacity) values (?,?,?)";
+        String ins = "insert into Rooms (Room_ID, Room_name, Room_building, Room_maxCapacity) values (?,?,?,?)";
         insertNewRoom = connection.prepareStatement(ins);
-        insertNewRoom.setString(1, room.getRoomName());
-        insertNewRoom.setString(2, room.getRoomBuilding());
-        insertNewRoom.setString(3, String.valueOf(room.getMaxCapacity()));
+        insertNewRoom.setInt(1, room.getRoomID());
+        insertNewRoom.setString(2, room.getRoomName());
+        insertNewRoom.setString(3, room.getRoomBuilding());
+        insertNewRoom.setString(4, String.valueOf(room.getMaxCapacity()));
         insertNewRoom.execute();
     }
 
-    public boolean deleteRoom(String roomName, Connection connection) throws SQLException {
+    public boolean deleteRoom(int roomID, Connection connection) throws SQLException {
         PreparedStatement deleteRoom;
-        String delete = "delete from Rooms where Room_name = ?";
+        String delete = "delete from Rooms where Room_ID = ?";
         deleteRoom = connection.prepareStatement(delete);
-        deleteRoom.setString(1, roomName);
+        deleteRoom.setInt(1, roomID);
         int result = deleteRoom.executeUpdate();
         // result er 1 hvis noe blir slettet, eller 0 hvis ingenting ble affected
         return result == 1;
@@ -118,5 +120,44 @@ public class DbFunctionality {
         while (resultSet.next()) {
             out.print(resultSet.getString("Room_ID") + " : " + resultSet.getString("Room_building") + "<br>");
         }
+    }
+
+    public void addOrder(Order order, Connection connection) throws SQLException {
+        PreparedStatement insertNewOrder;
+
+        String ins = "insert into `Order` (Order_ID, User_ID, Room_ID, Timestamp_start, Timestamp_end) VALUES (?,?,?,?,?)";
+        insertNewOrder = connection.prepareStatement(ins);
+        insertNewOrder.setInt(1, order.getID());
+        insertNewOrder.setInt(2, order.getUserID());
+        insertNewOrder.setInt(3, order.getRoomID());
+        insertNewOrder.setTimestamp(4, order.getTimestampStart());
+        insertNewOrder.setTimestamp(5, order.getTimestampEnd());
+        insertNewOrder.execute();
+    }
+
+    public Order getOrder(int requestedOrderID, Connection connection) throws SQLException {
+        PreparedStatement selectRoom;
+        String select = "select * from `Order` where Order_ID = ?";
+        selectRoom = connection.prepareStatement(select);
+        selectRoom.setInt(1, requestedOrderID);
+        ResultSet resultSet = selectRoom.executeQuery();
+
+        resultSet.next();
+        int orderID = resultSet.getInt("Order_ID");
+        int userID = resultSet.getInt("User_ID");
+        int roomID = resultSet.getInt("Room_ID");
+        Timestamp timestampStart = resultSet.getTimestamp("Timestamp_start");
+        Timestamp timestampEnd = resultSet.getTimestamp("Timestamp_end");
+
+        return new Order(orderID, userID, roomID, timestampStart, timestampEnd);
+    }
+
+    public boolean deleteOrder(int orderID, Connection connection) throws SQLException {
+        PreparedStatement deleteOrder;
+        String delete = "delete from `Order` where Order_ID = ?";
+        deleteOrder = connection.prepareStatement(delete);
+        deleteOrder.setInt(1, orderID);
+        int result = deleteOrder.executeUpdate();
+        return result == 1;
     }
 }

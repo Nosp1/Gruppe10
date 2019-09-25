@@ -106,15 +106,20 @@
         <h1>Add a room</h1>
         <div>
             <label for="Add_roomID">Room ID</label>
-            <input type="text" id="Add_roomID" name="Add_roomID">
+            <input type="number" id="Add_roomID" name="Add_roomID">
         </div>
         <div>
-            <label for="Add_roomFloor">Floor ID</label>
-            <input type="text" id="Add_roomFloor" name="Add_roomFloor">
+            <!-- TODO: Change to roomName -->
+            <label for="Add_roomName">Room Name</label>
+            <input type="text" id="Add_roomName" name="Add_roomName">
+        </div>
+        <div>
+            <label for="Add_roomBuilding">Building</label>
+            <input type="text" id="Add_roomBuilding" name="Add_roomBuilding">
         </div>
         <div>
             <label for="maxCapacity">Max capacity</label>
-            <input type="text" id="maxCapacity" name="maxCapacity">
+            <input type="number" id="maxCapacity" name="maxCapacity">
         </div>
         <div>
             <input class="submit btn-default btn-lg" type="submit" name="action" value="Add room">
