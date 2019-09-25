@@ -3,6 +3,8 @@ package Tests;
 import Classes.AbstractRoom;
 import Classes.Grouproom;
 import Classes.Order;
+import Classes.User.AbstractUser;
+import Classes.User.Student;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 import org.junit.Before;
@@ -44,18 +46,18 @@ public class RoombookingTests {
         dbFunctionality = new DbFunctionality();
         testConnection = dbTool.dbLogIn();
     }
-
     @Test
-    public void testUser() {
-        dbFunctionality.addUser("Ola", "Nordmann", testUserEmail, "1234", "1900-01-01", testConnection);
+    public void testAddUser() {
+        AbstractUser testUser = new Student("Ola", "Nordmann", testUserEmail, "1234", "1900-01-01");
+        dbFunctionality.addUser(testUser, testConnection);
         String statement = "SELECT User_email FROM User WHERE User_email = ?";
         try {
             PreparedStatement preparedStatement = testConnection.prepareStatement(statement);
-            preparedStatement.setString(1, testUserEmail);
+            preparedStatement.setString(1, testUser.getUserName());
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            while(resultSet.next()) {
-                assertEquals(resultSet.getString("User_email"), testUserEmail);
+            while (resultSet.next()) {
+                assertEquals(resultSet.getString("User_email"), testUser.getUserName());
             }
 
             assertEquals(dbFunctionality.checkUser(testUserEmail, "1234", testConnection), true);
@@ -77,7 +79,7 @@ public class RoombookingTests {
             preparedStatement.setString(1, testRoomName);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 assertEquals(resultSet.getString("Room_name"), testRoomName);
             }
 

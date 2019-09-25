@@ -2,12 +2,14 @@ package Tools;
 
 import Classes.AbstractRoom;
 import Classes.Order;
+import Classes.User.AbstractUser;
 import Passwords.PasswordHashAndCheck;
 
 import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.*;
+
 /**
  * @author trym, brisdalen
  */
@@ -15,21 +17,22 @@ public class DbFunctionality {
     Statement statement;
     PasswordHashAndCheck passwordHashAndCheck;
 
+
     public DbFunctionality() {
         passwordHashAndCheck = new PasswordHashAndCheck();
     }
 
-    public void addUser(String firstName, String lastName, String email, String passWord, String dob, Connection conn) {
+    public void addUser(AbstractUser user, Connection conn) {
         PreparedStatement insertNewUser;
 
         try {
             String ins = "insert into User (User_firstName, User_lastName, User_email, User_dob, User_password, User_salt) values (?,?,?,?,?,?)";
             insertNewUser = conn.prepareStatement(ins);
-            insertNewUser.setString(1, firstName);
-            insertNewUser.setString(2, lastName);
-            insertNewUser.setString(3, email);
-            insertNewUser.setString(4, dob);
-            String hashing = passwordHashAndCheck.stringToSaltedHash(passWord);
+            insertNewUser.setString(1, user.getFirstName());
+            insertNewUser.setString(2, user.getLastName());
+            insertNewUser.setString(3, user.getUserName());
+            insertNewUser.setString(4, user.getDob());
+            String hashing = passwordHashAndCheck.stringToSaltedHash(user.getPassword());
             // store the whole string in the database
             insertNewUser.setString(5, hashing);
             // split by ":" because method returns <salts>:<hashed password>
@@ -86,8 +89,7 @@ public class DbFunctionality {
     }
 
     /**
-     *
-     * @param room The room to be added to the database. Must be a subclass of AbstractRoom.
+     * @param room       The room to be added to the database. Must be a subclass of AbstractRoom.
      * @param connection The connection to the database.
      */
     public void addRoom(AbstractRoom room, Connection connection) throws SQLException {
