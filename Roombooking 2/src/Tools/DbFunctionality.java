@@ -1,6 +1,7 @@
 package Tools;
 
 import Classes.AbstractRoom;
+import Classes.User.AbstractUser;
 import Passwords.PasswordHashAndCheck;
 
 import java.io.PrintWriter;
@@ -15,26 +16,22 @@ public class DbFunctionality {
     Statement statement;
     PasswordHashAndCheck passwordHashAndCheck;
 
-    public void SelectAnyDb(String Table, String column, String value, Connection connection) {
-        PreparedStatement statement;
-        String query = "Select *  from ? where ? is ? (?,?) ";
-    }
 
     public DbFunctionality() {
         passwordHashAndCheck = new PasswordHashAndCheck();
     }
 
-    public void addUser(String firstName, String lastName, String email, String passWord, String dob, Connection conn) {
+    public void addUser(AbstractUser user, Connection conn) {
         PreparedStatement insertNewUser;
 
         try {
             String ins = "insert into User (User_firstName, User_lastName, User_email, User_dob, User_password, User_salt) values (?,?,?,?,?,?)";
             insertNewUser = conn.prepareStatement(ins);
-            insertNewUser.setString(1, firstName);
-            insertNewUser.setString(2, lastName);
-            insertNewUser.setString(3, email);
-            insertNewUser.setString(4, dob);
-            String hashing = passwordHashAndCheck.stringToSaltedHash(passWord);
+            insertNewUser.setString(1, user.getFirstName());
+            insertNewUser.setString(2, user.getLastName());
+            insertNewUser.setString(3, user.getUserName());
+            insertNewUser.setString(4, user.getDob());
+            String hashing = passwordHashAndCheck.stringToSaltedHash(user.getPassword());
             // store the whole string in the database
             insertNewUser.setString(5, hashing);
             // split by ":" because method returns <salts>:<hashed password>
