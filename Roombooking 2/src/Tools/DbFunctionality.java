@@ -7,12 +7,18 @@ import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.*;
+
 /**
  * @author trym, brisdalen
  */
 public class DbFunctionality {
     Statement statement;
     PasswordHashAndCheck passwordHashAndCheck;
+
+    public void SelectAnyDb(String Table, String column, String value, Connection connection) {
+        PreparedStatement statement;
+        String query = "Select *  from ? where ? is ? (?,?) ";
+    }
 
     public DbFunctionality() {
         passwordHashAndCheck = new PasswordHashAndCheck();
@@ -85,8 +91,7 @@ public class DbFunctionality {
     }
 
     /**
-     *
-     * @param room The room to be added to the database. Must be a subclass of AbstractRoom.
+     * @param room       The room to be added to the database. Must be a subclass of AbstractRoom.
      * @param connection The connection to the database.
      */
     public void addRoom(AbstractRoom room, Connection connection) throws SQLException {
