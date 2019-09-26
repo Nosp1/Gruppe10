@@ -40,7 +40,7 @@ public class DbTool {
 
         return connection;
     }
-
+//todo delete this method redundant
     public void printResults(PrintWriter out) throws SQLException {
         String strSelect = "Select * from User";
         statement = connection.createStatement();

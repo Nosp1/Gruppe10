@@ -1,5 +1,6 @@
 package Servlets;
 
+import Classes.Email.TLSEmail;
 import Classes.User.AbstractUser;
 import Classes.User.Student;
 import Tools.DbFunctionality;
@@ -44,6 +45,8 @@ public class Servlet extends AbstractPostServlet {
                 AbstractUser newUser = new Student(firstName, lastName, email, password, dob);
                 dbFunctionality.addUser(newUser, connection);
                 out.println("<p> You have successfully registered</p>");
+                TLSEmail tlsEmail = new TLSEmail();
+                tlsEmail.NoReplyEmail(newUser.getUserName());
                 addHomeButton(out);
             } else {
                 out.print("something went wrong");
@@ -53,5 +56,4 @@ public class Servlet extends AbstractPostServlet {
             out.println("</html>");
         }
     }
-
 }
