@@ -66,7 +66,7 @@ public class ServletLogin extends AbstractServlet {
             scriptBootstrap(out);
             out.print("</body>");
             out.print("</html>");
-        } catch (SQLException | InvalidKeySpecException | NoSuchAlgorithmException e) {
+        } catch (SQLException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
         }
     }
