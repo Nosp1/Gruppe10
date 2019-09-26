@@ -33,7 +33,7 @@ public class RoombookingTests {
     String testRoomName = "TEST001";
 
     int testOrderID = 1;
-    int testUserID = 3;
+    int testUserID = 5;
     int testRoomID = 1;
     Timestamp testTimestampStart = new Timestamp(1569420000000L);
     Timestamp testTimestampEnd = new Timestamp(1569427200000L);
@@ -117,10 +117,10 @@ public class RoombookingTests {
 
             // ----- Testing order.intersects() -----
             // Add new Orders, 16-18, 15-17, 17-19 and 10-12
-            dbFunctionality.addOrder(new Order(2, 3, 1, new Timestamp(1569427200000L), new Timestamp(1569434400000L)), testConnection);
-            dbFunctionality.addOrder(new Order(3, 3, 1, new Timestamp(1569423600000L), new Timestamp(1569430800000L)), testConnection);
-            dbFunctionality.addOrder(new Order(4, 3, 1, new Timestamp(1569430800000L), new Timestamp(1569438000000L)), testConnection);
-            dbFunctionality.addOrder(new Order(5, 3, 1, new Timestamp(1569405600000L), new Timestamp(1569412800000L)), testConnection);
+            dbFunctionality.addOrder(new Order(2, testUserID, 1, new Timestamp(1569427200000L), new Timestamp(1569434400000L)), testConnection);
+            dbFunctionality.addOrder(new Order(3, testUserID, 1, new Timestamp(1569423600000L), new Timestamp(1569430800000L)), testConnection);
+            dbFunctionality.addOrder(new Order(4, testUserID, 1, new Timestamp(1569430800000L), new Timestamp(1569438000000L)), testConnection);
+            dbFunctionality.addOrder(new Order(5, testUserID, 1, new Timestamp(1569405600000L), new Timestamp(1569412800000L)), testConnection);
 
             Order testOrder1 = dbFunctionality.getOrder(1, testConnection);
             Order testOrder2 = dbFunctionality.getOrder(2, testConnection);
