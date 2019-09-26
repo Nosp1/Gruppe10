@@ -6,8 +6,8 @@ import javax.mail.Session;
 import java.util.Properties;
 
 public class TLSEmail {
-    String fromEmail = "grproom@gmail.com";
-    String password = "dennIS93";
+    String fromEmail = "grproom@gmail.com"; //required valid email id
+    String password = "dennIS93"; //required valid password for email id
 
     /**
      * Outgoing Mail (SMTP) Server

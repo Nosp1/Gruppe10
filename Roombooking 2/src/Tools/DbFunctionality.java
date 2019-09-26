@@ -22,6 +22,24 @@ public class DbFunctionality {
         passwordHashAndCheck = new PasswordHashAndCheck();
     }
 
+    /**
+     * Temp method for adding Admin Email for sending out booking confirmation to registered users.
+     */
+    public void addAdminEmail (String email, String password, Connection connection) {
+        PreparedStatement insertEmail;
+        try {
+            String ins = "insert into Email (Email_name, Email_password, Email_Salt) values (?,?,?)";
+            insertEmail = connection.prepareStatement(ins);
+            insertEmail.setString(1,email);
+            String hashing = passwordHashAndCheck.stringToSaltedHash(password);
+            insertEmail.setString(2,hashing);
+            String[] hashParts = hashing.split(":");
+            insertEmail.setString(3,hashParts[0]);
+        } catch (SQLException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void addUser(AbstractUser user, Connection conn) {
         PreparedStatement insertNewUser;
 
