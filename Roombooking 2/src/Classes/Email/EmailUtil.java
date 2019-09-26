@@ -8,15 +8,19 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+/**
+ * Handles the construction of a html based email that sends an email to a recipient user
+ * @author trym
+ */
 public class EmailUtil {
 
     /**
      * Utility method to send simple HTML email
+     * @param session parses the host, authentication TSL, port
+     * @param toEmail recipients email
+     * @param subject The email subject
+     * @param body The body of the email
      *
-     * @param session
-     * @param toEmail
-     * @param subject
-     * @param body
      */
     public void sendEmail(Session session, String toEmail, String subject, String body) {
         try {
