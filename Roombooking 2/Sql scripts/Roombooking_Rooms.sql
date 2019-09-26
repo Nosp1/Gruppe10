@@ -15,7 +15,7 @@ CREATE TABLE Roombooking.`Order`
     User_ID int(11),
     Room_ID int(255),
     CONSTRAINT O_Order_ID_PK PRIMARY KEY (Order_ID),
-    CONSTRAINT O_User_ID_FK FOREIGN KEY (User_ID) REFERENCES User,
+    CONSTRAINT O_User_ID_FK FOREIGN KEY (User_ID) REFERENCES User (User_ID),
     CONSTRAINT O_Room_ID_FK FOREIGN KEY (Room_ID) REFERENCES Rooms(Room_ID)
 );
 
