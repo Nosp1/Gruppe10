@@ -60,6 +60,7 @@ public class ServletRoomOptions extends AbstractPostServlet {
             } else if(action.contains("reserve")) {
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
+                //todo add reservation.. and order generation
                 
 
 
