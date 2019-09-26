@@ -56,6 +56,13 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
                 dbFunctionality.printRooms(out, connection);
+
+            } else if(action.contains("reserve")) {
+                DbTool dbTool = new DbTool();
+                Connection connection = dbTool.dbLogIn(out);
+                
+
+
             }
 
             scriptBootstrap(out);
