@@ -85,9 +85,13 @@
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseAddRoom" role="button"
                 aria-controls="#collapseAddRoom">Add a room
         </button>
-        <!-- Delete a collapse room button -->
+        <!-- Delete a room collapse button -->
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseDeleteRoom" role="button"
                 aria-controls="#collapseDeleteRoom">Delete a room
+        </button>
+        <!-- Reserve a room collapse button -->
+        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseReserveRoom" role="button"
+                aria-controls="#collapseReserveRoom">Reserve a room
         </button>
     </div>
 </div>
@@ -139,10 +143,27 @@
         </div>
     </form>
 </div>
+
+<!-- Form for Reserve a room -->
+<div class="collapse container" id="collapseReserveRoom">
+    <form action="./Servlets.RoomOptions" method="post">
+        <h1>Reserve a room</h1>
+        <div>
+            <label for="Reserve_roomID"Room ID</label>
+            <input type="text" id="Reserve_roomID" name="Reserve_roomID">
+        </div>
+        <div>
+            <input class="submit btn-default btn-lg" type="submit" name="action" value="Reserve room"
+        </div>
+    </form>
+
+</div>
+
 <script
         src="https://code.jquery.com/jquery-3.4.1.js"
         integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
         crossorigin="anonymous"></script>
 <script src="bootstrap.js"></script>
+
 </body>
 </html>

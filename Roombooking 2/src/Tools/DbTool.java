@@ -18,7 +18,7 @@ public class DbTool {
     public Connection dbLogIn(PrintWriter out) {
         try {
             Context context = new InitialContext();
-            DataSource dataSource = (DataSource) context.lookup("java:comp/env/jdbc/localhost/Roombooking");
+            DataSource dataSource = (DataSource) context.lookup("java:comp/env/jdbc/localhost/roombooking");
             connection = dataSource.getConnection();
 
             return connection;

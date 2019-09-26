@@ -1,4 +1,4 @@
-CREATE DATABASE 'Roombooking';
+CREATE DATABASE Roombooking;
 
 CREATE TABLE Roombooking.Rooms
 (
