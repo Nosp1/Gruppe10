@@ -1,5 +1,7 @@
 package Servlets;
 
+import Classes.User.AbstractUser;
+import Classes.User.Student;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 
@@ -28,17 +30,19 @@ public class Servlet extends AbstractPostServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             printNav(out); //void method that prints start of html from parent class AbstractServlet
-            String firstName = request.getParameter("firstName").toLowerCase();
-            String lastName = request.getParameter("lastName").toLowerCase();
-            String email = request.getParameter("email").toLowerCase();
             String action = request.getParameter("action").toLowerCase();
-            String dob = request.getParameter("dob").toLowerCase();
-            String password = request.getParameter("password");
             if (action.contains("register")) {
+                String firstName = request.getParameter("firstName").toLowerCase();
+                String lastName = request.getParameter("lastName").toLowerCase();
+                String email = request.getParameter("email").toLowerCase();
+                String dob = request.getParameter("dob").toLowerCase();
+                String password = request.getParameter("password");
+
                 DbTool dbtool = new DbTool();
                 Connection connection = dbtool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
-                dbFunctionality.addUser(firstName, lastName, email, password, dob, connection);
+                AbstractUser newUser = new Student(firstName, lastName, email, password, dob);
+                dbFunctionality.addUser(newUser, connection);
                 out.println("<p> You have successfully registered</p>");
                 addHomeButton(out);
             } else {

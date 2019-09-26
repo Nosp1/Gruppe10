@@ -1,12 +1,15 @@
 package Tools;
 
 import Classes.AbstractRoom;
+import Classes.Order;
+import Classes.User.AbstractUser;
 import Passwords.PasswordHashAndCheck;
 
 import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.*;
+
 /**
  * @author trym, brisdalen
  */
@@ -14,21 +17,22 @@ public class DbFunctionality {
     Statement statement;
     PasswordHashAndCheck passwordHashAndCheck;
 
+
     public DbFunctionality() {
         passwordHashAndCheck = new PasswordHashAndCheck();
     }
 
-    public void addUser(String firstName, String lastName, String email, String passWord, String dob, Connection conn) {
+    public void addUser(AbstractUser user, Connection conn) {
         PreparedStatement insertNewUser;
 
         try {
             String ins = "insert into User (User_firstName, User_lastName, User_email, User_dob, User_password, User_salt) values (?,?,?,?,?,?)";
             insertNewUser = conn.prepareStatement(ins);
-            insertNewUser.setString(1, firstName);
-            insertNewUser.setString(2, lastName);
-            insertNewUser.setString(3, email);
-            insertNewUser.setString(4, dob);
-            String hashing = passwordHashAndCheck.stringToSaltedHash(passWord);
+            insertNewUser.setString(1, user.getFirstName());
+            insertNewUser.setString(2, user.getLastName());
+            insertNewUser.setString(3, user.getUserName());
+            insertNewUser.setString(4, user.getDob());
+            String hashing = passwordHashAndCheck.stringToSaltedHash(user.getPassword());
             // store the whole string in the database
             insertNewUser.setString(5, hashing);
             // split by ":" because method returns <salts>:<hashed password>
@@ -85,26 +89,26 @@ public class DbFunctionality {
     }
 
     /**
-     *
-     * @param room The room to be added to the database. Must be a subclass of AbstractRoom.
+     * @param room       The room to be added to the database. Must be a subclass of AbstractRoom.
      * @param connection The connection to the database.
      */
     public void addRoom(AbstractRoom room, Connection connection) throws SQLException {
         PreparedStatement insertNewRoom;
 
-        String ins = "insert into Rooms (Room_name, Room_building, Room_maxCapacity) values (?,?,?)";
+        String ins = "insert into Rooms (Room_ID, Room_name, Room_building, Room_maxCapacity) values (?,?,?,?)";
         insertNewRoom = connection.prepareStatement(ins);
-        insertNewRoom.setString(1, room.getRoomName());
-        insertNewRoom.setString(2, room.getRoomBuilding());
-        insertNewRoom.setString(3, String.valueOf(room.getMaxCapacity()));
+        insertNewRoom.setInt(1, room.getRoomID());
+        insertNewRoom.setString(2, room.getRoomName());
+        insertNewRoom.setString(3, room.getRoomBuilding());
+        insertNewRoom.setString(4, String.valueOf(room.getMaxCapacity()));
         insertNewRoom.execute();
     }
 
-    public boolean deleteRoom(String roomName, Connection connection) throws SQLException {
+    public boolean deleteRoom(int roomID, Connection connection) throws SQLException {
         PreparedStatement deleteRoom;
-        String delete = "delete from Rooms where Room_name = ?";
+        String delete = "delete from Rooms where Room_ID = ?";
         deleteRoom = connection.prepareStatement(delete);
-        deleteRoom.setString(1, roomName);
+        deleteRoom.setInt(1, roomID);
         int result = deleteRoom.executeUpdate();
         // result er 1 hvis noe blir slettet, eller 0 hvis ingenting ble affected
         return result == 1;
@@ -118,5 +122,44 @@ public class DbFunctionality {
         while (resultSet.next()) {
             out.print(resultSet.getString("Room_ID") + " : " + resultSet.getString("Room_building") + "<br>");
         }
+    }
+
+    public void addOrder(Order order, Connection connection) throws SQLException {
+        PreparedStatement insertNewOrder;
+
+        String ins = "insert into `Order` (Order_ID, User_ID, Room_ID, Timestamp_start, Timestamp_end) VALUES (?,?,?,?,?)";
+        insertNewOrder = connection.prepareStatement(ins);
+        insertNewOrder.setInt(1, order.getID());
+        insertNewOrder.setInt(2, order.getUserID());
+        insertNewOrder.setInt(3, order.getRoomID());
+        insertNewOrder.setTimestamp(4, order.getTimestampStart());
+        insertNewOrder.setTimestamp(5, order.getTimestampEnd());
+        insertNewOrder.execute();
+    }
+
+    public Order getOrder(int requestedOrderID, Connection connection) throws SQLException {
+        PreparedStatement selectRoom;
+        String select = "select * from `Order` where Order_ID = ?";
+        selectRoom = connection.prepareStatement(select);
+        selectRoom.setInt(1, requestedOrderID);
+        ResultSet resultSet = selectRoom.executeQuery();
+
+        resultSet.next();
+        int orderID = resultSet.getInt("Order_ID");
+        int userID = resultSet.getInt("User_ID");
+        int roomID = resultSet.getInt("Room_ID");
+        Timestamp timestampStart = resultSet.getTimestamp("Timestamp_start");
+        Timestamp timestampEnd = resultSet.getTimestamp("Timestamp_end");
+
+        return new Order(orderID, userID, roomID, timestampStart, timestampEnd);
+    }
+
+    public boolean deleteOrder(int orderID, Connection connection) throws SQLException {
+        PreparedStatement deleteOrder;
+        String delete = "delete from `Order` where Order_ID = ?";
+        deleteOrder = connection.prepareStatement(delete);
+        deleteOrder.setInt(1, orderID);
+        int result = deleteOrder.executeUpdate();
+        return result == 1;
     }
 }
