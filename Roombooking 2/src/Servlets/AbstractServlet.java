@@ -21,6 +21,7 @@ public abstract class AbstractServlet extends HttpServlet {
     * @param out
     */
     // TODO: Finnes det et mer forklarende metode-navn her?
+
     void scriptBootstrap(PrintWriter out) {
         out.println("<script\n" +
                 "        src=\"https://code.jquery.com/jquery-3.4.1.js\"\n" +

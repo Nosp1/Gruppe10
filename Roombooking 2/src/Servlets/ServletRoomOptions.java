@@ -1,7 +1,7 @@
 package Servlets;
 
-import Classes.AbstractRoom;
-import Classes.Grouproom;
+import Classes.Rooms.AbstractRoom;
+import Classes.Rooms.Grouproom;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 
@@ -21,30 +21,28 @@ public class ServletRoomOptions extends AbstractPostServlet {
         try (PrintWriter out = response.getWriter()) {
 
             printNav(out);
-                                        // TODO: Gjør dette andre steder også?
+
             String action = request.getParameter("action").toLowerCase();
 
-            // TODO: Lag HTML side med action som legger til et rom
             if(action.contains("add")) {
-                String roomID = request.getParameter("Add_roomID");
-                String roomFloor = request.getParameter("Add_roomFloor");
-                String maxCapacity = request.getParameter("maxCapacity");
+                int roomID = Integer.parseInt(request.getParameter("Add_roomID"));
+                String roomName = request.getParameter("Add_roomName");
+                String roomBuilding = request.getParameter("Add_roomBuilding");
+                int maxCapacity = Integer.parseInt(request.getParameter("maxCapacity"));
 
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
 
-                int parsedMaxCapacity = Integer.parseInt(maxCapacity);
-                AbstractRoom room = new Grouproom(roomID, roomFloor, parsedMaxCapacity);
+                AbstractRoom room = new Grouproom(roomID, roomName, roomBuilding, maxCapacity);
                 // TODO: Bruker kun grupperom typen for nå
                 dbFunctionality.addRoom(room, connection);
-
+                //TODO: legg til annen knapp for å forbli logget inn.
                 addHomeButton(out);
 
             // TODO: Lag HTML side med action som fjerner et rom
             } else if(action.contains("delete")) {
-                String roomID = request.getParameter("Delete_roomID");
-
+                int roomID = Integer.parseInt(request.getParameter("Delete_roomID"));
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
