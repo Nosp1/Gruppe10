@@ -1,7 +1,7 @@
 package Tests;
 
-import Classes.AbstractRoom;
-import Classes.Grouproom;
+import Classes.Rooms.AbstractRoom;
+import Classes.Rooms.Grouproom;
 import Classes.Order;
 import Classes.User.AbstractUser;
 import Classes.User.Student;
@@ -11,9 +11,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.*;
@@ -108,12 +105,13 @@ public class RoombookingTests {
                 assertEquals(resultSet.getInt("Room_ID"), testRoomID);
             }
 
-            // ----- Testing getOrder -----
-            assertEquals(dbFunctionality.getOrder(1, testConnection).getID(), testOrder.getID());
-            assertEquals(dbFunctionality.getOrder(1, testConnection).getUserID(), testOrder.getUserID());
-            assertEquals(dbFunctionality.getOrder(1, testConnection).getRoomID(), testOrder.getRoomID());
-            assertEquals(dbFunctionality.getOrder(1, testConnection).getTimestampStart(), testOrder.getTimestampStart());
-            assertEquals(dbFunctionality.getOrder(1, testConnection).getTimestampEnd(), testOrder.getTimestampEnd());
+            try {
+                // ----- Testing getOrder -----
+                assertEquals(dbFunctionality.getOrder(1, testConnection).getID(), testOrder.getID());
+                assertEquals(dbFunctionality.getOrder(1, testConnection).getUserID(), testOrder.getUserID());
+                assertEquals(dbFunctionality.getOrder(1, testConnection).getRoomID(), testOrder.getRoomID());
+                assertEquals(dbFunctionality.getOrder(1, testConnection).getTimestampStart(), testOrder.getTimestampStart());
+                assertEquals(dbFunctionality.getOrder(1, testConnection).getTimestampEnd(), testOrder.getTimestampEnd());
 
             // ----- Testing order.intersects() -----
             // Add new Orders, 16-18, 15-17, 17-19 and 10-12
@@ -122,24 +120,26 @@ public class RoombookingTests {
             dbFunctionality.addOrder(new Order(4, testUserID, 1, new Timestamp(1569430800000L), new Timestamp(1569438000000L)), testConnection);
             dbFunctionality.addOrder(new Order(5, testUserID, 1, new Timestamp(1569405600000L), new Timestamp(1569412800000L)), testConnection);
 
-            Order testOrder1 = dbFunctionality.getOrder(1, testConnection);
-            Order testOrder2 = dbFunctionality.getOrder(2, testConnection);
-            Order testOrder3 = dbFunctionality.getOrder(3, testConnection);
-            Order testOrder4 = dbFunctionality.getOrder(4, testConnection);
+                Order testOrder1 = dbFunctionality.getOrder(1, testConnection);
+                Order testOrder2 = dbFunctionality.getOrder(2, testConnection);
+                Order testOrder3 = dbFunctionality.getOrder(3, testConnection);
+                Order testOrder4 = dbFunctionality.getOrder(4, testConnection);
 
-            assertTrue(testOrder1.intersects(testOrder2));
-            assertTrue(testOrder1.intersects(testOrder3));
-            assertFalse(testOrder1.intersects(testOrder4));
+                assertTrue(testOrder1.intersects(testOrder2));
+                assertTrue(testOrder1.intersects(testOrder3));
+                assertFalse(testOrder1.intersects(testOrder4));
 
-            // ----- Testing deleteOrder -----
-            assertTrue(dbFunctionality.deleteOrder(1, testConnection));
-            assertTrue(dbFunctionality.deleteOrder(2, testConnection));
-            assertTrue(dbFunctionality.deleteOrder(3, testConnection));
-            assertTrue(dbFunctionality.deleteOrder(4, testConnection));
-            assertTrue(dbFunctionality.deleteOrder(5, testConnection));
-
+                // ----- Testing deleteOrder -----
+                assertTrue(dbFunctionality.deleteOrder(1, testConnection));
+                assertTrue(dbFunctionality.deleteOrder(2, testConnection));
+                assertTrue(dbFunctionality.deleteOrder(3, testConnection));
+                assertTrue(dbFunctionality.deleteOrder(4, testConnection));
+                assertTrue(dbFunctionality.deleteOrder(5, testConnection));
+            }
             // Deleting the room that was tested on
-            dbFunctionality.deleteRoom(testRoomID, testConnection);
+            finally {
+                dbFunctionality.deleteRoom(testRoomID, testConnection);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

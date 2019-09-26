@@ -1,7 +1,7 @@
 package Servlets;
 
-import Classes.AbstractRoom;
-import Classes.Grouproom;
+import Classes.Rooms.AbstractRoom;
+import Classes.Rooms.Grouproom;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 

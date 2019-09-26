@@ -1,6 +1,6 @@
 package Tools;
 
-import Classes.AbstractRoom;
+import Classes.Rooms.AbstractRoom;
 import Classes.Order;
 import Classes.User.AbstractUser;
 import Passwords.PasswordHashAndCheck;
@@ -162,4 +162,5 @@ public class DbFunctionality {
         int result = deleteOrder.executeUpdate();
         return result == 1;
     }
+
 }
