@@ -1,10 +1,10 @@
 
-CREATE DATABASE roombooking;
+CREATE DATABASE if not exists roombooking;
 USE roombooking;
 
 
 
-CREATE TABLE roombooking.rooms
+CREATE TABLE if not exists roombooking.rooms
 (
     Room_ID          int(11) UNIQUE AUTO_INCREMENT,
     Room_name        VARCHAR(255),
@@ -13,7 +13,7 @@ CREATE TABLE roombooking.rooms
     CONSTRAINT R_Room_ID_PK PRIMARY KEY (Room_ID)
 );
 
-CREATE TABLE roombooking.user
+CREATE TABLE if not exists roombooking.user
 (
     User_ID int(11) PRIMARY KEY UNIQUE AUTO_INCREMENT,
     User_firstName varchar(20) NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE roombooking.user
     User_salt varchar(100)
 );
 
-CREATE TABLE roombooking.`order`
+CREATE TABLE if not exists roombooking.`order`
 (
     Order_ID int(11) AUTO_INCREMENT,
     User_ID int(11),

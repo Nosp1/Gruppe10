@@ -21,7 +21,6 @@ import static org.junit.Assert.assertTrue;
 public class EmailTest {
     DbTool dbTool;
     DbFunctionality dbFunctionality;
-    EmailUtil emailUtil;
     TLSEmail tlsEmail;
     Connection testConnection;
     //the test users email address
@@ -62,6 +61,7 @@ public class EmailTest {
     public void testSendEmail() {
         AbstractUser testUser = new Student("Ola", "Nordmann", testUserEmail, "1234", "1900-01-01");
         tlsEmail.NoReplyEmail(testUser.getUserName());
+
 
     }
 

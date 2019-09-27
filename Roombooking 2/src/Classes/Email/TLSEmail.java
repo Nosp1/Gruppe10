@@ -40,21 +40,26 @@ public class TLSEmail {
      */
     private void SendSecureEmail(String fromEmail, String password, String toEmail) {
         Properties props = new Properties();
-        props.put("mail.smtp.host", "smtp.gmail.com"); //SMTP Host
-        props.put("mail.smtp.port", "587"); //TLS Port
-        props.put("mail.smtp.auth", "true"); //enable authentication
-        props.put("mail.smtp.starttls.enable", "true"); //enable STARTTLS
+        //SMTP Host: Asserts which mail server to use. -> google in this case.
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        //TLS Port: Which outgoing port to use for TLS -> 587 default port.
+        props.put("mail.smtp.port", "587");
+        //enable authentication: required to send secure emails over the Internet.
+        props.put("mail.smtp.auth", "true");
+        //enable STARTLLS: required to send email via TLS protocol.
+        props.put("mail.smtp.starttls.enable", "true");
 
-        //create Authenticator object to pass in Session.getInstance argument
+        //create Authenticator object to login and confirm password from sender.
         Authenticator auth = new Authenticator() {
-            //override the getPasswordAuthentication method
+            //returns the senders EmailID and EmailPassword.
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(fromEmail, password);
             }
         };
+        //gets the host,port, Sender EmailID and password
         Session session = Session.getInstance(props, auth);
         EmailUtil emailUtil = new EmailUtil();
-        // calls on EmailUtil send email method and parses the session, toEmail & subject + body
+        //Sends Email by taking: Sender EmailID, password, port
         emailUtil.sendEmail(session, toEmail, "Test", "Test");
     }
 }
