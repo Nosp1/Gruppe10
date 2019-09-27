@@ -1,11 +1,11 @@
 
 #collapseExample {
-    background: #2b542c;
+    background: #ff9933;
     width: border-box;
     /*text-align: center; */
 }
 #collapseLogin {
-    background: #2b542c;
+    background: #ff9933;
     width: border-box;
 }
 #welcome{
@@ -14,19 +14,21 @@
     margin-bottom: 10px;
 }
 .jumbotron {
-    color: rgb(41, 187, 48);
-    text-shadow: 10px, black;
+    color: rgb(248, 232, 232);
+    text-shadow: 10px, #ff9558;
 
     background-image: url("https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80");
     background-size: 100%;
+
 }
 
 .navbar-brand {
-    background: #216732;
+    background: #f9e6bd;
 }
 
 body {
-    background-color: rgb(41, 187, 105);
+    background: linear-gradient(to top left, #ffffcc 0%, #ff9933 100%) fixed;
+
     text-align: center;
 }
 #collapseExample {
