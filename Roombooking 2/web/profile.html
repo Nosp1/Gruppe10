@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>register form</title>
-    <link rel="stylesheet" type="text/css" href="./css/bootstrap.css">
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="roombooking.css">
     <meta charset="utf-8">
 </head>
 <body>
-<!-- Navigation Bar -->
+
+<!-- The Navigation bar for the webpage. -->
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -48,8 +50,11 @@
                 <button type="submit" class="btn btn-default">Submit</button>
             </form>
             <ul class="nav navbar-nav navbar-right">
-                <!-- Todo: add ref to login   -->
-
+                <li>
+                    <a href="profile.html">User <span class="glyphicon glyphicon-user"
+                                                        aria-hidden="true"></span>
+                    </a>
+                </li>
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
@@ -66,92 +71,53 @@
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
-<!-- Container with Jumbotron with log in button & register -->
-<div class="container">
-    <div class="jumbotron">
-        <h1 id="welcome" class="special-text">Welcome to Roombooking</h1>
-        <!-- Log in button that collapses class: #CollapseLogin -->
-        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseLogin" role="button"
-                aria-expanded="false"
-                aria-controls="#collapseLogin">Login
-        </button>
-        <!--  Register button that collapses class: #CollapseLogin -->
+<div class="container" id="ProfileContainer">
+    <div class="jumbotron" id="ProfileJumbotron">
+        <h1 id="Profile" class="special-text">My Profile</h1>
 
-        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseExample" role="button"
-                aria-expanded="false" aria-controls="collapseExample">Register
+        <!-- Browse Rooms collapse button -->
+        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseEdit" role="button"
+                aria-expanded="false"
+                aria-controls="#collapseEdit">Edit Profile Details
+        </button>
+
+        <!-- Book grouproom collapse button -->
+        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseBook" role="button"
+                aria-controls="#collapseBookRoom">Book Grouproom
+        </button>
+
+        <!-- My reservations collapse button -->
+        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseShow" role="button"
+                aria-controls="#collapseShow">My reservations
         </button>
     </div>
-
 </div>
 
 
-<div class="collapse container" id="collapseExample">
-    <form action="./Servlets.Servlet" method="post">
-        <h1>Register</h1>
+<!-- Submit button for Edit user details -->
+<div class="collapse container" id="collapseEdit">
+    <form action="./Servlets.ServletRoomOptions" method="post">
+        <h1>Edit Profile Details</h1>
         <div>
-            <label for="firstName">First name</label>
-            <input id="firstName" type="text" name="firstName" placeholder="John" required>
-        </div>
-        <div>
-            <label for="lastName">Last name</label>
-            <input id="lastName" type="text" name="lastName" placeholder="Smith" required>
-        </div>
-        <div>
-            <label for="gender">Gender</label>
-        </div>
-        <div id="gender" class="btn-group" role="group" aria-label="Basic example">
-
-            <button value="male" name="genderChoice" type="button" class=" submit btn btn-secondary">Male</button>
-            <button value="female" name="genderChoice" type="button" class=" submit btn btn-secondary">Female</button>
-            <button value="other" name="genderChoice" type="button" class=" submit btn btn-secondary">Other</button>
-
-        </div>
-
-
-        <div>
-            <label for="email">Email</label>
-            <input id="email" type="email" name="email" required placeholder="JohnS@example.com">
-        </div>
-
-        <div>
-            <label for="password">Password</label>
-            <input type="password" name="password" placeholder="password; minimum 8 characters" pattern=".{8,0}"
-                   id="password"
-                   required title="must atleast contain 8 symbols">
-        </div>
-
-        <div>
-            <label for="dob">Date Of birth</label>
-            <input id="dob" type="date" name="dob" required>
-        </div>
-
-        <div>
-            <label for="terms">I agree the Terms of Use
-                <input type="checkbox" name="checkbox" id="terms" required>
-            </label>
-        </div>
-        <div>
-            <input class="submit btn-default btn-lg" type="submit" name="action" value="Register">
+            <input class="submit btn-default btn-lg" type="submit" name="action" value="Edit my details">
         </div>
     </form>
 </div>
-<!-- testing  login function on same html Todo: add Navbar User glyphicon into AbstractServlet navbar -->
 
-<div class="collapse container" id="collapseLogin">
-    <form action="./Servlets.ServletLogin" method="post">
-        <h1>Log in</h1>
+<!-- Submit button for Book Grouproom -->
+<div class ="collapse container" id="collapseBook">
+    <form action="./Servlets.ServletRoomOptions" method="post">
+        <h1>Book grouproom</h1>
+        <div>
+            <input class="submit btn-default btn-lg" type="submit" name="action" value="Show all rooms">
+        </div>
+    </form>
+</div>
 
-        <div>
-            <label for="userName">Username</label>
-            <input type="text" id="userName" name="username">
-        </div>
-        <div>
-            <label for="loginpassword">Password</label>
-            <input type="password" id="loginpassword" name="loginpassword">
-        </div>
-        <div>
-            <input class="submit btn-default btn-lg" type="submit" name="action" value="login">
-        </div>
+<!-- Submit button for My Reservations -->
+<div class ="collapse container" id="collapseShow">
+    <form action="./Servlets.ServletRoomOptions" method="post">
+        <h1>My reservations</h1>
 
     </form>
 </div>

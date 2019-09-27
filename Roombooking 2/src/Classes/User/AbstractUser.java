@@ -1,6 +1,8 @@
 package Classes.User;
 
+import Classes.Order;
 import Classes.UserType;
+import java.util.ArrayList;
 
 public abstract class AbstractUser {
     /*
@@ -12,7 +14,12 @@ public abstract class AbstractUser {
     protected String dob;
     protected String password;
     protected UserType userType;
+    protected ArrayList<Order> orders;
 
+
+    /*
+    Constructor
+     */
 
     public AbstractUser( String firstName, String lastName,String userName, String dob, String password, UserType userType) {
         this.firstName = firstName;
@@ -21,6 +28,8 @@ public abstract class AbstractUser {
         this.dob = dob;
         this.password = password;
         this.userType = userType;
+
+        orders = new ArrayList<>();
     }
 
     public String getUserName() {
@@ -69,5 +78,12 @@ public abstract class AbstractUser {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void showOrders() {
+        //Viser orders
+        for(Order o: orders) {
+            System.out.println(o);
+        }
     }
 }
