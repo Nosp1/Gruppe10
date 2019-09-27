@@ -246,7 +246,7 @@ public class DbFunctionality {
     public void addOrder(Order order, Connection connection) throws SQLException {
         PreparedStatement insertNewOrder;
 
-        String ins = "insert into `Order` (Order_ID, User_ID, Room_ID, Timestamp_start, Timestamp_end) VALUES (?,?,?,?,?)";
+        String ins = "insert into `order` (Order_ID, User_ID, Room_ID, Timestamp_start, Timestamp_end) VALUES (?,?,?,?,?)";
         insertNewOrder = connection.prepareStatement(ins);
         insertNewOrder.setInt(1, order.getID());
         insertNewOrder.setInt(2, order.getUserID());
