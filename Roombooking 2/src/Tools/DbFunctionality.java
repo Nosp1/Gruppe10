@@ -1,6 +1,6 @@
 package Tools;
 
-import Classes.AbstractRoom;
+import Classes.Rooms.AbstractRoom;
 import Classes.Email.TLSEmail;
 import Classes.Order;
 import Classes.User.AbstractUser;
@@ -205,4 +205,5 @@ public class DbFunctionality {
         int result = deleteOrder.executeUpdate();
         return result == 1;
     }
+
 }
