@@ -60,6 +60,6 @@ public class TLSEmail {
         Session session = Session.getInstance(props, auth);
         EmailUtil emailUtil = new EmailUtil();
         //Sends Email by taking: Sender EmailID, password, port
-        emailUtil.sendEmail(session, toEmail, "Test", "Test");
+        emailUtil.sendEmail(session, toEmail, "Welcome to roombooking", "Velkommen til roombooking");
     }
 }
