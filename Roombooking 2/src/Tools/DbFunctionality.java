@@ -1,6 +1,7 @@
 package Tools;
 
-import Classes.AbstractRoom;
+import Classes.Rooms.AbstractRoom;
+import Classes.Email.TLSEmail;
 import Classes.Order;
 import Classes.User.AbstractUser;
 import Passwords.PasswordHashAndCheck;
@@ -11,6 +12,8 @@ import java.security.spec.InvalidKeySpecException;
 import java.sql.*;
 
 /**
+ * handles the queries to and from the database.
+ *
  * @author trym, brisdalen
  */
 public class DbFunctionality {
@@ -20,6 +23,46 @@ public class DbFunctionality {
 
     public DbFunctionality() {
         passwordHashAndCheck = new PasswordHashAndCheck();
+    }
+
+    /**
+     * Temp method for adding Admin Email for sending out booking confirmation to registered users.
+     */
+    public void addAdminEmail(String email, String password, Connection connection) {
+        PreparedStatement insertEmail;
+        try {
+            String ins = "insert into Email (Email_name, Email_Password, Email_Salt) values (?,?,?)";
+            insertEmail = connection.prepareStatement(ins);
+            insertEmail.setString(1, email);
+            String hashing = passwordHashAndCheck.stringToSaltedHash(password);
+            insertEmail.setString(2, hashing);
+            String[] hashParts = hashing.split(":");
+            insertEmail.setString(3, hashParts[0]);
+            insertEmail.execute();
+        } catch (SQLException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+            e.printStackTrace();
+        }
+    }
+    public boolean deleteAdminEmail (String adminUser, Connection connection) throws SQLException {
+        PreparedStatement deleteAdminUser;
+        String delete = "delete from  Email where Email_name = ?";
+        deleteAdminUser = connection.prepareStatement(delete);
+        deleteAdminUser.setString(1,adminUser);
+        int result = deleteAdminUser.executeUpdate();
+        return result == 1;
+
+    }
+
+    public TLSEmail getAdminEmail(String requestEmail, Connection connection) throws SQLException, InvalidKeySpecException, NoSuchAlgorithmException {
+        PreparedStatement getEmail;
+        String select = "delete from `Email` where Email_name = ?";
+        getEmail = connection.prepareStatement(select);
+        getEmail.setString(1, requestEmail);
+        ResultSet resultSet = getEmail.executeQuery();
+        resultSet.next();
+        String email = resultSet.getString("Email_name");
+        //String password = passwordHashAndCheck.(resultSet.getString("Email_Password"),resultSet.getString("Email_Salt"));
+        return null;
     }
 
     public void addUser(AbstractUser user, Connection conn) {
@@ -162,4 +205,5 @@ public class DbFunctionality {
         int result = deleteOrder.executeUpdate();
         return result == 1;
     }
+
 }
