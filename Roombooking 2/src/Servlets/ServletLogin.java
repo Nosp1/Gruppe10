@@ -33,39 +33,46 @@ public class ServletLogin extends AbstractServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-
+            //prints start of html tags.
             printNav(out);
+            //gets the username -> email in this case.
             String userName = request.getParameter("username").toLowerCase();
             String lowercaseUsername = userName.toLowerCase();
+            //gets the users password.
             String password = request.getParameter("loginpassword");
+            //gets the form value from action
             String action = request.getParameter("action").toLowerCase();
 
             if (action.contains("login")) {
                 DbTool dbTool = new DbTool();
+                //Establishes connection to database
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
-
+                //checks whether the users Email matches the stored password
                 if (dbFunctionality.checkUser(lowercaseUsername, password, connection)) {
                     // If successful login TODO: make it pop-up
                     System.out.println("success!");
                     out.print("Welcome " + lowercaseUsername + "!");
                     out.print("<br>");
+                    //redirects the user to the loggedIn.html
                     ServletContext servletContext = getServletContext();
                     servletContext.getRequestDispatcher("/loggedIn.html").forward(request, response);
+                    //if the login fails
                 } else {
                     // If not TODO: Add out.print error message for wrong password vs email
                     System.out.println("fail");
                     out.println("Sorry, we do not recognize \"" + lowercaseUsername + "\".");
                     out.print("<br>");
                 }
-
+                //adds a return button if the login fails.
                 addHomeButton(out);
 
             }
-
+            //prints script to establish connection between bootstrap and html
             scriptBootstrap(out);
             out.print("</body>");
             out.print("</html>");
+            //prints errors: if the database fails, if the password is wrong.
         } catch (SQLException | InvalidKeySpecException | NoSuchAlgorithmException e) {
             e.printStackTrace();
         }

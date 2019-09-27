@@ -64,13 +64,13 @@ public class RoombookingTests {
                 assertEquals(resultSet.getString("User_email"), testUser.getUserName());
             }
 
-            assertEquals(dbFunctionality.checkUser(testUserEmail, "1234", testConnection), true);
+            assertTrue(dbFunctionality.checkUser(testUserEmail, "1234", testConnection));
 
         } catch (SQLException | InvalidKeySpecException | NoSuchAlgorithmException e) {
             e.printStackTrace();
         } finally {
             try {
-                assertEquals(dbFunctionality.deleteUser(testUserEmail, testConnection), true);
+                assertTrue(dbFunctionality.deleteUser(testUserEmail, testConnection));
             } catch (SQLException e) {
                 e.printStackTrace();
             }
