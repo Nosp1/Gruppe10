@@ -1,5 +1,7 @@
 package Servlets;
 
+import Classes.User.AbstractUser;
+import Classes.User.Student;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 
@@ -28,37 +30,27 @@ public class Servlet extends AbstractPostServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             printNav(out); //void method that prints start of html from parent class AbstractServlet
-            String firstName = request.getParameter("firstName");
-            String lastName = request.getParameter("lastName");
-            String email = request.getParameter("email");
-            String action = request.getParameter("action");
-            String dob = request.getParameter("dob");
-            String password = request.getParameter("password");
+            String action = request.getParameter("action").toLowerCase();
+            if (action.contains("register")) {
+                String firstName = request.getParameter("firstName").toLowerCase();
+                String lastName = request.getParameter("lastName").toLowerCase();
+                String email = request.getParameter("email").toLowerCase();
+                String dob = request.getParameter("dob").toLowerCase();
+                String password = request.getParameter("password");
 
-            if (action.toLowerCase().contains("register")) {
                 DbTool dbtool = new DbTool();
                 Connection connection = dbtool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
-                dbFunctionality.addUser(firstName, lastName, email, password, dob, out, connection);
+                AbstractUser newUser = new Student(firstName, lastName, email, password, dob);
+                dbFunctionality.addUser(newUser, connection);
                 out.println("<p> You have successfully registered</p>");
-                out.println("<button class=\"submit btn-default btn-lg\">\n" +
-                        "\t\t\t<a href=\"index.html\">return</a>\n" +
-                        "\t\t</button>");
-
-            } else if (action.toLowerCase().contains("database")) {
-                DbTool dbTool = new DbTool();
-                Connection connection = dbTool.dbLogIn(out);
-                dbTool.printResults(out);
+                addHomeButton(out);
             } else {
                 out.print("something went wrong");
             }
-
             scriptBootstrap(out); // Prints Javascript connection to Bootstrap.js and other dependencies. See AbstractServlet
             out.println("</body>");
             out.println("</html>");
-
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
