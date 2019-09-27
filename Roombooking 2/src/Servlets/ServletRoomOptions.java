@@ -5,6 +5,7 @@ import Classes.Rooms.Grouproom;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +14,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+
+/**
+ * Author Hanne, Henriette, Hedda, Trym, Brisdalen
+ */
 
 @WebServlet(name = "Servlets.ServletRoomOptions", urlPatterns = {"/Servlets.ServletRoomOptions"})
 public class ServletRoomOptions extends AbstractPostServlet {
@@ -65,13 +70,15 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 DbFunctionality dbFunctionality = new DbFunctionality();
                 dbFunctionality.printRooms(out, connection);
 
+
+            } else if (action.contains("gotoprofile")) {
+                ServletContext servletContext = getServletContext();
+                servletContext.getRequestDispatcher("/profile.html").forward(request,response);
+
             } else if(action.contains("reserve")) {
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 //todo add reservation.. and order generation
-                
-
-
             }
 
             scriptBootstrap(out);
