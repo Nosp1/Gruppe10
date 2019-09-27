@@ -1,5 +1,8 @@
+
 CREATE DATABASE roombooking;
 USE roombooking;
+
+
 
 CREATE TABLE roombooking.rooms
 (
