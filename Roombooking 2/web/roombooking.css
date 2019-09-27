@@ -22,6 +22,8 @@
 
 }
 
+
+
 .navbar-brand {
     background: #f9e6bd;
 }
@@ -52,11 +54,12 @@ input {
 .btn-default {
     background-color: orange;
 }
-
-
-
-
-
+.btn-success {
+    background-color:orange;
+}
+.btn-success:hover {
+    background-color: rgba(174,39,5,0.38);
+}
 
 #collapseExample input {
     width: 100%;
