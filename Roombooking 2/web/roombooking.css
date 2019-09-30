@@ -46,6 +46,14 @@ body {
 #collapseLogin {
     color:white;
 }
+#collapseLogin input {
+    width: 100%;
+    clear: both;
+}
+#collapseLogin input {
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
 
 form {
     display: inline-block;
