@@ -1,11 +1,15 @@
 package Servlets;
 
+import Classes.Email.EmailTemplates;
+import Classes.Email.EmailUtil;
+import Classes.Email.TLSEmail;
 import Classes.Order;
 import Classes.Rooms.AbstractRoom;
 import Classes.Rooms.Grouproom;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 
+import javax.mail.Session;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -103,6 +107,15 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 System.out.println(order.toString());
                 dbFunctionality.addOrder(order, connection);
                 //todo add epost.
+                TLSEmail tlsEmail = new TLSEmail();
+                //TODO create db method to retrieve epost with userID from db.
+                //Todo: need to get roomName from Db and parse into email not id.
+                Session session = tlsEmail.NoReplyEmail("trymerlend@hotmail.no");
+                EmailUtil confirmationEmail = new EmailUtil();
+                String receipt = EmailTemplates.getBookingReceipt();
+                String body = EmailTemplates.bookingConfirmation("Trym",order);
+                confirmationEmail.sendEmail(session,"trymerlend@hotmail.no",receipt,body);
+
             }
 
             addBootStrapFunctionality(out);
