@@ -18,7 +18,8 @@ public class DbTool {
     public Connection dbLogIn(PrintWriter out) {
         try {
             Context context = new InitialContext();
-            DataSource dataSource = (DataSource) context.lookup("java:comp/env/jdbc/localhost/Roombooking");
+            // TODO: Endre denne og alt i databasen til til lowercase, siden det ikke funker i Windows
+            DataSource dataSource = (DataSource) context.lookup("java:comp/env/jdbc/localhost/roombooking");
             connection = dataSource.getConnection();
 
             return connection;
@@ -33,14 +34,14 @@ public class DbTool {
         // dbLogIn without PrintWriter, used for testing
         connection = null;
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Roombooking?autoReconnect=true&useSSL=false", "root", "dennIS93");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/roombooking?autoReconnect=true&useSSL=false", "root", "dennIS93");
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         return connection;
     }
-
+//todo delete this method redundant
     public void printResults(PrintWriter out) throws SQLException {
         String strSelect = "Select * from User";
         statement = connection.createStatement();

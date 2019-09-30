@@ -1,4 +1,6 @@
-package Classes;
+package Classes.Rooms;
+
+import Classes.RoomType;
 
 /**
  * @author brisdalen
