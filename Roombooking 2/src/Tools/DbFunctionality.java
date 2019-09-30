@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.*;
+import java.text.ParseException;
 
 /**
  * handles the queries to and from the database.
@@ -75,6 +76,8 @@ public class DbFunctionality {
             insertNewUser.setString(2, user.getLastName());
             insertNewUser.setString(3, user.getUserName());
             insertNewUser.setString(4, user.getDob());
+            /* We create a hashed version of the password instead of storing the actual password in the database.
+            This is to make it impossible to retrieve your password from the database. */
             String hashing = passwordHashAndCheck.stringToSaltedHash(user.getPassword());
             // store the whole string in the database
             insertNewUser.setString(5, hashing);
@@ -165,22 +168,31 @@ public class DbFunctionality {
         while (resultSet.next()) {
             out.print(resultSet.getString("Room_ID") + " : " + resultSet.getString("Room_building") + "<br>");
         }
+
     }
 
     public void addOrder(Order order, Connection connection) throws SQLException {
         PreparedStatement insertNewOrder;
+        System.out.println("addOrder started");
 
-        String ins = "insert into `Order` (Order_ID, User_ID, Room_ID, Timestamp_start, Timestamp_end) VALUES (?,?,?,?,?)";
+        String ins = "insert into `order` (User_ID, Room_ID, Timestamp_start, Timestamp_end) VALUES (?,?,?,?)";
         insertNewOrder = connection.prepareStatement(ins);
-        insertNewOrder.setInt(1, order.getID());
-        insertNewOrder.setInt(2, order.getUserID());
-        insertNewOrder.setInt(3, order.getRoomID());
-        insertNewOrder.setTimestamp(4, order.getTimestampStart());
-        insertNewOrder.setTimestamp(5, order.getTimestampEnd());
+        insertNewOrder.setInt(1, order.getUserID());
+        insertNewOrder.setInt(2, order.getRoomID());
+        insertNewOrder.setTimestamp(3, order.getTimestampStart());
+        insertNewOrder.setTimestamp(4, order.getTimestampEnd());
         insertNewOrder.execute();
+        // TODO ADD RECIEPT METHOD
     }
 
-    public Order getOrder(int requestedOrderID, Connection connection) throws SQLException {
+    /**
+     * The method getOrder returns an Order object with the requested orderID
+     * @param requestedOrderID The ID of an order in the database
+     * @param connection       The Connection object with the connection to the database
+     * @return An Order object representing an entry in the Order table of the database
+     * @throws SQLException
+     */
+    public Order getOrder(int requestedOrderID, Connection connection) throws SQLException, ParseException {
         PreparedStatement selectRoom;
         String select = "select * from `Order` where Order_ID = ?";
         selectRoom = connection.prepareStatement(select);
@@ -206,4 +218,16 @@ public class DbFunctionality {
         return result == 1;
     }
 
+    public int getOrderID(Connection connection) throws SQLException {
+        PreparedStatement selectOrderID;
+        String select = "select Order_ID from `order`";
+        selectOrderID = connection.prepareStatement(select);
+        ResultSet resultSet = selectOrderID.executeQuery();
+
+        while(resultSet.next()) {
+            return resultSet.getInt("Order_ID");
+        }
+
+        return 1;
+    }
 }

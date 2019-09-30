@@ -1,6 +1,9 @@
 package Classes;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Order {
 
@@ -15,9 +18,12 @@ public class Order {
      * @param timestampStart The date and time of the requested booking's beginning.
      * @param timestampEnd The date and time of the requested booking's end.
      */
-    public Order(Timestamp timestampStart, Timestamp timestampEnd) {
-        this.timestampStart = timestampStart;
-        this.timestampEnd = timestampEnd;
+    public Order(String timestampStart, String timestampEnd) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MM yyyy HH:mm");
+        Date start = sdf.parse(timestampStart);
+        Date end = sdf.parse(timestampEnd);
+        this.timestampStart = new Timestamp(start.getTime());
+        this.timestampEnd = new Timestamp(end.getTime());
     }
 
     /**
@@ -28,7 +34,29 @@ public class Order {
      * @param timestampStart The date and time of the requested booking's beginning.
      * @param timestampEnd The date and time of the requested booking's end.
      */
-    public Order(int id, int userID, int roomID, Timestamp timestampStart, Timestamp timestampEnd) {
+    public Order(int id, int userID, int roomID, String timestampStart, String timestampEnd) throws ParseException {
+        this.id = id;
+        System.out.println(id);
+        this.userID = userID;
+        System.out.println(userID);
+        this.roomID = roomID;
+        System.out.println(roomID);
+        this.timestampStart = getTimestampFromString(timestampStart);
+        System.out.println(this.timestampStart.toString());
+        this.timestampEnd = getTimestampFromString(timestampEnd);
+        System.out.println(this.timestampEnd.toString());
+    }
+
+    /**
+     * Constructor used for inserting an Order into the database, after availability has been checked.
+     * @param id The id for an order.
+     * @param userID The user that places the order.
+     * @param roomID The room which a user wants to book.
+     * @param timestampStart The date and time of the requested booking's beginning.
+     * @param timestampEnd The date and time of the requested booking's end.
+     */
+    public Order(int id, int userID, int roomID, Timestamp timestampStart, Timestamp timestampEnd) throws ParseException {
+        System.out.println("C3");
         this.id = id;
         this.userID = userID;
         this.roomID = roomID;
@@ -47,6 +75,24 @@ public class Order {
          * ergo, vi ønske false for å booke noe
          */
         return(comparison1 >= 0 && comparison2 >= 0);
+    }
+
+    private Timestamp getTimestampFromString(String input) throws ParseException {
+        System.out.println("getTimestamp called with: " + input);
+        input = input.replace("T", " ");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date output = sdf.parse(input);
+        return new Timestamp(output.getTime());
+    }
+
+    @Override
+    public String toString() {
+        return "Order_ID: " + String.valueOf(id) + "\n" +
+                "User_ID: " + String.valueOf(userID) + "\n" +
+                "Room_ID: " + String.valueOf(roomID) + "\n" +
+                "Timestamp_start: " + timestampStart.toString() + "\n" +
+                "Timestamp_end: " + timestampEnd.toString();
+
     }
 
     public int getID() {

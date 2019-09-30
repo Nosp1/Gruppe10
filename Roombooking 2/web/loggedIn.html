@@ -116,7 +116,6 @@
             <input type="number" id="Add_roomID" name="Add_roomID">
         </div>
         <div>
-            <!-- TODO: Change to roomName -->
             <label for="Add_roomName">Room Name</label>
             <input type="text" id="Add_roomName" name="Add_roomName">
         </div>
@@ -152,8 +151,16 @@
     <form action="./Servlets.ServletRoomOptions" method="post">
         <h1>Reserve a room</h1>
         <div>
-            <label for="Reserve_roomID">Room ID</label>
-            <input type="text" id="Reserve_roomID" name="Reserve_roomID">
+            <label for="Reserve_Room_ID">Room ID</label>
+            <input type="text" id="Reserve_Room_ID" name="Reserve_Room_ID">
+        </div>
+        <div>
+            <label for="Reserve_Timestamp_start">Booking start</label>
+            <input type="datetime-local" id="Reserve_Timestamp_start" name="Reserve_Timestamp_start">
+        </div>
+        <div>
+            <label for="Reserve_Timestamp_end">Booking end</label>
+            <input type="datetime-local" id="Reserve_Timestamp_end" name="Reserve_Timestamp_end">
         </div>
         <div>
             <input class="submit btn-default btn-lg" type="submit" name="action" value="Reserve room">
