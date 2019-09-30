@@ -1,20 +1,21 @@
 package Servlets;
 
+import Classes.Email.EmailUtil;
 import Classes.Email.TLSEmail;
 import Classes.User.AbstractUser;
 import Classes.User.Student;
+import Classes.Email.EmailTemplates;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 
+import javax.mail.Session;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 /**
  * Handles the Register form.
@@ -54,9 +55,18 @@ public class Servlet extends AbstractPostServlet {
                 out.println("<p> You have successfully registered</p>");
                 //Generates and sends a welcome email to the newly registered user
                 TLSEmail tlsEmail = new TLSEmail();
-
-                tlsEmail.NoReplyEmail(newUser.getUserName());
-                //Adds a return button to go back to the previous page.
+                //creates current email session & returns the session
+                Session session = tlsEmail.NoReplyEmail(newUser.getUserName());
+                EmailUtil newEmail = new EmailUtil();
+                //gets the standard welcome message as subject
+                String welcome = EmailTemplates.getWelcome();
+                //Sets the first letter of the recipients name to a capital letter.
+                String capName = newUser.getFirstName().substring(0, 1).toUpperCase() + newUser.getFirstName().substring(1);
+               //inserts the capitalised name into the body of the email.
+                String body = EmailTemplates.welcomeMessageBody(capName);
+                //sends email
+                newEmail.sendEmail(session,newUser.getUserName(),welcome,body);
+                //prints HomeButton.
                 addHomeButton(out);
             } else {
                 //if the user is not registered.
