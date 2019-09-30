@@ -1,10 +1,6 @@
 package Servlets;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
@@ -18,11 +14,11 @@ public abstract class AbstractServlet extends HttpServlet {
     /**
     * Method allows all children of  {@code AbstractServlet}
     to call the bootstrap.js ref and jquery for responsive Navbar.
-    * @param out
-    */
+     * @param out
+     */
     // TODO: Finnes det et mer forklarende metode-navn her?
 
-    void scriptBootstrap(PrintWriter out) {
+    void addBootStrapFunctionality(PrintWriter out) {
         out.println("<script\n" +
                 "        src=\"https://code.jquery.com/jquery-3.4.1.js\"\n" +
                 "        integrity=\"sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=\"\n" +
@@ -30,12 +26,27 @@ public abstract class AbstractServlet extends HttpServlet {
                 "<script src=\"bootstrap.js\"></script>");
     }
 
+    /**
+     * Prints a html button that returns you to landing page index.html
+     * @param out to print html
+     */
     void addHomeButton(PrintWriter out) {
         out.print("<button class=\"btn-default btn-lg submit\">\n" +
                 "                <a href=\"index.html\"> return</a>\n" +
                 "            </button>\n");
     }
 
+    /**
+     * Prints html button taht returns you to the logged in page.
+     * //TODO: might need cookie to remember which session?
+     * @param out to print html
+     *
+     */
+    void addHomeLoggedInButton (PrintWriter out) {
+        out.println("<button class=\"btn-default btn-lg submit\">\n" +
+                "                <a href=\"loggedIn.html\"> return</a>\n" +
+                "            </button>\n");
+    }
     /**
      * Adds Navigation bar to Servlet landing page.
      *

@@ -57,7 +57,8 @@ public class Servlet extends AbstractPostServlet {
                 //TODO: add a check for Already registered user.
                 if (dbFunctionality.checkUser(newUser.getUserName(), newUser.getPassword(), connection)) {
                     out.println("You have already registered with that email");
-                   wait(1);
+
+                    //todo button or email?
                     ServletContext servletContext = getServletContext();
                     servletContext.getRequestDispatcher("/index.html").forward(request,response);
 
@@ -89,10 +90,10 @@ public class Servlet extends AbstractPostServlet {
                 out.print("something went wrong");
             }
             // Prints Javascript connection to Bootstrap.js and other dependencies. See AbstractServlet
-            scriptBootstrap(out);
+            addBootStrapFunctionality(out);
             out.println("</body>");
             out.println("</html>");
-        } catch (NoSuchAlgorithmException | SQLException | InvalidKeySpecException | InterruptedException e) {
+        } catch (NoSuchAlgorithmException | SQLException | InvalidKeySpecException e) {
             e.printStackTrace();
         }
     }
