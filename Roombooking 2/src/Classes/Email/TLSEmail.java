@@ -58,10 +58,7 @@ public class TLSEmail {
         };
         //gets the host,port, Sender EmailID and password
         getSession(props,auth);
-        //EmailUtil emailUtil = new EmailUtil();
-        //Sends Email by taking: Sender EmailID, password, port
-        //emailUtil.sendEmail(session, toEmail, "Welcome to roombooking", "Velkommen til roombooking");
-        //return session;
+        //returns the email session to prepare for sending;
         return getSession(props,auth);
     }
 
