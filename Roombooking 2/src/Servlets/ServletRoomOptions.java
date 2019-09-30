@@ -1,5 +1,6 @@
 package Servlets;
 
+import Classes.Order;
 import Classes.Rooms.AbstractRoom;
 import Classes.Rooms.Grouproom;
 import Tools.DbFunctionality;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.ParseException;
 
 /**
  * Author Hanne, Henriette, Hedda, Trym, Brisdalen
@@ -76,15 +78,27 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 servletContext.getRequestDispatcher("/profile.html").forward(request,response);
 
             } else if(action.contains("reserve")) {
+                System.out.println("Reserve started");
+                String formRoomID = request.getParameter("Reserve_Room_ID");
+                int roomId = Integer.parseInt(formRoomID);
+                String timestampStart = request.getParameter("Reserve_Timestamp_start");
+                String timestampEnd = request.getParameter("Reserve_Timestamp_end");
+
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
-                //todo add reservation.. and order generation
+                DbFunctionality dbFunctionality = new DbFunctionality();
+
+                // TODO ADD AUTOMATIC ORDERID AND USERID
+                Order order = new Order(1,1, roomId, timestampStart, timestampEnd);
+                dbFunctionality.addOrder(order, connection);
             }
 
             scriptBootstrap(out);
             out.print("</body>");
             out.print("</html>");
         } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
             e.printStackTrace();
         }
     }
