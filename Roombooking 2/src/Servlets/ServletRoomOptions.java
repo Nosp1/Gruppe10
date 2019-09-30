@@ -1,8 +1,8 @@
 package Servlets;
 
-import Classes.AbstractRoom;
-import Classes.Grouproom;
 import Classes.Order;
+import Classes.Rooms.AbstractRoom;
+import Classes.Rooms.Grouproom;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 
@@ -78,17 +78,25 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 servletContext.getRequestDispatcher("/profile.html").forward(request,response);
 
             } else if(action.contains("reserve")) {
+                System.out.println("reserve room started");
                 int roomId = Integer.parseInt(request.getParameter("Reserve_RoomId"));
                 Timestamp timestampStart = Timestamp.valueOf(request.getParameter("Reserve_startTime"));
-                Timestamp timeestampEnd = Timestamp.valueOf(request.getParameter("Reserve_endTime"));
+                System.out.println(timestampStart);
+                Timestamp timestampEnd = Timestamp.valueOf(request.getParameter("Reserve_endTime"));
+                System.out.println(timestampEnd);
 
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
 
                 // TODO ADD AUTOMATIC ORDERID AND USERID
-                Order order = new Order(1,1, roomId, timestampStart, timeestampEnd);
+                Order order = new Order(1,1, roomId, timestampStart, timestampEnd);
                 dbFunctionality.addOrder(order, connection);
+
+                out.println(order.getID());
+                out.println(order.getTimestampStart());
+                out.println(order.getTimestampEnd());
+
             }
 
             scriptBootstrap(out);
