@@ -1,5 +1,6 @@
 package Servlets;
 
+import Classes.Order;
 import Classes.Rooms.AbstractRoom;
 import Classes.Rooms.Grouproom;
 import Tools.DbFunctionality;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.ParseException;
 
 
 /**
@@ -106,7 +108,7 @@ public class ServletRoomOptions extends AbstractPostServlet {
             addBootStrapFunctionality(out);
             out.print("</body>");
             out.print("</html>");
-        } catch (SQLException e) {
+        } catch (SQLException | ParseException e) {
             e.printStackTrace();
         }
     }
