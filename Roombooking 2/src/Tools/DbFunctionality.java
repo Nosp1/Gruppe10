@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.*;
+import java.text.ParseException;
 
 
 /**
@@ -89,7 +90,7 @@ public class DbFunctionality {
             insertNewUser.setString(3, user.getUserName());
             insertNewUser.setString(4, user.getDob());
             /* We create a hashed version of the password instead of storing the actual password in the database.
-            This is to make it impossible to retrieve your password from the database.  */
+            This is to make it impossible to retrieve your password from the database. */
             String hashing = passwordHashAndCheck.stringToSaltedHash(user.getPassword());
             // The whole string is stored in the database as "<salt>:<hash-code>"
             insertNewUser.setString(5, hashing);
@@ -246,6 +247,7 @@ public class DbFunctionality {
      */
     public void addOrder(Order order, Connection connection) throws SQLException {
         PreparedStatement insertNewOrder;
+        System.out.println("addOrder started");
 
         String ins = "insert into `order` (Order_ID, User_ID, Room_ID, Timestamp_start, Timestamp_end) VALUES (?,?,?,?,?)";
         insertNewOrder = connection.prepareStatement(ins);
@@ -265,7 +267,7 @@ public class DbFunctionality {
      * @return An Order object representing an entry in the Order table of the database
      * @throws SQLException
      */
-    public Order getOrder(int requestedOrderID, Connection connection) throws SQLException {
+    public Order getOrder(int requestedOrderID, Connection connection) throws SQLException, ParseException {
         PreparedStatement selectRoom;
         // Select the Order from the Order table with the corresponding Order_ID
         String select = "select * from `Order` where Order_ID = ?";

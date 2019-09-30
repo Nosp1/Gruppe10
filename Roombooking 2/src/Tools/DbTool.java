@@ -34,7 +34,7 @@ public class DbTool {
         // dbLogIn without PrintWriter, used for testing
         connection = null;
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/roombooking?autoReconnect=true&useSSL=false", "root", "dennIS93");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/roombooking?autoReconnect=true&useSSL=false", "root", "toor");
         } catch (SQLException e) {
             e.printStackTrace();
         }

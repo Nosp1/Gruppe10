@@ -15,7 +15,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.sql.Timestamp;
+
 
 /**
  * Author Hanne, Henriette, Hedda, Trym, Brisdalen
@@ -78,14 +80,11 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 servletContext.getRequestDispatcher("/profile.html").forward(request,response);
 
             } else if(action.contains("reserve")) {
-                System.out.println("reserve room started");
+                System.out.println("Reserve started");
                 String formRoomID = request.getParameter("Reserve_Room_ID");
                 int roomId = Integer.parseInt(formRoomID);
-                System.out.println(roomId);
-                Timestamp timestampStart = Timestamp.valueOf(request.getParameter("Reserve_timestamp_start"));
-                System.out.println(timestampStart);
-                Timestamp timestampEnd = Timestamp.valueOf(request.getParameter("Reserve_timestamp_end"));
-                System.out.println(timestampEnd);
+                String timestampStart = request.getParameter("Reserve_Timestamp_start");
+                String timestampEnd = request.getParameter("Reserve_Timestamp_end");
 
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
@@ -94,17 +93,15 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 // TODO ADD AUTOMATIC ORDERID AND USERID
                 Order order = new Order(1,1, roomId, timestampStart, timestampEnd);
                 dbFunctionality.addOrder(order, connection);
-
-                out.println(order.getID());
-                out.println(order.getTimestampStart());
-                out.println(order.getTimestampEnd());
-
+             
             }
 
             scriptBootstrap(out);
             out.print("</body>");
             out.print("</html>");
         } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
             e.printStackTrace();
         }
     }
