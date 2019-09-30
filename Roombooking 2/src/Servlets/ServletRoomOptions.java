@@ -51,9 +51,10 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 // TODO: Bruker kun grupperom typen for nå
                 //Adds the room to the database
                 dbFunctionality.addRoom(room, connection);
-                //TODO: legg til annen knapp for å forbli logget inn.
+                //TODO: Kanskje legge til if statement som
+                // dispatcher deg tilbake til loggedin istedenfor knapp? for mer flytt og mindre klikks
                 //prints return button.
-                addHomeButton(out);
+                addHomeLoggedInButton(out);
 
             // TODO: Lag HTML side med action som fjerner et rom
             } else if(action.contains("delete")) {
@@ -65,13 +66,14 @@ public class ServletRoomOptions extends AbstractPostServlet {
 
                 dbFunctionality.deleteRoom(roomID, connection);
 
-                addHomeButton(out);
+                addHomeLoggedInButton(out);
 
             } else if(action.contains("show")) {
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
                 dbFunctionality.printRooms(out, connection);
+                addHomeLoggedInButton(out);
 
 
             } else if (action.contains("gotoprofile")) {
@@ -79,6 +81,7 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 servletContext.getRequestDispatcher("/profile.html").forward(request,response);
 
             } else if(action.contains("reserve")) {
+                //TODO remove souts.
                 System.out.println("Reserve started");
                 String formRoomID = request.getParameter("Reserve_Room_ID");
                 int roomId = Integer.parseInt(formRoomID);
@@ -93,17 +96,18 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 DbFunctionality dbFunctionality = new DbFunctionality();
 
                 System.out.println("Attempting to create JAVA Order object");
-                // TODO: Her kommer vi oss ikke videre i koden -> fix it
+                // TODO: Her kommer vi oss ikke videre i koden -> fix it ref hvem?
                 // TODO ADD AUTOMATIC ORDERID AND USERID
                 int orderID = dbFunctionality.getOrderID(connection);
-                Order order = new Order(orderID ,5, roomId, timestampStart, timestampEnd);
+                Order order = new Order(orderID ,6, roomId, timestampStart, timestampEnd);
                 System.out.println("Created room: ");
                 System.out.println(order.toString());
                 dbFunctionality.addOrder(order, connection);
+                //todo add epost.
              
             }
 
-            scriptBootstrap(out);
+            addBootStrapFunctionality(out);
             out.print("</body>");
             out.print("</html>");
         } catch (SQLException e) {

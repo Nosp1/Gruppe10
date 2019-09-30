@@ -69,7 +69,7 @@ public class ServletLogin extends AbstractServlet {
 
             }
             //prints script to establish connection between bootstrap and html
-            scriptBootstrap(out);
+            addBootStrapFunctionality(out);
             out.print("</body>");
             out.print("</html>");
             //prints errors: if the database fails, if the password is wrong.
