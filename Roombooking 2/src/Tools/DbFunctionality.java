@@ -122,6 +122,7 @@ public class DbFunctionality {
         while (resultSet.next()) {
             out.print(resultSet.getString("Room_ID") + " : " + resultSet.getString("Room_building") + "<br>");
         }
+
     }
 
     public void addOrder(Order order, Connection connection) throws SQLException {
@@ -135,7 +136,9 @@ public class DbFunctionality {
         insertNewOrder.setTimestamp(4, order.getTimestampStart());
         insertNewOrder.setTimestamp(5, order.getTimestampEnd());
         insertNewOrder.execute();
+        // TODO ADD RECIEPT METHOD
     }
+
 
     public Order getOrder(int requestedOrderID, Connection connection) throws SQLException {
         PreparedStatement selectRoom;

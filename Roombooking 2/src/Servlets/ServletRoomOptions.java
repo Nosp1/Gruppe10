@@ -2,6 +2,7 @@ package Servlets;
 
 import Classes.AbstractRoom;
 import Classes.Grouproom;
+import Classes.Order;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 @WebServlet(name = "Servlets.ServletRoomOptions", urlPatterns = {"/Servlets.ServletRoomOptions"})
 public class ServletRoomOptions extends AbstractPostServlet {
@@ -58,11 +60,17 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 dbFunctionality.printRooms(out, connection);
 
             } else if(action.contains("reserve")) {
+                int roomId = Integer.parseInt(request.getParameter("Reserve_RoomId"));
+                Timestamp timestampStart = Timestamp.valueOf(request.getParameter("Reserve_startTime"));
+                Timestamp timeestampEnd = Timestamp.valueOf(request.getParameter("Reserve_endTime"));
+
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
-                
+                DbFunctionality dbFunctionality = new DbFunctionality();
 
-
+                // TODO ADD AUTOMATIC ORDERID AND USERID
+                Order order = new Order(1,1, roomId, timestampStart, timeestampEnd);
+                dbFunctionality.addOrder(order, connection);
             }
 
             scriptBootstrap(out);
