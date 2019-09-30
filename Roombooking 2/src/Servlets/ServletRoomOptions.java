@@ -16,7 +16,6 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.sql.Timestamp;
 
 
 /**
@@ -93,8 +92,13 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
 
+                System.out.println("Attempting to create JAVA Order object");
+                // TODO: Her kommer vi oss ikke videre i koden -> fix it
                 // TODO ADD AUTOMATIC ORDERID AND USERID
-                Order order = new Order(1,1, roomId, timestampStart, timestampEnd);
+                int orderID = dbFunctionality.getOrderID(connection);
+                Order order = new Order(orderID ,5, roomId, timestampStart, timestampEnd);
+                System.out.println("Created room: ");
+                System.out.println(order.toString());
                 dbFunctionality.addOrder(order, connection);
              
             }

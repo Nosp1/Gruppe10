@@ -249,13 +249,12 @@ public class DbFunctionality {
         PreparedStatement insertNewOrder;
         System.out.println("addOrder started");
 
-        String ins = "insert into `order` (Order_ID, User_ID, Room_ID, Timestamp_start, Timestamp_end) VALUES (?,?,?,?,?)";
+        String ins = "insert into `order` (User_ID, Room_ID, Timestamp_start, Timestamp_end) VALUES (?,?,?,?)";
         insertNewOrder = connection.prepareStatement(ins);
-        insertNewOrder.setInt(1, order.getID());
-        insertNewOrder.setInt(2, order.getUserID());
-        insertNewOrder.setInt(3, order.getRoomID());
-        insertNewOrder.setTimestamp(4, order.getTimestampStart());
-        insertNewOrder.setTimestamp(5, order.getTimestampEnd());
+        insertNewOrder.setInt(1, order.getUserID());
+        insertNewOrder.setInt(2, order.getRoomID());
+        insertNewOrder.setTimestamp(3, order.getTimestampStart());
+        insertNewOrder.setTimestamp(4, order.getTimestampEnd());
         insertNewOrder.execute();
         // TODO ADD RECIEPT METHOD
     }
@@ -308,4 +307,16 @@ public class DbFunctionality {
         return result == 1;
     }
 
+    public int getOrderID(Connection connection) throws SQLException {
+        PreparedStatement selectOrderID;
+        String select = "select Order_ID from `order`";
+        selectOrderID = connection.prepareStatement(select);
+        ResultSet resultSet = selectOrderID.executeQuery();
+
+        while(resultSet.next()) {
+            return resultSet.getInt("Order_ID");
+        }
+
+        return 1;
+    }
 }
