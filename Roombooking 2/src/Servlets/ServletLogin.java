@@ -6,7 +6,6 @@ import Tools.DbTool;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -33,10 +32,11 @@ public class ServletLogin extends AbstractServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
+            System.out.println("Login attempt started");
             //prints start of html tags.
             printNav(out);
             //gets the username -> email in this case.
-            String userName = request.getParameter("username").toLowerCase();
+            String userName = request.getParameter("loginemail").toLowerCase();
             String lowercaseUsername = userName.toLowerCase();
             //gets the users password.
             String password = request.getParameter("loginpassword");

@@ -36,10 +36,15 @@ public class Order {
      */
     public Order(int id, int userID, int roomID, String timestampStart, String timestampEnd) throws ParseException {
         this.id = id;
+        System.out.println(id);
         this.userID = userID;
+        System.out.println(userID);
         this.roomID = roomID;
+        System.out.println(roomID);
         this.timestampStart = getTimestampFromString(timestampStart);
+        System.out.println(this.timestampStart.toString());
         this.timestampEnd = getTimestampFromString(timestampEnd);
+        System.out.println(this.timestampEnd.toString());
     }
 
     /**
@@ -51,6 +56,7 @@ public class Order {
      * @param timestampEnd The date and time of the requested booking's end.
      */
     public Order(int id, int userID, int roomID, Timestamp timestampStart, Timestamp timestampEnd) throws ParseException {
+        System.out.println("C3");
         this.id = id;
         this.userID = userID;
         this.roomID = roomID;
@@ -72,7 +78,9 @@ public class Order {
     }
 
     private Timestamp getTimestampFromString(String input) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyyTHH:mm");
+        System.out.println("getTimestamp called with: " + input);
+        input = input.replace("T", " ");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         Date output = sdf.parse(input);
         return new Timestamp(output.getTime());
     }
