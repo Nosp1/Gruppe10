@@ -236,6 +236,7 @@ public class DbFunctionality {
             // and print the Room name and building of the current result.
             out.print(resultSet.getString("Room_name") + " : " + resultSet.getString("Room_building") + "<br>");
         }
+
     }
 
     /**
@@ -256,6 +257,7 @@ public class DbFunctionality {
         insertNewOrder.setTimestamp(4, order.getTimestampStart());
         insertNewOrder.setTimestamp(5, order.getTimestampEnd());
         insertNewOrder.execute();
+        // TODO ADD RECIEPT METHOD
     }
 
     /**

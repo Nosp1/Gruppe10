@@ -16,6 +16,8 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.sql.Timestamp;
+
 
 /**
  * Author Hanne, Henriette, Hedda, Trym, Brisdalen
@@ -91,6 +93,7 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 // TODO ADD AUTOMATIC ORDERID AND USERID
                 Order order = new Order(1,1, roomId, timestampStart, timestampEnd);
                 dbFunctionality.addOrder(order, connection);
+             
             }
 
             scriptBootstrap(out);
