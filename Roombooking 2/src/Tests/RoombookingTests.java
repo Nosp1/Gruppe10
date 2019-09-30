@@ -35,7 +35,7 @@ public class RoombookingTests {
     String testRoomName = "TEST001";
 
     int testOrderID = 1;
-    int testUserID = 5;
+    int testUserID = 4;
     int testRoomID = 1;
     // 2019-09-25 16:00:00
     String testTimestampStart = "26-09-2019 16:00";
