@@ -21,10 +21,12 @@
     background-size: 100%;
 
 }
+
 background-image {
     opacity: 0.5;
     filter: alpha(opacity=50); /* For IE8 and earlier */
 }
+
 .navbar-brand {
     background: linear-gradient(to top left, #ffffcc 0%, #ff9933 100%) fixed;
 }
@@ -65,11 +67,12 @@ input {
 .btn-default {
     background-color: orange;
 }
-
-
-
-
-
+.btn-success {
+    background-color:orange;
+}
+.btn-success:hover {
+    background-color: rgba(174,39,5,0.38);
+}
 
 #collapseExample input {
     width: 100%;
