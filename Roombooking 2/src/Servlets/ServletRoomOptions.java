@@ -79,10 +79,12 @@ public class ServletRoomOptions extends AbstractPostServlet {
 
             } else if(action.contains("reserve")) {
                 System.out.println("reserve room started");
-                int roomId = Integer.parseInt(request.getParameter("Reserve_RoomId"));
-                Timestamp timestampStart = Timestamp.valueOf(request.getParameter("Reserve_startTime"));
+                String formRoomID = request.getParameter("Reserve_Room_ID");
+                int roomId = Integer.parseInt(formRoomID);
+                System.out.println(roomId);
+                Timestamp timestampStart = Timestamp.valueOf(request.getParameter("Reserve_timestamp_start"));
                 System.out.println(timestampStart);
-                Timestamp timestampEnd = Timestamp.valueOf(request.getParameter("Reserve_endTime"));
+                Timestamp timestampEnd = Timestamp.valueOf(request.getParameter("Reserve_timestamp_end"));
                 System.out.println(timestampEnd);
 
                 DbTool dbTool = new DbTool();
