@@ -1,6 +1,5 @@
 package Servlets;
 
-import Classes.Order;
 import Classes.Rooms.AbstractRoom;
 import Classes.Rooms.Grouproom;
 import Tools.DbFunctionality;
@@ -15,7 +14,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.text.ParseException;
 
 
 /**
@@ -73,42 +71,16 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 DbFunctionality dbFunctionality = new DbFunctionality();
                 dbFunctionality.printRooms(out, connection);
 
-
             } else if (action.contains("gotoprofile")) {
                 ServletContext servletContext = getServletContext();
                 servletContext.getRequestDispatcher("/profile.html").forward(request,response);
 
-            } else if(action.contains("reserve")) {
-                System.out.println("Reserve started");
-                String formRoomID = request.getParameter("Reserve_Room_ID");
-                int roomId = Integer.parseInt(formRoomID);
-                System.out.println(roomId);
-                String timestampStart = request.getParameter("Reserve_timestamp_start");
-                System.out.println(timestampStart);
-                String timestampEnd = request.getParameter("Reserve_timestamp_end");
-                System.out.println(timestampEnd);
-
-                DbTool dbTool = new DbTool();
-                Connection connection = dbTool.dbLogIn(out);
-                DbFunctionality dbFunctionality = new DbFunctionality();
-
-                System.out.println("Attempting to create JAVA Order object");
-                // TODO: Her kommer vi oss ikke videre i koden -> fix it
-                // TODO ADD AUTOMATIC ORDERID AND USERID
-                int orderID = dbFunctionality.getOrderID(connection);
-                Order order = new Order(orderID ,5, roomId, timestampStart, timestampEnd);
-                System.out.println("Created room: ");
-                System.out.println(order.toString());
-                dbFunctionality.addOrder(order, connection);
-             
             }
 
             scriptBootstrap(out);
             out.print("</body>");
             out.print("</html>");
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
             e.printStackTrace();
         }
     }
