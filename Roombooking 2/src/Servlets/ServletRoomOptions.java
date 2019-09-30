@@ -1,6 +1,5 @@
 package Servlets;
 
-import Classes.Order;
 import Classes.Rooms.AbstractRoom;
 import Classes.Rooms.Grouproom;
 import Tools.DbFunctionality;
@@ -15,7 +14,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.text.ParseException;
 
 
 /**
@@ -75,7 +73,6 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 dbFunctionality.printRooms(out, connection);
                 addHomeLoggedInButton(out);
 
-
             } else if (action.contains("gotoprofile")) {
                 ServletContext servletContext = getServletContext();
                 servletContext.getRequestDispatcher("/profile.html").forward(request,response);
@@ -104,15 +101,12 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 System.out.println(order.toString());
                 dbFunctionality.addOrder(order, connection);
                 //todo add epost.
-             
             }
 
             addBootStrapFunctionality(out);
             out.print("</body>");
             out.print("</html>");
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
             e.printStackTrace();
         }
     }

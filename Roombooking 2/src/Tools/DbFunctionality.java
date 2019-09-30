@@ -1,8 +1,8 @@
 package Tools;
 
-import Classes.Rooms.AbstractRoom;
 import Classes.Email.TLSEmail;
 import Classes.Order;
+import Classes.Rooms.AbstractRoom;
 import Classes.User.AbstractUser;
 import Passwords.PasswordHashAndCheck;
 
@@ -267,13 +267,13 @@ public class DbFunctionality {
      * @throws SQLException
      */
     public Order getOrder(int requestedOrderID, Connection connection) throws SQLException, ParseException {
-        PreparedStatement selectRoom;
+        PreparedStatement selectOrder;
         // Select the Order from the Order table with the corresponding Order_ID
-        String select = "select * from `Order` where Order_ID = ?";
-        selectRoom = connection.prepareStatement(select);
-        selectRoom.setInt(1, requestedOrderID);
+        String select = "select * from `order` where Order_ID = ?";
+        selectOrder = connection.prepareStatement(select);
+        selectOrder.setInt(1, requestedOrderID);
         // and store it in a ResultSet.
-        ResultSet resultSet = selectRoom.executeQuery();
+        ResultSet resultSet = selectOrder.executeQuery();
 
         // The resultSet's pointer starts at "nothing", so move it to the next (first, and only) element.
         resultSet.next();
@@ -285,6 +285,16 @@ public class DbFunctionality {
         Timestamp timestampEnd = resultSet.getTimestamp("Timestamp_end");
         // and return a new Order object with these variables.
         return new Order(orderID, userID, roomID, timestampStart, timestampEnd);
+    }
+
+    public ResultSet getOrdersFromRoom(int roomID, Connection connection) throws SQLException {
+        PreparedStatement selectOrders;
+        // TODO: Finne ut av hvordan jeg skal selecte visse Orders fra et bestemt rom.
+        String select = "select Timestamp_start, Timestamp_end from `order`" +
+                          " inner join rooms" +
+                          " on `order`.Room_ID = rooms.Room_ID";
+        selectOrders = connection.prepareStatement(select);
+        return selectOrders.executeQuery();
     }
 
     /**
