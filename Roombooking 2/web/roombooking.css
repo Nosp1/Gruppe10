@@ -17,15 +17,18 @@
     color: rgb(248, 232, 232);
     text-shadow: 10px, #ff9558;
 
-    background-image: url("https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80");
+    background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url("https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80");
     background-size: 100%;
 
 }
 
-
+background-image {
+    opacity: 0.5;
+    filter: alpha(opacity=50); /* For IE8 and earlier */
+}
 
 .navbar-brand {
-    background: #f9e6bd;
+    background: linear-gradient(to top left, #ffffcc 0%, #ff9933 100%) fixed;
 }
 
 body {
@@ -33,6 +36,16 @@ body {
 
     text-align: center;
 }
+body {
+    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: white;
+    background-color: #fff;
+
+}
+
+
 #collapseExample {
     color: white;
 }
@@ -66,7 +79,16 @@ input {
     clear: both;
 }
 
+.navbar-default {
+    background: linear-gradient(to top left, #ffffcc 0%, #ff9933 100%) fixed;
 
+}
 
+.navbar{
+
+    font-weight: 530;
+    text-decoration-color: #000000;
+    text-
+}
 
 
