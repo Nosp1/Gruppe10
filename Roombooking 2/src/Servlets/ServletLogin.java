@@ -36,7 +36,7 @@ public class ServletLogin extends AbstractServlet {
             //prints start of html tags.
             printNav(out);
             //gets the username -> email in this case.
-            String userName = request.getParameter("username").toLowerCase();
+            String userName = request.getParameter("loginemail").toLowerCase();
             String lowercaseUsername = userName.toLowerCase();
             //gets the users password.
             String password = request.getParameter("loginpassword");
