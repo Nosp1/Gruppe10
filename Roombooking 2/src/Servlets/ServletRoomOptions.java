@@ -36,7 +36,7 @@ public class ServletRoomOptions extends AbstractPostServlet {
             //retrieves the value of button Add Room
             String action = request.getParameter("action").toLowerCase();
 
-            if(action.contains("add")) {
+            if (action.contains("add")) {
                 //retrieves the data in the text-box Add RoomID
                 int roomID = Integer.parseInt(request.getParameter("Add_roomID"));
                 //retrieves the Room name from the text-box Room Name
@@ -60,8 +60,8 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 //prints return button.
                 addHomeLoggedInButton(out);
 
-            // TODO: Lag HTML side med action som fjerner et rom
-            } else if(action.contains("delete")) {
+                // TODO: Lag HTML side med action som fjerner et rom
+            } else if (action.contains("delete")) {
                 //retrieves the
                 int roomID = Integer.parseInt(request.getParameter("Delete_roomID"));
                 DbTool dbTool = new DbTool();
@@ -72,7 +72,7 @@ public class ServletRoomOptions extends AbstractPostServlet {
 
                 addHomeLoggedInButton(out);
 
-            } else if(action.contains("show")) {
+            } else if (action.contains("show")) {
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
@@ -81,49 +81,15 @@ public class ServletRoomOptions extends AbstractPostServlet {
 
             } else if (action.contains("gotoprofile")) {
                 ServletContext servletContext = getServletContext();
-                servletContext.getRequestDispatcher("/profile.html").forward(request,response);
-
-            } else if(action.contains("reserve")) {
-                //TODO remove souts.
-                System.out.println("Reserve started");
-                String formRoomID = request.getParameter("Reserve_Room_ID");
-                int roomId = Integer.parseInt(formRoomID);
-                System.out.println(roomId);
-                String timestampStart = request.getParameter("Reserve_timestamp_start");
-                System.out.println(timestampStart);
-                String timestampEnd = request.getParameter("Reserve_timestamp_end");
-                System.out.println(timestampEnd);
-
-                DbTool dbTool = new DbTool();
-                Connection connection = dbTool.dbLogIn(out);
-                DbFunctionality dbFunctionality = new DbFunctionality();
-
-                System.out.println("Attempting to create JAVA Order object");
-                // TODO: Her kommer vi oss ikke videre i koden -> fix it ref hvem?
-                // TODO ADD AUTOMATIC ORDERID AND USERID
-                int orderID = dbFunctionality.getOrderID(connection);
-                Order order = new Order(orderID ,6, roomId, timestampStart, timestampEnd);
-                System.out.println("Created room: ");
-                System.out.println(order.toString());
-                dbFunctionality.addOrder(order, connection);
-                //todo add epost.
-                TLSEmail tlsEmail = new TLSEmail();
-                //TODO create db method to retrieve epost with userID from db.
-                //Todo: need to get roomName from Db and parse into email not id.
-                Session session = tlsEmail.NoReplyEmail("trymerlend@hotmail.no");
-                EmailUtil confirmationEmail = new EmailUtil();
-                String receipt = EmailTemplates.getBookingReceipt();
-                String body = EmailTemplates.bookingConfirmation("Trym",order);
-                confirmationEmail.sendEmail(session,"trymerlend@hotmail.no",receipt,body);
+                servletContext.getRequestDispatcher("/profile.html").forward(request, response);
 
             }
 
             addBootStrapFunctionality(out);
             out.print("</body>");
             out.print("</html>");
-        } catch (SQLException | ParseException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
 }

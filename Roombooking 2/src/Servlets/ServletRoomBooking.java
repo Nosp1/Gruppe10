@@ -48,12 +48,6 @@ public class ServletRoomBooking extends AbstractPostServlet {
                 System.out.println(order.toString());
                 TLSEmail tlsEmail = new TLSEmail();
                 //TODO create db method to retrieve epost with userID from db.
-                Session session = tlsEmail.NoReplyEmail("trymerlend@hotmail.no");
-                EmailUtil confirmationEmail = new EmailUtil();
-                String receipt = EmailTemplates.getBookingReceipt();
-                String body = EmailTemplates.bookingConfirmation("Trym",order);
-                confirmationEmail.sendEmail(session,"trymerlend@hotmail.no",receipt,body);
-                //todo hvorfor to steder med reserve?
                 /*
                 while(resultSet.next()) {
                     Timestamp t1 = resultSet.getTimestamp("Timestamp_start");
@@ -73,6 +67,11 @@ public class ServletRoomBooking extends AbstractPostServlet {
                 }
                  */
                 dbFunctionality.addOrder(order, connection);
+                Session session = tlsEmail.NoReplyEmail("trymerlend@hotmail.no");
+                EmailUtil confirmationEmail = new EmailUtil();
+                String receipt = EmailTemplates.getBookingReceipt();
+                String body = EmailTemplates.bookingConfirmation("Trym",order);
+                confirmationEmail.sendEmail(session,"trymerlend@hotmail.no",receipt,body);
             }
         } catch (SQLException | ParseException e) {
             e.printStackTrace();
