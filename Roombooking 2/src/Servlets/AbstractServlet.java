@@ -14,10 +14,8 @@ public abstract class AbstractServlet extends HttpServlet {
     /**
     * Method allows all children of  {@code AbstractServlet}
     to call the bootstrap.js ref and jquery for responsive Navbar.
-     * @param out
+     * @param out for printing html
      */
-    // TODO: Finnes det et mer forklarende metode-navn her?
-
     void addBootStrapFunctionality(PrintWriter out) {
         out.println("<script\n" +
                 "        src=\"https://code.jquery.com/jquery-3.4.1.js\"\n" +
