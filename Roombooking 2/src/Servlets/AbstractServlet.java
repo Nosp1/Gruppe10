@@ -35,7 +35,7 @@ public abstract class AbstractServlet extends HttpServlet {
     }
 
     /**
-     * Prints html button taht returns you to the logged in page.
+     * Prints html button that returns you to the logged in page.
      * //TODO: might need cookie to remember which session?
      * @param out to print html
      *

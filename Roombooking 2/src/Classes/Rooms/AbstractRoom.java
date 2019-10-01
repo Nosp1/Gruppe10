@@ -9,7 +9,7 @@ public abstract class AbstractRoom {
 
     protected int roomID; //TODO: Endre alle metoder som bruker gammel constructor
     protected String roomName;
-    protected String roomBuilding; //TODO: Trenger vi dette feltet?
+    protected String roomBuilding;
     protected RoomType roomType;
     protected int maxCapacity;
 
