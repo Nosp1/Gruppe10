@@ -69,6 +69,7 @@ public class Servlet extends AbstractPostServlet {
                     dbFunctionality.addUser(newUser, connection);
                     out.println("<p> You have successfully registered</p>");
                     //Generates and sends a welcome email to the newly registered user
+                    //todo refactor into method?
                     TLSEmail tlsEmail = new TLSEmail();
                     //creates current email session & returns the session
                     Session session = tlsEmail.NoReplyEmail(newUser.getUserName());
