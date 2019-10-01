@@ -7,7 +7,7 @@ import Classes.RoomType;
  */
 public abstract class AbstractRoom {
 
-    protected int roomID; //TODO: Endre alle metoder som bruker gammel constructor
+    protected int roomID;
     protected String roomName;
     protected String roomBuilding;
     protected RoomType roomType;
