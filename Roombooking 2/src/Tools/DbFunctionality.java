@@ -286,13 +286,30 @@ public class DbFunctionality {
         return new Order(orderID, userID, roomID, timestampStart, timestampEnd);
     }
 
-    public ResultSet getOrdersFromRoom(int roomID, Connection connection) throws SQLException {
+    public ResultSet getAllOrdersFromRoom(int roomID, Connection connection) throws SQLException {
         PreparedStatement selectOrders;
-        // TODO: Finne ut av hvordan jeg skal selecte visse Orders fra et bestemt rom.
-        String select = "select Timestamp_start, Timestamp_end from `order`" +
-                          " inner join rooms" +
-                          " on `order`.Room_ID = rooms.Room_ID";
+        String select = "select Order_ID, Timestamp_start, Timestamp_end from `order`\n" +
+                "  inner join rooms\n" +
+                "  on `order`.Room_ID = rooms.Room_ID\n" +
+                "  where `order`.Room_ID = ?";
         selectOrders = connection.prepareStatement(select);
+        selectOrders.setInt(1, roomID);
+        return selectOrders.executeQuery();
+    }
+
+    public ResultSet getOrdersFromRoom(int roomID, String date, Connection connection) throws SQLException, ParseException {
+        // TODO: date burde kunne ta inn et timestamp, og strings formatert som "yyyy-mm-dd hh:ss" og "yyyy-mm-dd"
+        System.out.println("Room_ID recieved: " + roomID);
+        System.out.println("Date as String recieved: " + date);
+        PreparedStatement selectOrders;
+        String select = "select Order_ID, Timestamp_start, Timestamp_end from `order`\n" +
+                "  inner join rooms\n" +
+                "  on `order`.Room_ID = rooms.Room_ID\n" +
+                "  where DATE(`order`.Timestamp_start) like ?\n" +
+                "  and `order`.Room_ID = ?";
+        selectOrders = connection.prepareStatement(select);
+        selectOrders.setString(1, date);
+        selectOrders.setInt(2, roomID);
         return selectOrders.executeQuery();
     }
 

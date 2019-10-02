@@ -1,9 +1,9 @@
 package Classes;
 
+import Tools.TimeUtility;
+
 import java.sql.Timestamp;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class Order {
 
@@ -92,10 +92,7 @@ public class Order {
      * @throws ParseException
      */
     private static Timestamp getTimestampFromString(String input) throws ParseException {
-        input = input.replace("T", " ");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        Date output = sdf.parse(input);
-        return new Timestamp(output.getTime());
+        return TimeUtility.getTimestampFromString(input);
     }
 
     @Override

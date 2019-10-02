@@ -36,7 +36,7 @@ public class RoombookingTests {
 
     int testOrderID = 1;
     int testUserID = 4;
-    int testRoomID = 1;
+    int testRoomID = 2;
     // 2019-09-25 16:00:00
     String testTimestampStart = "26-09-2019 16:00";
     // 2019-09-25 18:00:00
@@ -139,10 +139,10 @@ public class RoombookingTests {
                         try {
                         /* ----- Testing order.intersects() -----
                         Add new Orders, 16-18, 15-17, 17-19 and 10-12 */
-                            dbFunctionality.addOrder(new Order(2, testUserID, 1, "26-09-2019 16:00", "26-09-2019 18:00"), testConnection);
-                            dbFunctionality.addOrder(new Order(3, testUserID, 1, "26-09-2019 15:00", "26-09-2019 17:00"), testConnection);
-                            dbFunctionality.addOrder(new Order(4, testUserID, 1, "26-09-2019 17:00", "26-09-2019 19:00"), testConnection);
-                            dbFunctionality.addOrder(new Order(5, testUserID, 1, "26-09-2019 10:00", "26-09-2019 12:00"), testConnection);
+                            dbFunctionality.addOrder(new Order(2, testUserID, 1, "2019-09-26 16:00", "2019-09-26 18:00"), testConnection);
+                            dbFunctionality.addOrder(new Order(3, testUserID, 1, "2019-09-26 15:00", "2019-09-26 17:00"), testConnection);
+                            dbFunctionality.addOrder(new Order(4, testUserID, 1, "2019-09-26 17:00", "2019-09-26 19:00"), testConnection);
+                            dbFunctionality.addOrder(new Order(5, testUserID, 1, "2019-09-26 10:00", "2019-09-26 12:00"), testConnection);
 
                             System.out.println(dbFunctionality.getOrder(2, testConnection).toString() + "\n");
                             System.out.println(dbFunctionality.getOrder(3, testConnection).toString() + "\n");
@@ -213,6 +213,39 @@ public class RoombookingTests {
                     e.printStackTrace();
                 }
             }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testGetAllOrdersFromRoom() {
+        String testTimestampStart2 = "2019-01-01 16:00:00";
+        String testTimestampEnd2 = "2019-01-01 18:00:00";
+
+        try {
+            ResultSet resultSet = dbFunctionality.getAllOrdersFromRoom(1, testConnection);
+
+            while(resultSet.next()) {
+                System.out.println(resultSet.getString("Order_ID") + ": " + resultSet.getTimestamp("Timestamp_start") + " - " + resultSet.getTimestamp("Timestamp_end"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testGetOrdersFromRoom() {
+        String testTimestampStart2 = "2019-01-01";
+
+        try {
+            ResultSet resultSet = dbFunctionality.getOrdersFromRoom(3, testTimestampStart2, testConnection);
+
+            while(resultSet.next()) {
+                System.out.println(resultSet.getString("Order_ID") + ": " + resultSet.getTimestamp("Timestamp_start") + " - " + resultSet.getTimestamp("Timestamp_end"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         } catch (ParseException e) {
             e.printStackTrace();
         }
