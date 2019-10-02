@@ -53,18 +53,13 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 // dispatcher deg tilbake til loggedin istedenfor knapp? for mer flytt og mindre klikks
                 //prints return button.
                 addHomeLoggedInButton(out);
-
-                // TODO: Lag HTML side med action som fjerner et rom
             } else if (action.contains("delete")) {
                 // Disse klassene trengs
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
-                //Retrieve the roomID from the HTML form
-                int roomID = Integer.parseInt(request.getParameter("Delete_roomID"));
-
+                //todo add boolean statement to confirm deletion.
                 dbFunctionality.deleteRoom(roomID, connection);
-
                 addHomeLoggedInButton(out);
 
             } else if (action.contains("show")) {

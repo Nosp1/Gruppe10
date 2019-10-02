@@ -106,7 +106,6 @@ public class DbFunctionality {
     }
 
     /**
-     * TODO: Refactor to use the User object
      * @param userEmail  The user's attempted login email
      * @param password   The user's attempted password
      * @param connection The Connection object with the connection to the database

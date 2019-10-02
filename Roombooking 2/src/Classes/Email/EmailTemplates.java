@@ -18,7 +18,7 @@ public class EmailTemplates {
         return  "Reservation number " + order.getID() + "\n" +
                 recipientEmailName + " you have successfully booked " + order.getRoomID() +
                 " from" + order.getTimestampStart() + " -- " + order.getTimestampEnd()
-                + "\n"  + "for any inquires regarding your order, please send us an email at \n" +
+                + "\n"  + "for any inquires regarding your order please send us an email at \n" +
                 "grproom@gmail.com with your order reservation number found in this email" + "\n" +
                 "\n " + "Kind Regards, \n" +
                 "The Roombooking Team";

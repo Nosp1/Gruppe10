@@ -14,10 +14,8 @@ public abstract class AbstractServlet extends HttpServlet {
     /**
     * Method allows all children of  {@code AbstractServlet}
     to call the bootstrap.js ref and jquery for responsive Navbar.
-     * @param out
+     * @param out for printing html
      */
-    // TODO: Finnes det et mer forklarende metode-navn her?
-
     void addBootStrapFunctionality(PrintWriter out) {
         out.println("<script\n" +
                 "        src=\"https://code.jquery.com/jquery-3.4.1.js\"\n" +
@@ -37,7 +35,7 @@ public abstract class AbstractServlet extends HttpServlet {
     }
 
     /**
-     * Prints html button taht returns you to the logged in page.
+     * Prints html button that returns you to the logged in page.
      * //TODO: might need cookie to remember which session?
      * @param out to print html
      *
