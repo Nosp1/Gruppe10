@@ -1,15 +1,10 @@
 package Servlets;
 
-import Classes.Email.EmailTemplates;
-import Classes.Email.EmailUtil;
-import Classes.Email.TLSEmail;
-import Classes.Order;
 import Classes.Rooms.AbstractRoom;
 import Classes.Rooms.Grouproom;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 
-import javax.mail.Session;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,7 +14,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.text.ParseException;
 
 
 /**
@@ -37,6 +31,10 @@ public class ServletRoomOptions extends AbstractPostServlet {
             String action = request.getParameter("action").toLowerCase();
 
             if (action.contains("add")) {
+                DbTool dbTool = new DbTool();
+                //establishes connection to database
+                Connection connection = dbTool.dbLogIn(out);
+                DbFunctionality dbFunctionality = new DbFunctionality();
                 //retrieves the data in the text-box Add RoomID
                 int roomID = Integer.parseInt(request.getParameter("Add_roomID"));
                 //retrieves the Room name from the text-box Room Name
@@ -46,11 +44,7 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 //retrieves the room capacity from the text-box Room Capacity
                 int maxCapacity = Integer.parseInt(request.getParameter("maxCapacity"));
 
-                DbTool dbTool = new DbTool();
-                //establishes connection to database
-                Connection connection = dbTool.dbLogIn(out);
-                DbFunctionality dbFunctionality = new DbFunctionality();
-                //
+                // Opprett et Grouproom objekt fra dataen hentet fra HTML formen
                 AbstractRoom room = new Grouproom(roomID, roomName, roomBuilding, maxCapacity);
                 // TODO: Bruker kun grupperom typen for nå
                 //Adds the room to the database
@@ -62,11 +56,12 @@ public class ServletRoomOptions extends AbstractPostServlet {
 
                 // TODO: Lag HTML side med action som fjerner et rom
             } else if (action.contains("delete")) {
-                //retrieves the
-                int roomID = Integer.parseInt(request.getParameter("Delete_roomID"));
+                // Disse klassene trengs
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
+                //Retrieve the roomID from the HTML form
+                int roomID = Integer.parseInt(request.getParameter("Delete_roomID"));
 
                 dbFunctionality.deleteRoom(roomID, connection);
 
@@ -76,6 +71,7 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
+
                 dbFunctionality.printRooms(out, connection);
                 addHomeLoggedInButton(out);
 
