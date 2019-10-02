@@ -218,6 +218,39 @@ public class RoombookingTests {
         }
     }
 
+    @Test
+    public void testGetAllOrdersFromRoom() {
+        String testTimestampStart2 = "2019-01-01 16:00:00";
+        String testTimestampEnd2 = "2019-01-01 18:00:00";
+
+        try {
+            ResultSet resultSet = dbFunctionality.getAllOrdersFromRoom(1, testConnection);
+
+            while(resultSet.next()) {
+                System.out.println(resultSet.getString("Order_ID") + ": " + resultSet.getTimestamp("Timestamp_start") + " - " + resultSet.getTimestamp("Timestamp_end"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testGetOrdersFromRoom() {
+        String testTimestampStart2 = "2019-01-01";
+
+        try {
+            ResultSet resultSet = dbFunctionality.getOrdersFromRoom(3, testTimestampStart2, testConnection);
+
+            while(resultSet.next()) {
+                System.out.println(resultSet.getString("Order_ID") + ": " + resultSet.getTimestamp("Timestamp_start") + " - " + resultSet.getTimestamp("Timestamp_end"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Ignore
     public void bookRoom() {
         // if(!intersects(testOrder1.intersects(testorder2)
