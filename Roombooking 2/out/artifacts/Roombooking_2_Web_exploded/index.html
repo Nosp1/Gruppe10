@@ -48,10 +48,8 @@
                 <button type="submit" class="btn btn-default">Submit</button>
             </form>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="https://www.google.com">User <span class="glyphicon glyphicon-user"
-                                                                aria-hidden="true"></span>
-                </a>
-                </li>
+                <!-- Todo: add ref to login   -->
+
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
@@ -72,21 +70,21 @@
 <div class="container">
     <div class="jumbotron">
         <h1 id="welcome" class="special-text">Welcome to Roombooking</h1>
-        <!-- Log in button that collapses class: #CollapseLogin -->
-        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseLogin" role="button"
+        <!-- Log in button that collapses class: #collapseLogin -->
+        <button class="btn btn-success btn-lg" id="jumbotronButton" data-toggle="collapse" href="#collapseLogin" role="button"
                 aria-expanded="false"
                 aria-controls="#collapseLogin">Login
         </button>
         <!--  Register button that collapses class: #CollapseLogin -->
 
-        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseExample" role="button"
+        <button class="btn btn-success btn-lg" id="jumbronButton2" data-toggle="collapse" href="#collapseExample" role="button"
                 aria-expanded="false" aria-controls="collapseExample">Register
         </button>
     </div>
 
 </div>
 
-
+<!-- Form for Register -->
 <div class="collapse container" id="collapseExample">
     <form action="./Servlets.Servlet" method="post">
         <h1>Register</h1>
@@ -134,19 +132,18 @@
         </div>
         <div>
             <input class="submit btn-default btn-lg" type="submit" name="action" value="Register">
-            <input class="submit btn-default btn lg" type="submit" name="action" value="Database">
         </div>
     </form>
 </div>
-<!-- testing  login function on same html Todo: add Navbar User glyphicon into AbstractServlet navbar -->
+<!-- login function on same html -->
 
 <div class="collapse container" id="collapseLogin">
     <form action="./Servlets.ServletLogin" method="post">
         <h1>Log in</h1>
 
         <div>
-            <label for="userName">Username</label>
-            <input type="text" id="userName" name="username">
+            <label for="loginemail">Email</label>
+            <input type="text" id="loginemail" name="loginemail">
         </div>
         <div>
             <label for="loginpassword">Password</label>
