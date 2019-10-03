@@ -8,6 +8,7 @@ public abstract class AbstractUser {
     /*
     fields
      */
+
     protected String firstName;
     protected String lastName;
     protected String userName;
