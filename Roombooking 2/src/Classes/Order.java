@@ -76,7 +76,7 @@ public class Order {
         /* returnerer true hvis 2 timestamps overlapper
          * ergo, vi ønske false for å booke noe
          */
-        return(comparison1 >= 0 && comparison2 >= 0);
+        return(comparison1 > 0 && comparison2 > 0);
     }
 
     public boolean intersects(Timestamp otherStart, Timestamp otherEnd) throws ParseException {
