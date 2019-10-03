@@ -34,13 +34,15 @@ public class RoombookingTests {
 
     String testRoomName = "TEST001";
 
-    int testOrderID = 1;
-    int testUserID = 11;
-    int testRoomID = 2;
+
+    int testOrderID = 30;
+    int testUserID = 5;
+    int testRoomID = 10;
+
     // 2019-09-25 16:00:00
-    String testTimestampStart = "26-09-2019 16:00";
+    String testTimestampStart = "2019-09-26 16:00";
     // 2019-09-25 18:00:00
-    String testTimestampEnd = "26-09-2019 18:00";
+    String testTimestampEnd = "2019-09-26 18:00";
     Order testOrder;
 
     @Before
