@@ -6,8 +6,10 @@ import Tools.DbTool;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
@@ -57,6 +59,8 @@ public class ServletLogin extends AbstractServlet {
                     out.print("<br>");
                     //redirects the user to the loggedIn.html
                     ServletContext servletContext = getServletContext();
+                    HttpSession session = request.getSession();
+                    session.setAttribute("userEmail",userName);
                     servletContext.getRequestDispatcher("/loggedIn.html").forward(request, response);
                     //if the login fails
                 } else {

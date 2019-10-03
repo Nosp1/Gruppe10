@@ -4,6 +4,7 @@ import Classes.Email.TLSEmail;
 import Classes.Order;
 import Classes.Rooms.AbstractRoom;
 import Classes.User.AbstractUser;
+import Classes.User.Student;
 import Passwords.PasswordHashAndCheck;
 
 import java.io.PrintWriter;
@@ -136,6 +137,22 @@ public class DbFunctionality {
         }
         // Return false if there are no elements in the ResultSet.
         return false;
+    }
+    public AbstractUser getUser (String requestedUserEmail, Connection connection ) throws SQLException {
+        PreparedStatement selectUser;
+        //select the User from the User table with the corresponding User_ID
+        String select = "select * from user where User_email = ?";
+        selectUser = connection.prepareStatement(select);
+        selectUser.setString(1,requestedUserEmail);
+        ResultSet resultSet = selectUser.executeQuery();
+        resultSet.next();
+        String firstName = resultSet.getString("User_firstName");
+        String lastName = resultSet.getString("User_lastName");
+        String userName = resultSet.getString("User_email");
+        String dob = resultSet.getNString("User_dob");
+        String password = resultSet.getString("User_password");
+
+        return new Student(firstName,lastName,userName,password,dob);
     }
 
     /**
@@ -303,6 +320,7 @@ public class DbFunctionality {
         // and return a new Order object with these variables.
         return new Order(orderID, userID, roomID, timestampStart, timestampEnd);
     }
+
 
     public ResultSet getAllOrdersFromRoom(int roomID, Connection connection) throws SQLException {
         PreparedStatement selectOrders;
