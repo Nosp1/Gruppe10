@@ -67,6 +67,8 @@ public class RoombookingTests {
 
             assertTrue(dbFunctionality.checkUser(testUserEmail, "1234", testConnection));
 
+            assertEquals(dbFunctionality.getUserId(testUserEmail,testConnection),testUserID);
+
         } catch (SQLException | InvalidKeySpecException | NoSuchAlgorithmException e) {
             e.printStackTrace();
         } finally {
