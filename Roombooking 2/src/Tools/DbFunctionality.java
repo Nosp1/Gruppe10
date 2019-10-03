@@ -139,6 +139,24 @@ public class DbFunctionality {
     }
 
     /**
+     *
+     * @param userEmail the users Email address
+     * @param connection connection to db
+     * @return userID as int.
+     * @throws SQLException
+     */
+    public int getUserId(String userEmail, Connection connection) throws SQLException {
+        PreparedStatement getUser;
+        String query = "Select User_ID from user where User_Email = (?)";
+        getUser = connection.prepareStatement(query);
+        getUser.setString(1,userEmail);
+        ResultSet resultSet = getUser.executeQuery();
+        resultSet.next();
+         return Integer.parseInt(resultSet.getString(1));
+
+    }
+
+    /**
      * The method deleteUser is used to delete a user from the database. This method is for admins only
      * @param userEmail  The email of the user you want to delete
      * @param connection The Connection object with the connection to the database

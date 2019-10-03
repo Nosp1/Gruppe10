@@ -73,7 +73,8 @@ public class ServletRoomBooking extends AbstractPostServlet {
                     // henter vi orderID, lager Order objektet på nytt og legger det til databasen.
                     int orderID = dbFunctionality.getOrderID(connection);
                     // TODO ADD AUTOMATIC USERID
-                    order = new Order(orderID, 5, roomID, timestampStart, timestampEnd);
+                    int userID = dbFunctionality.getUserId("trymerlend@hotmail.no",connection);
+                    order = new Order(orderID, userID, roomID, timestampStart, timestampEnd);
                     dbFunctionality.addOrder(order, connection);
                     // Etter reservasjonen er lagt til i databasen sender vi en kvittering på epost.
                     Session session = tlsEmail.NoReplyEmail("trymerlend@hotmail.no");

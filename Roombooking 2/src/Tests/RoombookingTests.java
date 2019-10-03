@@ -34,9 +34,11 @@ public class RoombookingTests {
 
     String testRoomName = "TEST001";
 
+
     int testOrderID = 30;
     int testUserID = 5;
     int testRoomID = 10;
+
     // 2019-09-25 16:00:00
     String testTimestampStart = "2019-09-26 16:00";
     // 2019-09-25 18:00:00
@@ -66,6 +68,8 @@ public class RoombookingTests {
             }
 
             assertTrue(dbFunctionality.checkUser(testUserEmail, "1234", testConnection));
+
+            assertEquals(dbFunctionality.getUserId(testUserEmail,testConnection),testUserID);
 
         } catch (SQLException | InvalidKeySpecException | NoSuchAlgorithmException e) {
             e.printStackTrace();
