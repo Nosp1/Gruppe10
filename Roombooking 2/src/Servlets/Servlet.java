@@ -54,10 +54,10 @@ public class Servlet extends AbstractPostServlet {
                 //generates a new user with the information from the form register
                 AbstractUser newUser = new Student(firstName, lastName, email, password, dob);
                 //sends the new users data and adds it to the database
-                //TODO: add a check for Already registered user.
+                //checks for already registered user.
                 if (dbFunctionality.checkUser(newUser.getUserName(), newUser.getPassword(), connection)) {
                     out.println("You have already registered with that email");
-                   wait(1);
+
                     ServletContext servletContext = getServletContext();
                     servletContext.getRequestDispatcher("/index.html").forward(request,response);
 
@@ -69,6 +69,7 @@ public class Servlet extends AbstractPostServlet {
                     dbFunctionality.addUser(newUser, connection);
                     out.println("<p> You have successfully registered</p>");
                     //Generates and sends a welcome email to the newly registered user
+                    //todo refactor into method?
                     TLSEmail tlsEmail = new TLSEmail();
                     //creates current email session & returns the session
                     Session session = tlsEmail.NoReplyEmail(newUser.getUserName());
@@ -89,10 +90,10 @@ public class Servlet extends AbstractPostServlet {
                 out.print("something went wrong");
             }
             // Prints Javascript connection to Bootstrap.js and other dependencies. See AbstractServlet
-            scriptBootstrap(out);
+            addBootStrapFunctionality(out);
             out.println("</body>");
             out.println("</html>");
-        } catch (NoSuchAlgorithmException | SQLException | InvalidKeySpecException | InterruptedException e) {
+        } catch (NoSuchAlgorithmException | SQLException | InvalidKeySpecException e) {
             e.printStackTrace();
         }
     }

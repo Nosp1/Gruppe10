@@ -1,9 +1,9 @@
 package Classes;
 
+import Tools.TimeUtility;
+
 import java.sql.Timestamp;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class Order {
 
@@ -15,15 +15,17 @@ public class Order {
 
     /**
      * Constructor used for booking rooms, while checking if something is vacant.
-     * @param timestampStart The date and time of the requested booking's beginning.
-     * @param timestampEnd The date and time of the requested booking's end.
+     * The format for the strings are
+     * @param stringStart The date and time of the requested booking's beginning as a string.
+     * @param stringEnd The date and time of the requested booking's end as a string.
      */
-    public Order(String timestampStart, String timestampEnd) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd MM yyyy HH:mm");
-        Date start = sdf.parse(timestampStart);
-        Date end = sdf.parse(timestampEnd);
-        this.timestampStart = new Timestamp(start.getTime());
-        this.timestampEnd = new Timestamp(end.getTime());
+    public Order(String stringStart, String stringEnd) throws ParseException {
+        this(getTimestampFromString(stringStart), getTimestampFromString(stringEnd));
+    }
+
+    public Order(Timestamp timestampStart, Timestamp timestampEnd) {
+        this.timestampStart = timestampStart;
+        this.timestampEnd = timestampEnd;
     }
 
     /**
@@ -74,15 +76,23 @@ public class Order {
         /* returnerer true hvis 2 timestamps overlapper
          * ergo, vi ønske false for å booke noe
          */
-        return(comparison1 >= 0 && comparison2 >= 0);
+        return(comparison1 > 0 && comparison2 > 0);
     }
 
-    private Timestamp getTimestampFromString(String input) throws ParseException {
-        System.out.println("getTimestamp called with: " + input);
-        input = input.replace("T", " ");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        Date output = sdf.parse(input);
-        return new Timestamp(output.getTime());
+    public boolean intersects(Timestamp otherStart, Timestamp otherEnd) throws ParseException {
+        // Samme som over, men med Timestamps og ikke et Order object
+        Order temp = new Order(otherStart, otherEnd);
+        return intersects(temp);
+    }
+
+    /**
+     * A private utility method to convert a "yyyy-MM-dd'T'HH:mm" string to "yyyy-MM-dd HH:mm".
+     * @param input A date and time String, parsed from a HTML datetime-local type.
+     * @return A java.sql.Timestamp object with a date and time correctly formatted.
+     * @throws ParseException
+     */
+    private static Timestamp getTimestampFromString(String input) throws ParseException {
+        return TimeUtility.getTimestampFromString(input);
     }
 
     @Override
@@ -113,5 +123,17 @@ public class Order {
 
     public Timestamp getTimestampEnd() {
         return timestampEnd;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setRoomID(int roomID) {
+        this.roomID = roomID;
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
     }
 }

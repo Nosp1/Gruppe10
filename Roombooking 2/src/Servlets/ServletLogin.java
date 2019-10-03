@@ -29,6 +29,7 @@ import java.sql.SQLException;
 
 @WebServlet(name = "Servlets.ServletLogin", urlPatterns = {"/Servlets.ServletLogin"})
 public class ServletLogin extends AbstractServlet {
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
@@ -69,7 +70,7 @@ public class ServletLogin extends AbstractServlet {
 
             }
             //prints script to establish connection between bootstrap and html
-            scriptBootstrap(out);
+            addBootStrapFunctionality(out);
             out.print("</body>");
             out.print("</html>");
             //prints errors: if the database fails, if the password is wrong.
