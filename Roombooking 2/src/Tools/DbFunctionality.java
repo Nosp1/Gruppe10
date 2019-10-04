@@ -381,4 +381,32 @@ public class DbFunctionality {
 
         return 1;
     }
+    // TODO: Dokumentere metodene under
+    public ResultSet getMostBookedRoom(Connection connection) throws SQLException {
+        return getMostBookedRoom(5, connection);
+    }
+
+    public ResultSet getMostBookedRoom(int howMany, Connection connection) throws SQLException {
+        PreparedStatement selectBookedRoom;
+        //TODO: teste metoden og implementere i en Servlet
+        String select =  "SELECT room_id, COUNT(*) as amount FROM `order` GROUP BY room_id ORDER BY amount DESC LIMIT ?";
+        selectBookedRoom = connection.prepareStatement(select);
+        selectBookedRoom.setInt(1, howMany);
+
+        return selectBookedRoom.executeQuery();
+    }
+
+    public ResultSet getMostActiveUsers(Connection connection) throws SQLException {
+        return getMostActiveUsers(5, connection);
+    }
+
+    public ResultSet getMostActiveUsers(int howMany, Connection connection) throws SQLException {
+        PreparedStatement selectActiveUsers;
+        //TODO: teste metoden og implementere i en Servlet
+        String select = "SELECT user_id, COUNT(*) as amount FROM `order` GROUP BY user_id ORDER BY amount DESC LIMIT ?";
+        selectActiveUsers = connection.prepareStatement(select);
+        selectActiveUsers.setInt(1, howMany);
+
+        return selectActiveUsers.executeQuery();
+    }
 }
