@@ -62,6 +62,10 @@ form {
 input {
     color: black;
 }
+input[readonly="readonly"]
+{
+    background-color:#D3D3D3;
+}
 .btn-secondary{
     background-color: orange;
 

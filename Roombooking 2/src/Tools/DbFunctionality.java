@@ -301,6 +301,7 @@ public class DbFunctionality {
      * @throws SQLException
      */
     public Order getOrder(int requestedOrderID, Connection connection) throws SQLException, ParseException {
+        System.out.println("getOrder started. requestedOrderID: " + requestedOrderID);
         PreparedStatement selectOrder;
         // Select the Order from the Order table with the corresponding Order_ID
         String select = "select * from `order` where Order_ID = ?";
@@ -310,11 +311,14 @@ public class DbFunctionality {
         ResultSet resultSet = selectOrder.executeQuery();
 
         // The resultSet's pointer starts at "nothing", so move it to the next (first, and only) element.
-        resultSet.next();
+        resultSet.first();
         // Get and store the data in local variables,
         int orderID = resultSet.getInt("Order_ID");
+        System.out.println("getOrder orderID: " + orderID);
         int userID = resultSet.getInt("User_ID");
+        System.out.println("getOrder userID: " + userID);
         int roomID = resultSet.getInt("Room_ID");
+        System.out.println("getOrder roomID: " + roomID);
         Timestamp timestampStart = resultSet.getTimestamp("Timestamp_start");
         Timestamp timestampEnd = resultSet.getTimestamp("Timestamp_end");
         // and return a new Order object with these variables.
@@ -376,7 +380,8 @@ public class DbFunctionality {
         ResultSet resultSet = selectOrderID.executeQuery();
 
         while(resultSet.next()) {
-            return resultSet.getInt("Order_ID");
+            System.out.println("orderID from method: " + (resultSet.getInt("Order_ID") + 1));
+            return resultSet.getInt("Order_ID") + 1;
         }
 
         return 1;

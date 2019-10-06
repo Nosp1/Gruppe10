@@ -48,8 +48,17 @@ public class ServletRoomBooking extends AbstractPostServlet {
                 // Hent roomID, Timestamp_start og _end for å sjekke reservasjonen
                 String formRoomID = request.getParameter("Reserve_Room_ID");
                 int roomID = Integer.parseInt(formRoomID);
-                String timestampStart = request.getParameter("Reserve_Timestamp_start");
-                String timestampEnd = request.getParameter("Reserve_Timestamp_end");
+                
+                String timestampStartDate = request.getParameter("Reserve_Timestamp_start_date");
+                String timestampStartTime = request.getParameter("Reserve_Timestamp_start_time");
+                String timestampStart = timestampStartDate + " " + timestampStartTime;
+                System.out.println(timestampStart);
+
+                String timestampEndDate = request.getParameter("Reserve_Timestamp_end_date");
+                String timestampEndTime = request.getParameter("Reserve_Timestamp_end_time");
+                String timestampEnd = timestampEndDate + " " + timestampEndTime;
+                System.out.println(timestampEnd);
+
                 Order order = new Order(timestampStart, timestampEnd);
 
                 //TODO create db method to retrieve epost with userID from db.
