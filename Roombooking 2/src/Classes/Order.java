@@ -58,7 +58,6 @@ public class Order {
      * @param timestampEnd The date and time of the requested booking's end.
      */
     public Order(int id, int userID, int roomID, Timestamp timestampStart, Timestamp timestampEnd) throws ParseException {
-        System.out.println("C3");
         this.id = id;
         this.userID = userID;
         this.roomID = roomID;

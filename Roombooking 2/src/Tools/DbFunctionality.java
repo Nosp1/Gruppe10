@@ -126,8 +126,49 @@ public class DbFunctionality {
         // Return false if there is no result set(?)
         return false;
     }
+    public AbstractUser getUser (String requestedUserEmail, Connection connection ) throws SQLException {
+        PreparedStatement selectUser;
+        //select the User from the User table with the corresponding User_ID
+        String select = "select * from user where User_email = ?";
+        selectUser = connection.prepareStatement(select);
+        selectUser.setString(1,requestedUserEmail);
+        ResultSet resultSet = selectUser.executeQuery();
+        resultSet.next();
+        String firstName = resultSet.getString("User_firstName");
+        String lastName = resultSet.getString("User_lastName");
+        String userName = resultSet.getString("User_email");
+        String dob = resultSet.getNString("User_dob");
+        String password = resultSet.getString("User_password");
 
-    public boolean deleteUser(String username, Connection connection) throws SQLException {
+        return new Student(firstName,lastName,userName,password,dob);
+    }
+
+    /**
+     *
+     * @param userEmail the users Email address
+     * @param connection connection to db
+     * @return userID as int.
+     * @throws SQLException
+     */
+    public int getUserId(String userEmail, Connection connection) throws SQLException {
+        PreparedStatement getUser;
+        String query = "Select User_ID from user where User_Email = (?)";
+        getUser = connection.prepareStatement(query);
+        getUser.setString(1,userEmail);
+        ResultSet resultSet = getUser.executeQuery();
+        resultSet.next();
+         return Integer.parseInt(resultSet.getString(1));
+
+    }
+
+    /**
+     * The method deleteUser is used to delete a user from the database. This method is for admins only
+     * @param userEmail  The email of the user you want to delete
+     * @param connection The Connection object with the connection to the database
+     * @return true if something was deleted, false if nothing was affected
+     * @throws SQLException
+     */
+    public boolean deleteUser(String userEmail, Connection connection) throws SQLException {
         PreparedStatement deleteUser;
         String delete = "delete from user where User_email = ?";
         deleteUser = connection.prepareStatement(delete);
@@ -197,22 +238,65 @@ public class DbFunctionality {
      * @throws SQLException
      */
     public Order getOrder(int requestedOrderID, Connection connection) throws SQLException, ParseException {
-        PreparedStatement selectRoom;
-        String select = "select * from `Order` where Order_ID = ?";
-        selectRoom = connection.prepareStatement(select);
-        selectRoom.setInt(1, requestedOrderID);
-        ResultSet resultSet = selectRoom.executeQuery();
+        System.out.println("getOrder started. requestedOrderID: " + requestedOrderID);
+        PreparedStatement selectOrder;
+        // Select the Order from the Order table with the corresponding Order_ID
+        String select = "select * from `order` where Order_ID = ?";
+        selectOrder = connection.prepareStatement(select);
+        selectOrder.setInt(1, requestedOrderID);
+        // and store it in a ResultSet.
+        ResultSet resultSet = selectOrder.executeQuery();
 
-        resultSet.next();
+        // The resultSet's pointer starts at "nothing", so move it to the next (first, and only) element.
+        resultSet.first();
+        // Get and store the data in local variables,
         int orderID = resultSet.getInt("Order_ID");
+        System.out.println("getOrder orderID: " + orderID);
         int userID = resultSet.getInt("User_ID");
+        System.out.println("getOrder userID: " + userID);
         int roomID = resultSet.getInt("Room_ID");
+        System.out.println("getOrder roomID: " + roomID);
         Timestamp timestampStart = resultSet.getTimestamp("Timestamp_start");
         Timestamp timestampEnd = resultSet.getTimestamp("Timestamp_end");
 
         return new Order(orderID, userID, roomID, timestampStart, timestampEnd);
     }
 
+
+    public ResultSet getAllOrdersFromRoom(int roomID, Connection connection) throws SQLException {
+        PreparedStatement selectOrders;
+        String select = "select Order_ID, Timestamp_start, Timestamp_end from `order`\n" +
+                "  inner join rooms\n" +
+                "  on `order`.Room_ID = rooms.Room_ID\n" +
+                "  where `order`.Room_ID = ?";
+        selectOrders = connection.prepareStatement(select);
+        selectOrders.setInt(1, roomID);
+        return selectOrders.executeQuery();
+    }
+
+    public ResultSet getOrdersFromRoom(int roomID, String date, Connection connection) throws SQLException, ParseException {
+        // TODO: date burde kunne ta inn et timestamp, og strings formatert som "yyyy-mm-dd hh:ss" og "yyyy-mm-dd"
+        System.out.println("Room_ID recieved: " + roomID);
+        System.out.println("Date as String recieved: " + date);
+        PreparedStatement selectOrders;
+        String select = "select Order_ID, Timestamp_start, Timestamp_end from `order`\n" +
+                "  inner join rooms\n" +
+                "  on `order`.Room_ID = rooms.Room_ID\n" +
+                "  where DATE(`order`.Timestamp_start) like ?\n" +
+                "  and `order`.Room_ID = ?";
+        selectOrders = connection.prepareStatement(select);
+        selectOrders.setString(1, date);
+        selectOrders.setInt(2, roomID);
+        return selectOrders.executeQuery();
+    }
+
+    /**
+     *
+     * @param orderID    The ID of the Order you want to delete
+     * @param connection The Connection object with the connection to the database
+     * @return true if something was deleted, false if nothing was affected
+     * @throws SQLException
+     */
     public boolean deleteOrder(int orderID, Connection connection) throws SQLException {
         PreparedStatement deleteOrder;
         String delete = "delete from `Order` where Order_ID = ?";
@@ -228,11 +312,40 @@ public class DbFunctionality {
         selectOrderID = connection.prepareStatement(select);
         ResultSet resultSet = selectOrderID.executeQuery();
 
-        while (resultSet.next()) {
-            return resultSet.getInt("Order_ID");
+        while(resultSet.next()) {
+            System.out.println("orderID from method: " + (resultSet.getInt("Order_ID") + 1));
+            return resultSet.getInt("Order_ID") + 1;
         }
 
         return 1;
+    }
+    // TODO: Dokumentere metodene under
+    public ResultSet getMostBookedRoom(Connection connection) throws SQLException {
+        return getMostBookedRoom(5, connection);
+    }
+
+    public ResultSet getMostBookedRoom(int howMany, Connection connection) throws SQLException {
+        PreparedStatement selectBookedRoom;
+        //TODO: teste metoden og implementere i en Servlet
+        String select =  "SELECT room_id, COUNT(*) as amount FROM `order` GROUP BY room_id ORDER BY amount DESC LIMIT ?";
+        selectBookedRoom = connection.prepareStatement(select);
+        selectBookedRoom.setInt(1, howMany);
+
+        return selectBookedRoom.executeQuery();
+    }
+
+    public ResultSet getMostActiveUsers(Connection connection) throws SQLException {
+        return getMostActiveUsers(5, connection);
+    }
+
+    public ResultSet getMostActiveUsers(int howMany, Connection connection) throws SQLException {
+        PreparedStatement selectActiveUsers;
+        //TODO: teste metoden og implementere i en Servlet
+        String select = "SELECT user_id, COUNT(*) as amount FROM `order` GROUP BY user_id ORDER BY amount DESC LIMIT ?";
+        selectActiveUsers = connection.prepareStatement(select);
+        selectActiveUsers.setInt(1, howMany);
+
+        return selectActiveUsers.executeQuery();
     }
 
     /**

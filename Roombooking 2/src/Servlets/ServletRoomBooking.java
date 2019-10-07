@@ -4,6 +4,7 @@ import Classes.Email.EmailTemplates;
 import Classes.Email.EmailUtil;
 import Classes.Email.TLSEmail;
 import Classes.Order;
+import Classes.User.AbstractUser;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 
@@ -11,6 +12,7 @@ import javax.mail.Session;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -33,6 +35,8 @@ public class ServletRoomBooking extends AbstractPostServlet {
             printNav(out);
             //retrieves the value of the Reserve a Room button
             String action = request.getParameter("action").toLowerCase();
+            HttpSession httpSession = request.getSession();
+            String userName = (String) httpSession.getAttribute("userEmail");
             //TODO: Må ordne intersects; en booking med 10:30-11:00 og en annen med 11:00-11:30 returnerer at det overlapper
             if(action.contains("reserve")) {
                 System.out.println("Reserve started");
@@ -44,8 +48,17 @@ public class ServletRoomBooking extends AbstractPostServlet {
                 // Hent roomID, Timestamp_start og _end for å sjekke reservasjonen
                 String formRoomID = request.getParameter("Reserve_Room_ID");
                 int roomID = Integer.parseInt(formRoomID);
-                String timestampStart = request.getParameter("Reserve_Timestamp_start");
-                String timestampEnd = request.getParameter("Reserve_Timestamp_end");
+                
+                String timestampStartDate = request.getParameter("Reserve_Timestamp_start_date");
+                String timestampStartTime = request.getParameter("Reserve_Timestamp_start_time");
+                String timestampStart = timestampStartDate + " " + timestampStartTime;
+                System.out.println(timestampStart);
+
+                String timestampEndDate = request.getParameter("Reserve_Timestamp_end_date");
+                String timestampEndTime = request.getParameter("Reserve_Timestamp_end_time");
+                String timestampEnd = timestampEndDate + " " + timestampEndTime;
+                System.out.println(timestampEnd);
+
                 Order order = new Order(timestampStart, timestampEnd);
 
                 //TODO create db method to retrieve epost with userID from db.
@@ -73,15 +86,16 @@ public class ServletRoomBooking extends AbstractPostServlet {
                     // henter vi orderID, lager Order objektet på nytt og legger det til databasen.
                     int orderID = dbFunctionality.getOrderID(connection);
                     // TODO ADD AUTOMATIC USERID
-                    int userID = dbFunctionality.getUserId("trymerlend@hotmail.no",connection);
-                    order = new Order(orderID, userID, roomID, timestampStart, timestampEnd);
+                    AbstractUser user = dbFunctionality.getUser(userName,connection);
+                    int userId = dbFunctionality.getUserId(userName,connection);
+                    order = new Order(orderID, userId, roomID, timestampStart, timestampEnd);
                     dbFunctionality.addOrder(order, connection);
                     // Etter reservasjonen er lagt til i databasen sender vi en kvittering på epost.
-                    Session session = tlsEmail.NoReplyEmail("trymerlend@hotmail.no");
+                    Session session = tlsEmail.NoReplyEmail(user.getUserName());
                     EmailUtil confirmationEmail = new EmailUtil();
                     String receipt = EmailTemplates.getBookingReceipt();
-                    String body = EmailTemplates.bookingConfirmation("Trym",order);
-                    confirmationEmail.sendEmail(session,"trymerlend@hotmail.no",receipt,body);
+                    String body = EmailTemplates.bookingConfirmation(user.getFirstName().substring(0, 1).toUpperCase() + user.getFirstName().substring(1),order);
+                    confirmationEmail.sendEmail(session,user.getUserName(),receipt,body);
                 } else {
                     String errorMessage = "Sorry, that time and room is already taken.";
                     // Hvis ikke returneres en error til brukeren
