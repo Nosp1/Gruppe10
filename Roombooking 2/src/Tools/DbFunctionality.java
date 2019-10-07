@@ -4,6 +4,7 @@ import Classes.Email.TLSEmail;
 import Classes.Order;
 import Classes.Rooms.AbstractRoom;
 import Classes.User.AbstractUser;
+import Classes.User.Student;
 import Passwords.PasswordHashAndCheck;
 
 import java.io.PrintWriter;
@@ -11,6 +12,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.*;
 import java.text.ParseException;
+import java.util.ArrayList;
 
 /**
  * handles the queries to and from the database.
@@ -44,11 +46,12 @@ public class DbFunctionality {
             e.printStackTrace();
         }
     }
-    public boolean deleteAdminEmail (String adminUser, Connection connection) throws SQLException {
+
+    public boolean deleteAdminEmail(String adminUser, Connection connection) throws SQLException {
         PreparedStatement deleteAdminUser;
         String delete = "delete from  Email where Email_name = ?";
         deleteAdminUser = connection.prepareStatement(delete);
-        deleteAdminUser.setString(1,adminUser);
+        deleteAdminUser.setString(1, adminUser);
         int result = deleteAdminUser.executeUpdate();
         return result == 1;
 
@@ -187,6 +190,7 @@ public class DbFunctionality {
 
     /**
      * The method getOrder returns an Order object with the requested orderID
+     *
      * @param requestedOrderID The ID of an order in the database
      * @param connection       The Connection object with the connection to the database
      * @return An Order object representing an entry in the Order table of the database
@@ -224,10 +228,47 @@ public class DbFunctionality {
         selectOrderID = connection.prepareStatement(select);
         ResultSet resultSet = selectOrderID.executeQuery();
 
-        while(resultSet.next()) {
+        while (resultSet.next()) {
             return resultSet.getInt("Order_ID");
         }
 
         return 1;
+    }
+
+    /**
+     *
+     * @param requestedUserID
+     * @param connection
+     * @return ArrayList with order objects.
+     * @throws SQLException
+     * @throws ParseException
+     */
+
+    public ArrayList<Order> getOrderListByUserID(int requestedUserID, Connection connection) throws SQLException, ParseException {
+        //creates database query
+        PreparedStatement selectUserID;
+        //selects all orders by id
+        String query = "select * from `order` where User_ID= ?";
+        selectUserID = connection.prepareStatement(query);
+        selectUserID.setInt(1, requestedUserID);
+        ResultSet resultSet = selectUserID.executeQuery();
+        //crates list for orders
+        ArrayList<Order> orders = new ArrayList<>();
+        //inserts order objects into list
+        while (resultSet.next()) {
+            int orderID = resultSet.getInt("Order_ID");
+            int userID = resultSet.getInt("User_ID");
+            int roomID = resultSet.getInt("Room_ID");
+            Timestamp timestampStart = resultSet.getTimestamp("Timestamp_start");
+            Timestamp timestampEnd = resultSet.getTimestamp("Timestamp_end");
+            Order order = new Order(orderID, userID, roomID, timestampStart, timestampEnd);
+            orders.add(order);
+        }
+        //returns the list of order objects.
+        return orders;
+    }
+
+    public ResultSet getOrdersFromRoom(int roomID, String substring, Connection connection) {
+        
     }
 }

@@ -31,6 +31,11 @@ public abstract class AbstractUser {
 
         orders = new ArrayList<>();
     }
+    public AbstractUser(int userID, ArrayList<Order> orderList) {
+
+        this.userName = userName;
+        this.orders = orderList;
+    }
 
     public String getUserName() {
         return userName;
