@@ -15,6 +15,7 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+
 /**
  * Author Hanne, Henriette, Hedda, Trym, Brisdalen
  */
@@ -29,7 +30,11 @@ public class ServletRoomOptions extends AbstractPostServlet {
             //retrieves the value of button Add Room
             String action = request.getParameter("action").toLowerCase();
 
-            if(action.contains("add")) {
+            if (action.contains("add")) {
+                DbTool dbTool = new DbTool();
+                //establishes connection to database
+                Connection connection = dbTool.dbLogIn(out);
+                DbFunctionality dbFunctionality = new DbFunctionality();
                 //retrieves the data in the text-box Add RoomID
                 int roomID = Integer.parseInt(request.getParameter("Add_roomID"));
                 //retrieves the Room name from the text-box Room Name
@@ -39,54 +44,44 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 //retrieves the room capacity from the text-box Room Capacity
                 int maxCapacity = Integer.parseInt(request.getParameter("maxCapacity"));
 
-                DbTool dbTool = new DbTool();
-                //establishes connection to database
-                Connection connection = dbTool.dbLogIn(out);
-                DbFunctionality dbFunctionality = new DbFunctionality();
-                //
+                // Opprett et Grouproom objekt fra dataen hentet fra HTML formen
                 AbstractRoom room = new Grouproom(roomID, roomName, roomBuilding, maxCapacity);
                 // TODO: Bruker kun grupperom typen for nå
                 //Adds the room to the database
                 dbFunctionality.addRoom(room, connection);
-                //TODO: legg til annen knapp for å forbli logget inn.
+                //TODO: Kanskje legge til if statement som
+                // dispatcher deg tilbake til loggedin istedenfor knapp? for mer flytt og mindre klikks
                 //prints return button.
-                addHomeButton(out);
+                addHomeLoggedInButton(out);
+            } else if (action.contains("delete")) {
+                // Disse klassene trengs
+                DbTool dbTool = new DbTool();
+                Connection connection = dbTool.dbLogIn(out);
+                DbFunctionality dbFunctionality = new DbFunctionality();
+                //todo add boolean statement to confirm deletion.
+                //dbFunctionality.deleteRoom(roomID, connection);
+                addHomeLoggedInButton(out);
 
-            // TODO: Lag HTML side med action som fjerner et rom
-            } else if(action.contains("delete")) {
-                //retrieves the
-                int roomID = Integer.parseInt(request.getParameter("Delete_roomID"));
+            } else if (action.contains("show")) {
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
 
-                dbFunctionality.deleteRoom(roomID, connection);
-
-                addHomeButton(out);
-
-            } else if(action.contains("show")) {
-                DbTool dbTool = new DbTool();
-                Connection connection = dbTool.dbLogIn(out);
-                DbFunctionality dbFunctionality = new DbFunctionality();
                 dbFunctionality.printRooms(out, connection);
-
+                addHomeLoggedInButton(out);
 
             } else if (action.contains("gotoprofile")) {
                 ServletContext servletContext = getServletContext();
-                servletContext.getRequestDispatcher("/profile.html").forward(request,response);
+                //todo Send session with Username
+                servletContext.getRequestDispatcher("/profile.html").forward(request, response);
 
-            } else if(action.contains("reserve")) {
-                DbTool dbTool = new DbTool();
-                Connection connection = dbTool.dbLogIn(out);
-                //todo add reservation.. and order generation
             }
 
-            scriptBootstrap(out);
+            addBootStrapFunctionality(out);
             out.print("</body>");
             out.print("</html>");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
 }

@@ -14,8 +14,6 @@
 
 }
 
-
-
 .navbar-brand {
     background: linear-gradient(to top left, #ae988a 0%, #e2e0d5 100%) fixed;
 }
@@ -41,6 +39,14 @@ body {
 #collapseLogin {
     color:white;
 }
+#collapseLogin input {
+    width: 100%;
+    clear: both;
+}
+#collapseLogin input {
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
 
 form {
     display: inline-block;
@@ -48,6 +54,10 @@ form {
 }
 input {
     color: black;
+}
+input[readonly="readonly"]
+{
+    background-color:#D3D3D3;
 }
 .btn-secondary{
     background-color: #42a28f;
@@ -60,6 +70,7 @@ input {
     background-color:#7aa39a;
     border-color: #fffce1;
 }
+
 .btn-success:hover {
     background-color: #42a28f;
     border-color: #e6e6e6;
@@ -78,10 +89,6 @@ input {
     border-color: #e6e6e6;
 }
 
-
-
-
-
 #collapseExample input {
     width: 100%;
     clear: both;
@@ -93,7 +100,6 @@ input {
 }
 
 .navbar{
-
     font-weight: 530;
     text-decoration-color: #000000;
 }

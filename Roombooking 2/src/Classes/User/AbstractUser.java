@@ -8,6 +8,7 @@ public abstract class AbstractUser {
     /*
     fields
      */
+
     protected String firstName;
     protected String lastName;
     protected String userName;
@@ -30,6 +31,21 @@ public abstract class AbstractUser {
         this.userType = userType;
 
         orders = new ArrayList<>();
+    }
+
+    public void showOrders() {
+        //Viser orders
+        for(Order o: orders) {
+            System.out.println(o);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return firstName + " " + lastName + "\n" +
+                userName + "\n" +
+                dob + "\n" +
+                userType;
     }
 
     public String getUserName() {
@@ -78,12 +94,5 @@ public abstract class AbstractUser {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public void showOrders() {
-        //Viser orders
-        for(Order o: orders) {
-            System.out.println(o);
-        }
     }
 }

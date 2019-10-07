@@ -116,7 +116,6 @@
             <input type="number" id="Add_roomID" name="Add_roomID">
         </div>
         <div>
-            <!-- TODO: Change to roomName -->
             <label for="Add_roomName">Room Name</label>
             <input type="text" id="Add_roomName" name="Add_roomName">
         </div>
@@ -149,11 +148,21 @@
 
 <!-- Form for Reserve a room -->
 <div class="collapse container" id="collapseReserveRoom">
-    <form action="./Servlets.ServletRoomOptions" method="post">
+    <form action="./Servlets.ServletRoomBooking" method="post">
         <h1>Reserve a room</h1>
         <div>
-            <label for="Reserve_roomID">Room ID</label>
-            <input type="text" id="Reserve_roomID" name="Reserve_roomID">
+            <label for="Reserve_Room_ID">Room ID</label>
+            <input type="text" id="Reserve_Room_ID" name="Reserve_Room_ID">
+        </div>
+        <div>
+            <label for="Reserve_Timestamp_start_date" for="Reserve_Timestamp_start_time">Booking start</label>
+            <input type="date" id="Reserve_Timestamp_start_date" name="Reserve_Timestamp_start_date" onblur="updateDate2()"/>
+            <input type="time" id="Reserve_Timestamp_start_time" name="Reserve_Timestamp_start_time" onblur="updateTimeEnd()"/>
+        </div>
+        <div>
+            <label for="Reserve_Timestamp_end_date" for="Reserve_Timestamp_end_time">Booking end</label>
+            <input type="date" id="Reserve_Timestamp_end_date" name="Reserve_Timestamp_end_date" tabindex="-1" readonly="readonly"/>
+            <input type="time" id="Reserve_Timestamp_end_time" name="Reserve_Timestamp_end_time">
         </div>
         <div>
             <input class="submit btn-default btn-lg" type="submit" name="action" value="Reserve room">
@@ -167,6 +176,7 @@
         integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
         crossorigin="anonymous"></script>
 <script src="bootstrap.js"></script>
+<script src="date-time-reserve.js"></script>
 
 </body>
 </html>

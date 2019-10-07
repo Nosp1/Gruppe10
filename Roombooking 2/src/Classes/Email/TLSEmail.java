@@ -25,12 +25,12 @@ public class TLSEmail {
      * Method takes in a {@code String} object and sends it to {@code SendSecureEmail}
      * @param toEmail methods takes in recipient email.
      */
-    public void NoReplyEmail(String toEmail) {
+    public Session NoReplyEmail(String toEmail) {
         System.out.println("TLSEmail Start");
         //creates TlSEMAIL object
         TLSEmail tlsEmail = new TLSEmail();
         //calls on TLSE to establish host,port, authentication and starttls
-        tlsEmail.SendSecureEmail(fromEmail, password, toEmail);
+        return tlsEmail.SendSecureEmail(fromEmail, password, toEmail);
     }
     /**
      *
@@ -38,7 +38,7 @@ public class TLSEmail {
      * @param password is the senders Email Password
      * @param toEmail is the recipient email
      */
-    private void SendSecureEmail(String fromEmail, String password, String toEmail) {
+    private Session SendSecureEmail(String fromEmail, String password, String toEmail) {
         Properties props = new Properties();
         //SMTP Host: Asserts which mail server to use. -> google in this case.
         props.put("mail.smtp.host", "smtp.gmail.com");
@@ -57,9 +57,12 @@ public class TLSEmail {
             }
         };
         //gets the host,port, Sender EmailID and password
-        Session session = Session.getInstance(props, auth);
-        EmailUtil emailUtil = new EmailUtil();
-        //Sends Email by taking: Sender EmailID, password, port
-        emailUtil.sendEmail(session, toEmail, "Welcome to roombooking", "Velkommen til roombooking");
+        getSession(props,auth);
+        //returns the email session to prepare for sending;
+        return getSession(props,auth);
+    }
+
+    private Session getSession(Properties props, Authenticator auth) {
+        return Session.getInstance(props, auth);
     }
 }
