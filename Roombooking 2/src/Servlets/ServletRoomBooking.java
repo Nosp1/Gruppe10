@@ -24,7 +24,7 @@ import java.text.ParseException;
 /**
  * ServletRoomBooking.java is used for handling actions related to room-booking reservations.
  *
- * @author brisdalen
+ * @author brisdalen, Trym
  */
 @WebServlet(name = "Servlets.ServletRoomBooking", urlPatterns = {"/Servlets.ServletRoomBooking"})
 public class ServletRoomBooking extends AbstractPostServlet {

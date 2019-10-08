@@ -4,6 +4,9 @@ import Classes.Order;
 import Classes.UserType;
 import java.util.ArrayList;
 
+/**
+ *
+ */
 public abstract class AbstractUser {
     /*
     fields
