@@ -180,7 +180,7 @@ public class DbFunctionality {
      * @return true if something was deleted, false if nothing was affected
      * @throws SQLException
      */
-    public boolean deleteUser(String userEmail, Connection connection) throws SQLException {
+    public boolean deleteUserByEmail(String userEmail, Connection connection) throws SQLException {
         PreparedStatement deleteUser;
         // Prepare a delete-query for execution,
         String delete = "delete from user where User_email = ?";
