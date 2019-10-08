@@ -71,7 +71,7 @@ public class RoombookingTests {
             e.printStackTrace();
         } finally {
             try {
-                assertTrue(dbFunctionality.deleteUser(testUserEmail, testConnection));
+                assertTrue(dbFunctionality.deleteUserByEmail(testUserEmail, testConnection));
             } catch (SQLException e) {
                 e.printStackTrace();
             }
