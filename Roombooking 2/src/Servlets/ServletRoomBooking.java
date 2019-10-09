@@ -37,7 +37,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
             String action = request.getParameter("action").toLowerCase();
             HttpSession httpSession = request.getSession();
             String userName = (String) httpSession.getAttribute("userEmail");
-            //TODO: Må ordne intersects; en booking med 10:30-11:00 og en annen med 11:00-11:30 returnerer at det overlapper
+            //TODO: ignorer booking der time == time (22:00 start og 22:00 end)
             if(action.contains("reserve")) {
                 System.out.println("Reserve started");
                 // Nødvendige klasser for database samhandling og funksjonalitet
@@ -48,7 +48,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
                 // Hent roomID, Timestamp_start og _end for å sjekke reservasjonen
                 String formRoomID = request.getParameter("Reserve_Room_ID");
                 int roomID = Integer.parseInt(formRoomID);
-                
+
                 String timestampStartDate = request.getParameter("Reserve_Timestamp_start_date");
                 String timestampStartTime = request.getParameter("Reserve_Timestamp_start_time");
                 String timestampStart = timestampStartDate + " " + timestampStartTime;

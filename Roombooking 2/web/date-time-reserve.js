@@ -1,26 +1,7 @@
-/*
-    <div>
-    Date 1: <input type="date" id="date" onfocusout="MyFunc()">
-	    	<input type="time" id="start" onfocusout="Add2Hours()"><br>
-    Date 2: <input type="date" id="out" disabled>
-	    	<input type="time" id="end"
-    </div>
-
-        <div>
-            <label for="Reserve_Timestamp_start_date" for="Reserve_Timestamp_start_time">Booking start</label>
-            <input type="date" id="Reserve_Timestamp_start_date" name="Reserve_Timestamp_start_date" onfocusout="updateDate2()"/>
-            <input type="time" id="Reserve_Timestamp_start_time" name="Reserve_Timestamp_start_time" onfocusout="updateTimeEnd()"/>
-        </div>
-        <div>
-            <label for="Reserve_Timestamp_end_date" for="Reserve_Timestamp_end_time">Booking end</label>
-            <input type="date" id="Reserve_Timestamp_end_date" name="Reserve_Timestamp_end_date" disabled/>
-            <input type="time" id="Reserve_Timestamp_end_time" name="Reserve_Timestamp_end_time">
-        </div>
- */
 /**
- * updateDate2 sets the date-field with id "out" to the same value as the first date-field.
+ * updateEndDate sets the date-field with id "out" to the same value as the first date-field.
  */
-function updateDate2() {
+function updateEndDate() {
     var date = document.getElementById("Reserve_Timestamp_start_date");
     // First we get the whole value from the first date-field.
     var c = date.value;
@@ -30,6 +11,10 @@ function updateDate2() {
     document.getElementById("Reserve_Timestamp_end_date").value = d;
 }
 
+function checkInputEnd(event) {
+    checkInputRangeEnd(event);
+}
+
 /**
  * updateTimeEnd takes the end-time and increments it by 2 hours.
  */
@@ -37,4 +22,57 @@ function updateTimeEnd() {
     document.getElementById("Reserve_Timestamp_end_time").value = document.getElementById("Reserve_Timestamp_start_time").value;
     // stepUp increments the minutes of a time-field by a set amount, in this case 120 minutes.
     document.getElementById("Reserve_Timestamp_end_time").stepUp(120);
+}
+
+function checkInputStart(event) {
+    checkInputRangeStart(event);
+    updateTimeEnd();
+}
+
+function checkInputRangeStart(event) {
+    let val = $("#Reserve_Timestamp_start_time").val();
+    if (val < "08:00"
+        && event.keyCode !== 46 // delete
+        && event.keyCode !== 8 // backspace
+    ) {
+        event.preventDefault();
+        $("#Reserve_Timestamp_start_time").val("08:00");
+        showTimeLimitMessage();
+        $('#Reserve_Timestamp_start_time').focus();
+    } else if (val > "22:00"
+        && event.keyCode !== 46 // delete
+        && event.keyCode !== 8 // backspace
+    ) {
+        event.preventDefault();
+        $("#Reserve_Timestamp_start_time").val("22:00");
+        showTimeLimitMessage();
+        $('#Reserve_Timestamp_start_time').focus();
+    } else {
+        hideTimeLimitMessage();
+    }
+}
+
+function checkInputRangeEnd(event) {
+    let val = $("#Reserve_Timestamp_end_time").val();
+    if (val < "08:00" || val > "22:00"
+        && event.keyCode !== 46 // delete
+        && event.keyCode !== 8 // backspace
+    ) {
+        event.preventDefault();
+        updateTimeEnd();
+        showTimeLimitMessage();
+        $('#Reserve_Timestamp_end_time').focus();
+    } else {
+        hideTimeLimitMessage();
+    }
+}
+
+function showTimeLimitMessage() {
+    console.log("shown")
+    $('.timeLimitMessage').show();
+}
+
+function hideTimeLimitMessage() {
+    console.log("hidden")
+    $('.timeLimitMessage').hide();
 }
