@@ -21,6 +21,8 @@ public class DbTool {
             DataSource dataSource = (DataSource) context.lookup("java:comp/env/jdbc/localhost/roombooking");
             connection = dataSource.getConnection();
 
+            context.close();
+
             return connection;
         } catch (NamingException | SQLException e) {
             e.printStackTrace();
