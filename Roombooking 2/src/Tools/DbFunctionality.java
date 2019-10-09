@@ -169,6 +169,8 @@ public class DbFunctionality {
         getUser.setString(1,userEmail);
         ResultSet resultSet = getUser.executeQuery();
         resultSet.next();
+        //todo funker dette?
+        getUser.closeOnCompletion();
          return Integer.parseInt(resultSet.getString(1));
 
     }

@@ -60,9 +60,6 @@ public class Servlet extends AbstractPostServlet {
 
                     ServletContext servletContext = getServletContext();
                     servletContext.getRequestDispatcher("/index.html").forward(request,response);
-
-
-
                 }
                 else {
 
