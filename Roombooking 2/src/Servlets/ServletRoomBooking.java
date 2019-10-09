@@ -37,7 +37,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
             String action = request.getParameter("action").toLowerCase();
             HttpSession httpSession = request.getSession();
             String userName = (String) httpSession.getAttribute("userEmail");
-            //TODO: ignorer booking der time == time (22:00 start og 22:00 end)
+
             if(action.contains("reserve")) {
                 System.out.println("Reserve started");
                 // Nødvendige klasser for database samhandling og funksjonalitet
@@ -58,6 +58,14 @@ public class ServletRoomBooking extends AbstractPostServlet {
                 String timestampEndTime = request.getParameter("Reserve_Timestamp_end_time");
                 String timestampEnd = timestampEndDate + " " + timestampEndTime;
                 System.out.println(timestampEnd);
+
+                if(timestampStart.equals(timestampEnd)) {
+                    // Ikke reserver, returner feilmelding til brukeren
+                    String sameTimeErrorMessage = "Sorry, the start and end-time is the same, and a booking can't be made.";
+                    System.out.println(sameTimeErrorMessage);
+                    out.println(sameTimeErrorMessage);
+                    return;
+                }
 
                 Order order = new Order(timestampStart, timestampEnd);
 
@@ -96,12 +104,16 @@ public class ServletRoomBooking extends AbstractPostServlet {
                     String receipt = EmailTemplates.getBookingReceipt();
                     String body = EmailTemplates.bookingConfirmation(user.getFirstName().substring(0, 1).toUpperCase() + user.getFirstName().substring(1),order);
                     confirmationEmail.sendEmail(session,user.getUserName(),receipt,body);
+
+                    String reservationSuccessfull = "Booking reserved.";
+                    System.out.println(reservationSuccessfull);
+                    out.println(reservationSuccessfull);
                 } else {
-                    String errorMessage = "Sorry, that time and room is already taken.";
+                    String notAvailableErrorMessage = "Sorry, that time and room is already taken.";
                     // Hvis ikke returneres en error til brukeren
                     // TODO: Returner en error til brukeren om rommet er opptatt ved tidspunktet valgt
-                    System.out.println(errorMessage);
-                    out.println(errorMessage);
+                    System.out.println(notAvailableErrorMessage);
+                    out.println(notAvailableErrorMessage);
                 }
 
             }
