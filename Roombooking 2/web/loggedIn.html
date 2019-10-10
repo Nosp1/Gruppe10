@@ -96,9 +96,13 @@
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseReserveRoom" role="button"
                 aria-controls="#collapseReserveRoom">Reserve a room
         </button>
+        <!-- Edit a booking collapse button -->
+        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseEditBooking" role="button"
+                aria-controls="#collapseEditBooking">Edit a booking
+        </button>
     </div>
 </div>
-<!-- Submit button for Browse -->
+        <!-- Submit button for Browse -->
 <div class="collapse container" id="collapseBrowse">
     <form action="./Servlets.ServletRoomOptions" method="post">
         <h1>Click beneath to show all rooms</h1>
@@ -183,6 +187,21 @@
     </form>
 
 </div>
+<!-- Form for Editing a booking -->
+<div class="collapse container" id="collapseEditBooking">
+    <form action="./Servlets.ServletRoomBooking" method="post">
+        <h1>Edit Booking</h1>
+        <div>
+            <label for="Edit_Booking">Edit</label>
+            <input type="text" id="Edit_Booking" name="Edit_Booking">
+        </div>
+
+        <div>
+            <input class="submit btn-default btn-lg" type="submit" name="action" value="Edit Booking">
+        </div>
+    </form>
+</div>
+
 
 <script
         src="https://code.jquery.com/jquery-3.4.1.js"

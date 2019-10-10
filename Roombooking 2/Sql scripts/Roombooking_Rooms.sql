@@ -35,3 +35,14 @@ CREATE TABLE if not exists roombooking.`order`
     CONSTRAINT O_User_ID_FK FOREIGN KEY (User_ID) REFERENCES user (User_ID),
     CONSTRAINT O_Room_ID_FK FOREIGN KEY (Room_ID) REFERENCES rooms (Room_ID)
 );
+/*
+ might be redundant table.
+ */
+create table Email
+(
+    Email_name     varchar(55)  null,
+    Email_Password varchar(255) null,
+    Email_Salt     varchar(255) null,
+    constraint Email_Email_name_uindex
+        unique (Email_name)
+);

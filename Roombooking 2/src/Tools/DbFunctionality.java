@@ -17,7 +17,7 @@ import java.util.ArrayList;
 /**
  * handles the queries to and from the database.
  *
- * @author trym, brisdalen
+ * @author trym, brisdalen, sæthra
  */
 public class DbFunctionality {
     Statement statement;
@@ -291,6 +291,11 @@ public class DbFunctionality {
         selectOrders.setString(1, date);
         selectOrders.setInt(2, roomID);
         return selectOrders.executeQuery();
+    }
+
+
+    public ResultSet editOrderTime(Order order, Connection connection) throws SQLException, ParseException {
+
     }
 
     /**
