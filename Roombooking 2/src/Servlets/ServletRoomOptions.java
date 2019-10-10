@@ -67,7 +67,21 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 //dbFunctionality.deleteRoom(roomID, connection);
                 addHomeLoggedInButton(out);
 
-            } else if (action.contains("show")) {
+            } else if (action.contains("cancel")) {
+                //todo add documentation
+                int orderID = Integer.parseInt( request.getParameter("Cancel_Order_ID"));
+                DbTool dbTool = new DbTool();
+                Connection connection = dbTool.dbLogIn(out);
+                DbFunctionality dbFunctionality = new DbFunctionality();
+
+                if (dbFunctionality.deleteOrder(orderID,connection)) {
+                    out.println("Order canceled ");
+                   addHomeLoggedInButton(out);
+
+                }
+
+            }
+            else if (action.contains("show")) {
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();

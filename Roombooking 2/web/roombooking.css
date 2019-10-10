@@ -24,7 +24,7 @@ input[readonly="readonly"]
 ----------------------------------*/
 .jumbotron {
     color: rgb(248, 232, 232);
-    text-shadow: 10px, #42a28f;
+    text-shadow: 5px, #42a28f;
 
     background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url("https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80");
     background-size: 100%;
