@@ -53,6 +53,14 @@ public abstract class AbstractUser {
         }
     }
 
+    public void showOrders(PrintWriter out) {
+        //todo add print outwriter not sout.out.
+        //Viser orders
+        for(Order o: orders) {
+            out.println(o + "\n");
+        }
+    }
+
     @Override
     public String toString() {
         return firstName + " " + lastName + "\n" +

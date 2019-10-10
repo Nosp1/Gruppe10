@@ -56,7 +56,7 @@ public class ServletReservations extends AbstractServlet {
                 DbFunctionality dbFunctionality = new DbFunctionality();
                  int userID = dbFunctionality.getUserId(userName,connection);
                  AbstractUser user = new Student(userID,dbFunctionality.getOrderListByUserID(userID,connection));
-                 user.showOrders();
+                 user.showOrders(out);
 
             }
             else{
