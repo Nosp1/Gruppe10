@@ -6,16 +6,22 @@ body {
     line-height: 1.42857143;
     color: white;
     background-color: #fff;
-    background: linear-gradient(to top left, #ffffcc 0%, #ff9933 100%) fixed;
+    background: linear-gradient(to top left, #ae988a 0%, #e2e0d5  100%) fixed;
     text-align: center;
 }
-
-
-#welcome{
-    -webkit-text-stroke: 1px black;
-    text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-    margin-bottom: 10px;
+form {
+    display: inline-block;
+    color: white;
 }
+input {
+    color: black;
+}
+input[readonly="readonly"]
+{
+    background-color:#D3D3D3;
+}
+/* CLASS SELECTORS
+----------------------------------*/
 .jumbotron {
     color: rgb(248, 232, 232);
     text-shadow: 10px, #42a28f;
@@ -24,45 +30,43 @@ body {
     background-size: 100%;
 
 }
-
 .navbar-brand {
     background: linear-gradient(to top left, #ae988a 0%, #e2e0d5 100%) fixed;
 }
+
+
+
+#welcome{
+    -webkit-text-stroke: 1px black;
+    text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    margin-bottom: 10px;
+}
+
+
+
+
 
 body {
     background: linear-gradient(to top left, #ae988a 0%, #e2e0d5  100%) fixed;
 
 }
 
-.navbar{
 
-    font-weight: 530;
-    text-decoration-color: #000000;
 
-}
 
-.btn-secondary{
-    background-color: orange;
-
-}
-.btn-default {
-    background-color: orange;
-}
-.btn-success {
-    background-color:orange;
-}
 
 
 /* ID SELECTORS
 -------------------------*/
 #collapseExample {
-    background: #ff9933;
-    width: border-box;
+    color: white;
+    /*width: border-box; /*
     /*text-align: center; */
 }
 #collapseLogin {
-    background: #ff9933;
-    width: border-box;
+    color: white;
+    /*width: border-box; */
+    text-align: center;
 }
 #welcome{
     -webkit-text-stroke: 1px black;
@@ -78,24 +82,16 @@ body {
 }
 #collapseLogin input {
     width: 100%;
-    clear: both;
+   /* clear: both; */
 }
 #collapseLogin input {
     margin-top: 10px;
     margin-bottom: 5px;
 }
 
-form {
-    display: inline-block;
-    color: white;
-}
-input {
-    color: black;
-}
-input[readonly="readonly"]
-{
-    background-color:#D3D3D3;
-}
+
+
+
 .btn-secondary{
     background-color: #42a28f;
 
