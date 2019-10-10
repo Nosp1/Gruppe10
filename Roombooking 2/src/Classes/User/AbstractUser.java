@@ -2,8 +2,15 @@ package Classes.User;
 
 import Classes.Order;
 import Classes.UserType;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
+/**
+ *
+ */
 public abstract class AbstractUser {
     /*
     fields
@@ -32,11 +39,25 @@ public abstract class AbstractUser {
 
         orders = new ArrayList<>();
     }
+    public AbstractUser(int userID, ArrayList<Order> orderList) {
+
+        this.userName = userName;
+        this.orders = orderList;
+    }
 
     public void showOrders() {
+        //todo add print outwriter not sout.out.
         //Viser orders
         for(Order o: orders) {
             System.out.println(o);
+        }
+    }
+
+    public void showOrders(PrintWriter out) {
+        //todo add print outwriter not sout.out.
+        //Viser orders
+        for(Order o: orders) {
+            out.println(o + "\n");
         }
     }
 

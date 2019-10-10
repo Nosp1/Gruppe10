@@ -20,7 +20,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="index.html">Roombooking</a>
+            <a class="navbar-brand" href="loggedIn.html">Roombooking</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -154,18 +154,31 @@
             <label for="Reserve_Room_ID">Room ID</label>
             <input type="text" id="Reserve_Room_ID" name="Reserve_Room_ID">
         </div>
+
         <div>
             <label for="Reserve_Timestamp_start_date" for="Reserve_Timestamp_start_time">Booking start</label>
-            <input type="date" id="Reserve_Timestamp_start_date" name="Reserve_Timestamp_start_date" onblur="updateDate2()"/>
-            <input type="time" id="Reserve_Timestamp_start_time" name="Reserve_Timestamp_start_time" onblur="updateTimeEnd()"/>
+            <input type="date" id="Reserve_Timestamp_start_date" name="Reserve_Timestamp_start_date" onfocusout="updateEndDate()"/>
+            <span class="validateReserveTime">
+                <input type="time" id="Reserve_Timestamp_start_time" class="ReserveTime" name="Reserve_Timestamp_start_time"
+                       min="08:00" max="22:00" onfocusout="checkInputStart(event)"/>
+            </span>
         </div>
+
         <div>
             <label for="Reserve_Timestamp_end_date" for="Reserve_Timestamp_end_time">Booking end</label>
             <input type="date" id="Reserve_Timestamp_end_date" name="Reserve_Timestamp_end_date" tabindex="-1" readonly="readonly"/>
-            <input type="time" id="Reserve_Timestamp_end_time" name="Reserve_Timestamp_end_time">
+            <span class="validateReserveTime">
+                <input type="time" id="Reserve_Timestamp_end_time" class="ReserveTime" name="Reserve_Timestamp_end_time"
+                       min="08:00" max="22:00" onfocusout="checkInputEnd(event)"/>
+            </span>
         </div>
+
         <div>
             <input class="submit btn-default btn-lg" type="submit" name="action" value="Reserve room">
+        </div>
+
+        <div class="timeLimitMessage" style="display: none;">
+            <p> The time must be between 08:00 and 21:59 </p>
         </div>
     </form>
 

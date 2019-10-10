@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -29,6 +30,10 @@ public class ServletRoomOptions extends AbstractPostServlet {
             printNav(out);
             //retrieves the value of button Add Room
             String action = request.getParameter("action").toLowerCase();
+            HttpSession httpSession = request.getSession();
+            String userName = (String) httpSession.getAttribute("userEmail");
+            System.out.println(userName
+            );
 
             if (action.contains("add")) {
                 DbTool dbTool = new DbTool();
@@ -73,6 +78,8 @@ public class ServletRoomOptions extends AbstractPostServlet {
             } else if (action.contains("gotoprofile")) {
                 ServletContext servletContext = getServletContext();
                 //todo Send session with Username
+                HttpSession session = request.getSession();
+                session.setAttribute("userEmail", userName);
                 servletContext.getRequestDispatcher("/profile.html").forward(request, response);
 
             }
