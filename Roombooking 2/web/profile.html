@@ -21,7 +21,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="index.html">Roombooking</a>
+            <a class="navbar-brand" href="loggedin.html">Roombooking</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -87,9 +87,10 @@
         </button>
 
         <!-- My reservations collapse button -->
-        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseShow" role="button"
-                aria-controls="#collapseShow">My reservations
+        <form action="./Servlets.ServletReservations" method="post">
+        <button class="btn btn-success btn-lg"  href="#collapseShow" role="button" name="action" value="myreservations">My reservations
         </button>
+        </form>
     </div>
 </div>
 
@@ -116,10 +117,7 @@
 
 <!-- Submit button for My Reservations -->
 <div class ="collapse container" id="collapseShow">
-    <form action="./Servlets.ServletRoomOptions" method="post">
-        <h1>My reservations</h1>
 
-    </form>
 </div>
 
 <script

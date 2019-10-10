@@ -126,12 +126,13 @@ public class DbFunctionality {
         // Return false if there is no result set(?)
         return false;
     }
-    public AbstractUser getUser (String requestedUserEmail, Connection connection ) throws SQLException {
+
+    public AbstractUser getUser(String requestedUserEmail, Connection connection) throws SQLException {
         PreparedStatement selectUser;
         //select the User from the User table with the corresponding User_ID
         String select = "select * from user where User_email = ?";
         selectUser = connection.prepareStatement(select);
-        selectUser.setString(1,requestedUserEmail);
+        selectUser.setString(1, requestedUserEmail);
         ResultSet resultSet = selectUser.executeQuery();
         resultSet.next();
         String firstName = resultSet.getString("User_firstName");
@@ -140,12 +141,11 @@ public class DbFunctionality {
         String dob = resultSet.getNString("User_dob");
         String password = resultSet.getString("User_password");
 
-        return new Student(firstName,lastName,userName,password,dob);
+        return new Student(firstName, lastName, userName, password, dob);
     }
 
     /**
-     *
-     * @param userEmail the users Email address
+     * @param userEmail  the users Email address
      * @param connection connection to db
      * @return userID as int.
      * @throws SQLException
@@ -154,25 +154,26 @@ public class DbFunctionality {
         PreparedStatement getUser;
         String query = "Select User_ID from user where User_Email = (?)";
         getUser = connection.prepareStatement(query);
-        getUser.setString(1,userEmail);
+        getUser.setString(1, userEmail);
         ResultSet resultSet = getUser.executeQuery();
         resultSet.next();
-         return Integer.parseInt(resultSet.getString(1));
+        return Integer.parseInt(resultSet.getString(1));
 
     }
 
     /**
      * The method deleteUser is used to delete a user from the database. This method is for admins only
+     *
      * @param userEmail  The email of the user you want to delete
      * @param connection The Connection object with the connection to the database
      * @return true if something was deleted, false if nothing was affected
      * @throws SQLException
      */
-    public boolean deleteUser(String userEmail, Connection connection) throws SQLException {
+    public boolean deleteUserByEmail(String userEmail, Connection connection) throws SQLException {
         PreparedStatement deleteUser;
         String delete = "delete from user where User_email = ?";
         deleteUser = connection.prepareStatement(delete);
-        deleteUser.setString(1, username);
+        deleteUser.setString(1, userEmail);
         int result = deleteUser.executeUpdate();
         // result er 1 hvis noe blir slettet, eller 0 hvis ingenting ble affected
         return result == 1;
@@ -291,7 +292,6 @@ public class DbFunctionality {
     }
 
     /**
-     *
      * @param orderID    The ID of the Order you want to delete
      * @param connection The Connection object with the connection to the database
      * @return true if something was deleted, false if nothing was affected
@@ -312,13 +312,14 @@ public class DbFunctionality {
         selectOrderID = connection.prepareStatement(select);
         ResultSet resultSet = selectOrderID.executeQuery();
 
-        while(resultSet.next()) {
+        while (resultSet.next()) {
             System.out.println("orderID from method: " + (resultSet.getInt("Order_ID") + 1));
             return resultSet.getInt("Order_ID") + 1;
         }
 
         return 1;
     }
+
     // TODO: Dokumentere metodene under
     public ResultSet getMostBookedRoom(Connection connection) throws SQLException {
         return getMostBookedRoom(5, connection);
@@ -327,7 +328,7 @@ public class DbFunctionality {
     public ResultSet getMostBookedRoom(int howMany, Connection connection) throws SQLException {
         PreparedStatement selectBookedRoom;
         //TODO: teste metoden og implementere i en Servlet
-        String select =  "SELECT room_id, COUNT(*) as amount FROM `order` GROUP BY room_id ORDER BY amount DESC LIMIT ?";
+        String select = "SELECT room_id, COUNT(*) as amount FROM `order` GROUP BY room_id ORDER BY amount DESC LIMIT ?";
         selectBookedRoom = connection.prepareStatement(select);
         selectBookedRoom.setInt(1, howMany);
 
@@ -349,7 +350,6 @@ public class DbFunctionality {
     }
 
     /**
-     *
      * @param requestedUserID
      * @param connection
      * @return ArrayList with order objects.
@@ -380,8 +380,7 @@ public class DbFunctionality {
         //returns the list of order objects.
         return orders;
     }
-
-    public ResultSet getOrdersFromRoom(int roomID, String substring, Connection connection) {
-        
-    }
 }
+
+
+

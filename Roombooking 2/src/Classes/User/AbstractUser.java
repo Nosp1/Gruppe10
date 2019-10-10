@@ -2,6 +2,10 @@ package Classes.User;
 
 import Classes.Order;
 import Classes.UserType;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public abstract class AbstractUser {
@@ -39,6 +43,7 @@ public abstract class AbstractUser {
     }
 
     public void showOrders() {
+        //todo add print outwriter not sout.out.
         //Viser orders
         for(Order o: orders) {
             System.out.println(o);
