@@ -8,6 +8,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+/**
+ *
+ */
 public abstract class AbstractUser {
     /*
     fields

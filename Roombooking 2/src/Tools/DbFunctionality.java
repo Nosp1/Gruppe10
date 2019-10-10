@@ -157,7 +157,9 @@ public class DbFunctionality {
         getUser.setString(1, userEmail);
         ResultSet resultSet = getUser.executeQuery();
         resultSet.next();
-        return Integer.parseInt(resultSet.getString(1));
+        //todo funker dette?
+        getUser.closeOnCompletion();
+         return Integer.parseInt(resultSet.getString(1));
 
     }
 
@@ -356,7 +358,6 @@ public class DbFunctionality {
      * @throws SQLException
      * @throws ParseException
      */
-
     public ArrayList<Order> getOrderListByUserID(int requestedUserID, Connection connection) throws SQLException, ParseException {
         //creates database query
         PreparedStatement selectUserID;
