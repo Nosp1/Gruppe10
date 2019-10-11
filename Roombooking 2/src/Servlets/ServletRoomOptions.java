@@ -59,7 +59,8 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
                 //todo add boolean statement to confirm deletion.
-                //dbFunctionality.deleteRoom(roomID, connection);
+                int roomID = Integer.parseInt(request.getParameter("Delete_roomID"));
+                dbFunctionality.deleteRoom(roomID, connection);
                 addHomeLoggedInButton(out);
 
             } else if (action.contains("show")) {

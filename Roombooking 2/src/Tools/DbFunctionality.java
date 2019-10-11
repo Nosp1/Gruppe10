@@ -242,6 +242,13 @@ public class DbFunctionality {
      * @throws SQLException
      */
     public boolean deleteRoom(int roomID, Connection connection) throws SQLException {
+        // Delete orders associated with the room first, so there is no foreign key dependency.
+        PreparedStatement stmt;
+        String deleteOrder = "delete from `order` where Room_ID = ?";
+        stmt = connection.prepareStatement(deleteOrder);
+        stmt.setInt(1, roomID);
+        stmt.executeUpdate();
+
         PreparedStatement deleteRoom;
         // Prepare a delete-query for execution,
         String delete = "delete from Rooms where Room_ID = ?";
