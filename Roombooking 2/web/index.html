@@ -164,7 +164,7 @@
 <script>
     $('#search-form').on('submit', function(evt) {
         evt.preventDefault();
-        const value = $('.navbar-form .form-group input[type="text"]').val();
+        let value = $('.navbar-form .form-group input[type="text"]').val();
         console.log('value = ', value);
         $.get('./Servlets.ServletSearch?value=' + value, function(response) {
             console.log('response = ', response);
