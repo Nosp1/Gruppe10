@@ -41,7 +41,7 @@
                     </ul>
                 </li>
             </ul>
-            <form class="navbar-form navbar-left">
+            <form class="navbar-form navbar-left" id="search-form">
                 <div class="form-group">
                     <input type="text" class="form-control" placeholder="Search">
                 </div>
@@ -161,5 +161,15 @@
         integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
         crossorigin="anonymous"></script>
 <script src="bootstrap.js"></script>
+<script>
+    $('#search-form').on('submit', function(evt) {
+        evt.preventDefault();
+        const value = $('.navbar-form .form-group input[type="text"]').val();
+        console.log('value = ', value);
+        $.get('./Servlets.ServletSearch?value=' + value, function(response) {
+            console.log('response = ', response);
+        })
+    });
+</script>
 </body>
 </html>
