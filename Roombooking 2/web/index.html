@@ -70,14 +70,14 @@
 <div class="container">
     <div class="jumbotron">
         <h1 id="welcome" class="special-text">Welcome to Roombooking</h1>
-        <!-- Log in button that collapses class: #CollapseLogin -->
+        <!-- Log in button that collapses class: #collapseLogin -->
         <button class="btn btn-success btn-lg" id="jumbotronButton" data-toggle="collapse" href="#collapseLogin" role="button"
                 aria-expanded="false"
                 aria-controls="#collapseLogin">Login
         </button>
         <!--  Register button that collapses class: #CollapseLogin -->
 
-        <button class="btn btn-success btn-lg" id="jumbronButton2" data-toggle="collapse" href="#collapseExample" role="button"
+        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseExample" role="button"
                 aria-expanded="false" aria-controls="collapseExample">Register
         </button>
     </div>
@@ -135,15 +135,15 @@
         </div>
     </form>
 </div>
-<!-- testing  login function on same html Todo: add Navbar User glyphicon into AbstractServlet navbar -->
+<!-- login function on same html -->
 
 <div class="collapse container" id="collapseLogin">
     <form action="./Servlets.ServletLogin" method="post">
         <h1>Log in</h1>
 
         <div>
-            <label for="userName">Username</label>
-            <input type="text" id="userName" name="username">
+            <label for="loginemail">Email</label>
+            <input type="text" id="loginemail" name="loginemail">
         </div>
         <div>
             <label for="loginpassword">Password</label>
