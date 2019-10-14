@@ -294,10 +294,6 @@ public class DbFunctionality {
     }
 
 
-    public ResultSet editOrderTime(Order order, Connection connection) throws SQLException, ParseException {
-
-    }
-
     /**
      * @param orderID    The ID of the Order you want to delete
      * @param connection The Connection object with the connection to the database
@@ -344,6 +340,24 @@ public class DbFunctionality {
 
     public ResultSet getMostActiveUsers(Connection connection) throws SQLException {
         return getMostActiveUsers(5, connection);
+    }
+
+    public void updateOrderInformation (Order order, Connection connection) throws SQLException {
+        PreparedStatement updateOrderPS;
+
+        System.out.println("update order started");
+
+        String updateOrder = "UPDATE `order` "
+                + "set Timestamp_start ?"
+                + "WHERE order_id = ?";
+
+        updateOrderPS = connection.prepareStatement(updateOrder);
+        updateOrderPS.setTimestamp(1, order.getTimestampStart());
+        updateOrderPS.setTimestamp(1, order.getTimestampEnd());
+
+
+        updateOrderPS.execute();
+
     }
 
     public ResultSet getMostActiveUsers(int howMany, Connection connection) throws SQLException {
