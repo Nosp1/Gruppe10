@@ -381,6 +381,26 @@ public class DbFunctionality {
         //returns the list of order objects.
         return orders;
     }
+
+    public void getTodayOrders(int orderId, PrintWriter out, Connection connection) throws SQLException {
+        // Select all elements from the Order table,
+        String strSelect = "SELECT * FROM `order` WHERE DATE_FORMAT(Timestamp_start, '%Y-%m-%d') = CURDATE() AND Room_ID="+ Integer.toString(orderId);
+        PreparedStatement statement = connection.prepareStatement(strSelect);
+        // and store them in a ResultSet.
+        ResultSet resultSet = statement.executeQuery(strSelect);
+        // Loop through all elements of the ResultSet
+        out.print("[");
+        int i = 0;
+        while (resultSet.next()) {
+            if (i > 0) {
+                out.print(",");
+            }
+            // and print the Room name and building of the current result.
+            out.print("{\"start\": \"" + resultSet.getTimestamp("Timestamp_start") + "\", \"end\": \"" + resultSet.getTimestamp("Timestamp_end") + "\"}");
+            i++;
+        }
+        out.print("]");
+    }
 }
 
 
