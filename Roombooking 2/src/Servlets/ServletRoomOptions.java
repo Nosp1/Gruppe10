@@ -50,22 +50,23 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 int maxCapacity = Integer.parseInt(request.getParameter("maxCapacity"));
                 System.out.println("maxCapacity: " + maxCapacity);
                 boolean hasTavle = false;
-                boolean hasProsjektor = false;
-                //retrieves the checkbox values for "hasTavle" and "hasProsjektor"
+                boolean hasProjektor = false;
+                /*retrieves the checkbox values for "hasTavle" and "hasProsjektor", not sent
+                with the request if they are unchecked, so set them to true if they are not null */
                 String[] values = request.getParameterValues("hasTavle");
                 if(values != null) {
                     hasTavle = true;
                 }
                 System.out.println("hasTavle: " + hasTavle);
                 
-                values = request.getParameterValues("hasProsjektor");
+                values = request.getParameterValues("hasProjektor");
                 if(values != null) {
-                    hasProsjektor = true;
+                    hasProjektor = true;
                 }
-                System.out.println("hasProsjektor: " + hasProsjektor);
+                System.out.println("hasProjektor: " + hasProjektor);
 
                 // Opprett et Grouproom objekt fra dataen hentet fra HTML formen
-                AbstractRoom room = new Grouproom(roomID, roomName, roomBuilding, maxCapacity, hasTavle, hasProsjektor);
+                AbstractRoom room = new Grouproom(roomID, roomName, roomBuilding, maxCapacity, hasTavle, hasProjektor);
                 // TODO: Bruker kun grupperom typen for nå
                 //Adds the room to the database
                 dbFunctionality.addRoom(room, connection);

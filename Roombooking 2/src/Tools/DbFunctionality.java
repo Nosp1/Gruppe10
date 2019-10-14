@@ -233,11 +233,13 @@ public class DbFunctionality {
         String strSelect = "Select * from Rooms";
         PreparedStatement statement = connection.prepareStatement(strSelect);
         ResultSet resultSet = statement.executeQuery(strSelect);
-        out.print("Your results are:" + "<br>");
+        out.print("Your results are:" + "<br><br>");
         while (resultSet.next()) {
-            out.print(resultSet.getString("Room_ID") + " : " + resultSet.getString("Room_building") + "<br>");
+            out.println(resultSet.getString("Room_ID") + " : " + resultSet.getString("Room_name"));
+            out.println("Plasser: " + resultSet.getString("Room_maxCapacity") + "<br>");
+            out.println("Tavle: " + resultSet.getString("Tavle"));
+            out.println("Projektor: " + resultSet.getString("Projektor") + "<br><br>");
         }
-
     }
 
     public void addOrder(Order order, Connection connection) throws SQLException {
