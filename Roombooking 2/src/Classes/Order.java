@@ -65,14 +65,6 @@ public class Order {
         this.timestampEnd = timestampEnd;
     }
 
-    public Order(int orderID, String timestampStartTime, String timestampEndTime) throws ParseException {
-        this.id = orderID;
-        this.timestampStart = getTimestampFromString(timestampStartTime);
-        this.timestampEnd = getTimestampFromString(timestampEndTime);
-
-
-    }
-
     public boolean intersects(Order other) {
         /* compareTo returnerer mindre enn 0 hvis tidspunktet er før other,
          * 0 hvis tidspunktene er like, og større enn 0 hvis tidspunktet

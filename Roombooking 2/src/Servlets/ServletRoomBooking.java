@@ -114,23 +114,19 @@ public class ServletRoomBooking extends AbstractPostServlet {
 
 
             } else if (action.contains("update")) {
-                String formOrderID = ( request.getParameter("Update_orderID"));
-                int orderID = Integer.parseInt(formOrderID);
-                String timestampStartTime = request.getParameter("Update_Timestamp_start_time");
-                String timestampEndTime = request.getParameter("Update_Timestamp_end_time");
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
-                Order order = new Order(orderID,timestampStartTime, timestampEndTime);
-                dbFunctionality.updateOrderInformation(order,connection);
 
                 // FØRST HENT FRAM FRA Databasen, deretter OPPDATERE INFO OG Databasen.
 
-
+                int orderID = dbFunctionality.getOrderID(connection);
+                int update = dbFunctionality.updateOrderInformation(orderID, connection);
 
                 // Hent roomID, Timestamp_start og _end for å sjekke reservasjonen
 
-
+                String timestampStartTime = request.getParameter("Update_Timestamp_start_time");
+                String timestampEndTime = request.getParameter("Update_Timestamp_end_time");
 
 
             }
