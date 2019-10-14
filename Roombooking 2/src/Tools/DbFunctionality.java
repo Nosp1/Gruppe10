@@ -348,14 +348,13 @@ public class DbFunctionality {
         System.out.println("update order started");
 
         String updateOrder = "UPDATE `order` "
-                + "set Timestamp_start ?"
+                + "set Timestamp_start = ?"
+               // + "set Timestamp_end = ?"
                 + "WHERE order_id = ?";
 
         updateOrderPS = connection.prepareStatement(updateOrder);
         updateOrderPS.setTimestamp(1, order.getTimestampStart());
-        updateOrderPS.setTimestamp(1, order.getTimestampEnd());
-
-
+        //updateOrderPS.setTimestamp(1, order.getTimestampEnd());
         updateOrderPS.execute();
 
     }
