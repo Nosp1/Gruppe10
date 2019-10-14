@@ -20,7 +20,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="index.html">Roombooking</a>
+            <a class="navbar-brand" href="loggedIn.html">Roombooking</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -96,6 +96,8 @@
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseReserveRoom" role="button"
                 aria-controls="#collapseReserveRoom">Reserve a room
         </button>
+        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseCancelRoom" role="button"
+        aria-controls="#collapseCancelRoom">Cancel a booking</button>
     </div>
 </div>
 <!-- Submit button for Browse -->
@@ -182,6 +184,22 @@
         </div>
     </form>
 
+</div>
+<!-- Form for Cancel a booking -->
+<div class="collapse container" id="collapseCancelRoom">
+    <form action="./Servlets.ServletRoomOptions" method="post">
+        <h1>
+            Cancel booking
+        </h1>
+        <div>
+            <label for="Cancel_Order_ID">Order ID</label>
+            <input type="text" id="Cancel_Order_ID" name="Cancel_Order_ID">
+        </div>
+        <div>
+            <input class="submit btn-default btn-lg" type="submit" name="action" value="cancel">
+        </div>
+
+    </form>
 </div>
 
 <script

@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -29,6 +30,10 @@ public class ServletRoomOptions extends AbstractPostServlet {
             printNav(out);
             //retrieves the value of button Add Room
             String action = request.getParameter("action").toLowerCase();
+            HttpSession httpSession = request.getSession();
+            String userName = (String) httpSession.getAttribute("userEmail");
+            System.out.println(userName
+            );
 
             if (action.contains("add")) {
                 DbTool dbTool = new DbTool();
@@ -53,17 +58,31 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 // dispatcher deg tilbake til loggedin istedenfor knapp? for mer flytt og mindre klikks
                 //prints return button.
                 addHomeLoggedInButton(out);
-            } else if (action.contains("delete")) {
-                // Disse klassene trengs
+            } else if (action.contains("delete room")) {
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
                 //todo add boolean statement to confirm deletion.
-                int roomID = Integer.parseInt(request.getParameter("Delete_roomID"));
+                //todo Cannot delete room because orders with the room exists.
+
                 dbFunctionality.deleteRoom(roomID, connection);
                 addHomeLoggedInButton(out);
 
-            } else if (action.contains("show")) {
+            } else if (action.contains("cancel")) {
+                //todo add documentation
+                int orderID = Integer.parseInt( request.getParameter("Cancel_Order_ID"));
+                DbTool dbTool = new DbTool();
+                Connection connection = dbTool.dbLogIn(out);
+                DbFunctionality dbFunctionality = new DbFunctionality();
+
+                if (dbFunctionality.deleteOrder(orderID,connection)) {
+                    out.println("Order canceled ");
+                   addHomeLoggedInButton(out);
+
+                }
+
+            }
+            else if (action.contains("show")) {
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
@@ -74,6 +93,8 @@ public class ServletRoomOptions extends AbstractPostServlet {
             } else if (action.contains("gotoprofile")) {
                 ServletContext servletContext = getServletContext();
                 //todo Send session with Username
+                HttpSession session = request.getSession();
+                session.setAttribute("userEmail", userName);
                 servletContext.getRequestDispatcher("/profile.html").forward(request, response);
 
             }
