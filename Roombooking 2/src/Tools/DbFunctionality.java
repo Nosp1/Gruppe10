@@ -1,16 +1,18 @@
 package Tools;
 
-import Classes.Rooms.AbstractRoom;
 import Classes.Email.TLSEmail;
 import Classes.Order;
+import Classes.Rooms.AbstractRoom;
 import Classes.User.AbstractUser;
+import Classes.User.Student;
 import Passwords.PasswordHashAndCheck;
 
 import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.*;
-
+import java.text.ParseException;
+import java.util.ArrayList;
 
 /**
  * handles the queries to and from the database.
@@ -20,6 +22,7 @@ import java.sql.*;
 public class DbFunctionality {
     Statement statement;
     PasswordHashAndCheck passwordHashAndCheck;
+
 
     public DbFunctionality() {
         passwordHashAndCheck = new PasswordHashAndCheck();
@@ -43,11 +46,12 @@ public class DbFunctionality {
             e.printStackTrace();
         }
     }
-    public boolean deleteAdminEmail (String adminUser, Connection connection) throws SQLException {
+
+    public boolean deleteAdminEmail(String adminUser, Connection connection) throws SQLException {
         PreparedStatement deleteAdminUser;
         String delete = "delete from  Email where Email_name = ?";
         deleteAdminUser = connection.prepareStatement(delete);
-        deleteAdminUser.setString(1,adminUser);
+        deleteAdminUser.setString(1, adminUser);
         int result = deleteAdminUser.executeUpdate();
         return result == 1;
 
@@ -65,38 +69,25 @@ public class DbFunctionality {
         return null;
     }
 
-    /**
-     * The method addUser is used to insert a User object into the database
-     * @param user The user object to be inserted into the database. Must be a subclass of AbstractUser
-     * @param conn The Connection object with the connection to the database
-     * @throws SQLException
-     * @throws NoSuchAlgorithmException
-     * @throws InvalidKeySpecException
-     */
     public void addUser(AbstractUser user, Connection conn) {
         PreparedStatement insertNewUser;
 
         try {
-            String ins = "insert into User (User_firstName, User_lastName, User_email, User_dob, User_password, User_salt) " +
-                    "values (?,?,?,?,?,?)";
-            /* conn.prepareStatement takes a String with an SQL query, and returns a PreparedStatement object
-            with the query's parameters and values. */
+            String ins = "insert into User (User_firstName, User_lastName, User_email, User_dob, User_password, User_salt) values (?,?,?,?,?,?)";
             insertNewUser = conn.prepareStatement(ins);
-            /* setString applies the User object's data to the values of the SQL query.
-            setInt can be used for integer numbers, and there are other set methods for different data types. */
             insertNewUser.setString(1, user.getFirstName());
             insertNewUser.setString(2, user.getLastName());
             insertNewUser.setString(3, user.getUserName());
             insertNewUser.setString(4, user.getDob());
             /* We create a hashed version of the password instead of storing the actual password in the database.
-            This is to make it impossible to retrieve your password from the database.  */
+            This is to make it impossible to retrieve your password from the database. */
             String hashing = passwordHashAndCheck.stringToSaltedHash(user.getPassword());
-            // The whole string is stored in the database as "<salt>:<hash-code>"
+            // store the whole string in the database
             insertNewUser.setString(5, hashing);
-            // To store the salt we split the string by ":", which returns a String array with the salt on [0].
+            // split by ":" because method returns <salts>:<hashed password>
             String[] hashParts = hashing.split(":");
+            // store the salt in the databse
             insertNewUser.setString(6, hashParts[0]);
-            // Call the execute method to perform the query.
             insertNewUser.execute();
 
         } catch (SQLException | NoSuchAlgorithmException | InvalidKeySpecException e) {
@@ -105,189 +96,211 @@ public class DbFunctionality {
     }
 
     /**
-     * TODO: Refactor to use the User object
-     * @param userEmail  The user's attempted login email
+     * @param username   The user's attempted login email
      * @param password   The user's attempted password
-     * @param connection The Connection object with the connection to the database
+     * @param connection The Connection object to a given database
      * @return true if the input password matches the stored password for a given email
      * @throws SQLException
      * @throws InvalidKeySpecException
      * @throws NoSuchAlgorithmException
      */
-    public boolean checkUser(String userEmail, String password, Connection connection)
-            throws SQLException, InvalidKeySpecException, NoSuchAlgorithmException {
-        PreparedStatement checkUser;
+    public boolean checkUser(String username, String password, Connection connection) throws SQLException, InvalidKeySpecException, NoSuchAlgorithmException {
+        PreparedStatement stmt;
         String query = "select * from user where User_email = ?";
-        checkUser = connection.prepareStatement(query);
-        checkUser.setString(1, userEmail);
-        // Check if the attempted email matches any emails in the database.
-        ResultSet resultSet = checkUser.executeQuery();
-        // Loop through the result of the query to look for an email matching the attempted login.
+        stmt = connection.prepareStatement(query);
+        stmt.setString(1, username);
+        // Check if the attempted email matches any emails in the database
+        ResultSet resultSet = stmt.executeQuery();
         while (resultSet.next()) {
-            if (resultSet.getString("User_email").toLowerCase().matches(userEmail)) {
-                // If the email is found, get the hashed password from the database,
+            if (resultSet.getString("User_email").toLowerCase().matches(username)) {
+                // If the email is found, store the hashed string in the variabled "storedPassword"
                 String storedPassword = resultSet.getString("User_password");
-                // and check if it matches the attempted password.
+                /* Return true or false if the input password matches the stored password
+                   after hashing. */
                 return passwordHashAndCheck.validatePassword(password, storedPassword);
             } else {
-                // If no matching email is found, return false.
+                // No user with that email found
                 return false;
             }
         }
-        // Return false if there are no elements in the ResultSet.
+        // Return false if there is no result set(?)
         return false;
+    }
+
+    public AbstractUser getUser(String requestedUserEmail, Connection connection) throws SQLException {
+        PreparedStatement selectUser;
+        //select the User from the User table with the corresponding User_ID
+        String select = "select * from user where User_email = ?";
+        selectUser = connection.prepareStatement(select);
+        selectUser.setString(1, requestedUserEmail);
+        ResultSet resultSet = selectUser.executeQuery();
+        resultSet.next();
+        String firstName = resultSet.getString("User_firstName");
+        String lastName = resultSet.getString("User_lastName");
+        String userName = resultSet.getString("User_email");
+        String dob = resultSet.getNString("User_dob");
+        String password = resultSet.getString("User_password");
+
+        return new Student(firstName, lastName, userName, password, dob);
+    }
+
+    /**
+     * @param userEmail  the users Email address
+     * @param connection connection to db
+     * @return userID as int.
+     * @throws SQLException
+     */
+    public int getUserId(String userEmail, Connection connection) throws SQLException {
+        PreparedStatement getUser;
+        String query = "Select User_ID from user where User_Email = (?)";
+        getUser = connection.prepareStatement(query);
+        getUser.setString(1, userEmail);
+        ResultSet resultSet = getUser.executeQuery();
+        resultSet.next();
+        //todo funker dette?
+        getUser.closeOnCompletion();
+         return Integer.parseInt(resultSet.getString(1));
+
     }
 
     /**
      * The method deleteUser is used to delete a user from the database. This method is for admins only
+     *
      * @param userEmail  The email of the user you want to delete
      * @param connection The Connection object with the connection to the database
      * @return true if something was deleted, false if nothing was affected
      * @throws SQLException
      */
-    public boolean deleteUser(String userEmail, Connection connection) throws SQLException {
+    public boolean deleteUserByEmail(String userEmail, Connection connection) throws SQLException {
         PreparedStatement deleteUser;
-        // Prepare a delete-query for execution,
         String delete = "delete from user where User_email = ?";
         deleteUser = connection.prepareStatement(delete);
-        // and set the value of User_email to the given userEmail.
         deleteUser.setString(1, userEmail);
-        // We need to use the executeUpdate method to execute and delete rows from the database.
         int result = deleteUser.executeUpdate();
-        // ExecuteUpdate returns 1 if something is deleted, or 0 otherwise, and we return this as a boolean.
+        // result er 1 hvis noe blir slettet, eller 0 hvis ingenting ble affected
         return result == 1;
     }
 
     /**
-     * The method deleteUser is used to delete a user from the database. This method is for admins only
-     * @param userID     The ID of the user you want to delete
-     * @param connection The Connection object with the connection to the database
-     * @return true if something was deleted, false if nothing was affected
-     * @throws SQLException
-     */
-    public boolean deleteUser(int userID, Connection connection) throws SQLException {
-        PreparedStatement deleteUser;
-        // Prepare a delete-query for execution,
-        String delete = "delete from user where User_ID = ?";
-        deleteUser = connection.prepareStatement(delete);
-        // and set the value of User_ID to the given userID.
-        deleteUser.setInt(1, userID);
-        // We need to use the executeUpdate method to execute and delete rows from the database.
-        int result = deleteUser.executeUpdate();
-        // ExecuteUpdate returns 1 if something is deleted, or 0 otherwise, and we return this as a boolean.
-        return result == 1;
-    }
-
-    /**
-     * The method addRoom is used to insert a Room object into the database.
-     * @param room       The Room object to be added to the database. Must be a subclass of AbstractRoom.
-     * @param connection The Connection object with the connection to the database
+     * @param room       The room to be added to the database. Must be a subclass of AbstractRoom.
+     * @param connection The connection to the database.
      */
     public void addRoom(AbstractRoom room, Connection connection) throws SQLException {
         PreparedStatement insertNewRoom;
 
-        String insert = "insert into Rooms (Room_ID, Room_name, Room_building, Room_maxCapacity) values (?,?,?,?)";
-        insertNewRoom = connection.prepareStatement(insert);
-        // Get the appropriate values from the Room object, and set the query's values accordingly.
+        String ins = "insert into Rooms (Room_ID, Room_name, Room_building, Room_maxCapacity) values (?,?,?,?)";
+        insertNewRoom = connection.prepareStatement(ins);
         insertNewRoom.setInt(1, room.getRoomID());
         insertNewRoom.setString(2, room.getRoomName());
         insertNewRoom.setString(3, room.getRoomBuilding());
-        insertNewRoom.setInt(4, room.getMaxCapacity());
-        // Call the execute method to add the Room to the database.
+        insertNewRoom.setString(4, String.valueOf(room.getMaxCapacity()));
         insertNewRoom.execute();
     }
 
-    /**
-     * The method deleteRoom is used to delete the room with the given roomID. This method is for admins only
-     * @param roomID     The ID of the Room you want to delete
-     * @param connection The Connection object with the connection to the database
-     * @return true if something was deleted, false if nothing was affected
-     * @throws SQLException
-     */
     public boolean deleteRoom(int roomID, Connection connection) throws SQLException {
+        // Delete orders associated with the room first, so there is no foreign key dependency.
+        PreparedStatement stmt;
+        String deleteOrder = "delete from `order` where Room_ID = ?";
+        stmt = connection.prepareStatement(deleteOrder);
+        stmt.setInt(1, roomID);
+        stmt.executeUpdate();
+
         PreparedStatement deleteRoom;
-        // Prepare a delete-query for execution,
         String delete = "delete from Rooms where Room_ID = ?";
         deleteRoom = connection.prepareStatement(delete);
-        // and set the value of Room_ID to the given roomID.
         deleteRoom.setInt(1, roomID);
-        // We need to use the executeUpdate method to execute and delete rows from the database.
         int result = deleteRoom.executeUpdate();
-        // ExecuteUpdate returns 1 if something is deleted, or 0 otherwise, and we return this as a boolean.
+        // result er 1 hvis noe blir slettet, eller 0 hvis ingenting ble affected
         return result == 1;
     }
 
-    /**
-     * The method printRooms is used to print all Rooms in the database to a given PrintWriter
-     * @param out           Where to print the results of the method
-     * @param connection    The Connection object with the connection to the database
-     * @throws SQLException
-     */
     public void printRooms(PrintWriter out, Connection connection) throws SQLException {
-        // Select all elements from the Rooms table,
         String strSelect = "Select * from Rooms";
         PreparedStatement statement = connection.prepareStatement(strSelect);
-        // and store them in a ResultSet.
         ResultSet resultSet = statement.executeQuery(strSelect);
         out.print("Your results are:" + "<br>");
-        // Loop through all elements of the ResultSet
         while (resultSet.next()) {
-            // and print the Room name and building of the current result.
-            out.print(resultSet.getString("Room_name") + " : " + resultSet.getString("Room_building") + "<br>");
+            out.print(resultSet.getString("Room_ID") + " : " + resultSet.getString("Room_building") + "<br>");
         }
 
     }
 
-    /**
-     * The method addOrder is used to insert an Order object into the database
-     * @param order         The Order object to be added to the database.
-     * @param connection    The Connection object with the connection to the database
-     * @throws SQLException
-     */
     public void addOrder(Order order, Connection connection) throws SQLException {
         PreparedStatement insertNewOrder;
+        System.out.println("addOrder started");
 
-        String ins = "insert into `order` (Order_ID, User_ID, Room_ID, Timestamp_start, Timestamp_end) VALUES (?,?,?,?,?)";
+        String ins = "insert into `order` (User_ID, Room_ID, Timestamp_start, Timestamp_end) VALUES (?,?,?,?)";
         insertNewOrder = connection.prepareStatement(ins);
-        insertNewOrder.setInt(1, order.getID());
-        insertNewOrder.setInt(2, order.getUserID());
-        insertNewOrder.setInt(3, order.getRoomID());
-        insertNewOrder.setTimestamp(4, order.getTimestampStart());
-        insertNewOrder.setTimestamp(5, order.getTimestampEnd());
+        insertNewOrder.setInt(1, order.getUserID());
+        insertNewOrder.setInt(2, order.getRoomID());
+        insertNewOrder.setTimestamp(3, order.getTimestampStart());
+        insertNewOrder.setTimestamp(4, order.getTimestampEnd());
         insertNewOrder.execute();
         // TODO ADD RECIEPT METHOD
     }
 
     /**
      * The method getOrder returns an Order object with the requested orderID
+     *
      * @param requestedOrderID The ID of an order in the database
      * @param connection       The Connection object with the connection to the database
      * @return An Order object representing an entry in the Order table of the database
      * @throws SQLException
      */
-    public Order getOrder(int requestedOrderID, Connection connection) throws SQLException {
-        PreparedStatement selectRoom;
+    public Order getOrder(int requestedOrderID, Connection connection) throws SQLException, ParseException {
+        System.out.println("getOrder started. requestedOrderID: " + requestedOrderID);
+        PreparedStatement selectOrder;
         // Select the Order from the Order table with the corresponding Order_ID
-        String select = "select * from `Order` where Order_ID = ?";
-        selectRoom = connection.prepareStatement(select);
-        selectRoom.setInt(1, requestedOrderID);
+        String select = "select * from `order` where Order_ID = ?";
+        selectOrder = connection.prepareStatement(select);
+        selectOrder.setInt(1, requestedOrderID);
         // and store it in a ResultSet.
-        ResultSet resultSet = selectRoom.executeQuery();
+        ResultSet resultSet = selectOrder.executeQuery();
 
         // The resultSet's pointer starts at "nothing", so move it to the next (first, and only) element.
-        resultSet.next();
+        resultSet.first();
         // Get and store the data in local variables,
         int orderID = resultSet.getInt("Order_ID");
+        System.out.println("getOrder orderID: " + orderID);
         int userID = resultSet.getInt("User_ID");
+        System.out.println("getOrder userID: " + userID);
         int roomID = resultSet.getInt("Room_ID");
+        System.out.println("getOrder roomID: " + roomID);
         Timestamp timestampStart = resultSet.getTimestamp("Timestamp_start");
         Timestamp timestampEnd = resultSet.getTimestamp("Timestamp_end");
-        // and return a new Order object with these variables.
+
         return new Order(orderID, userID, roomID, timestampStart, timestampEnd);
     }
 
+
+    public ResultSet getAllOrdersFromRoom(int roomID, Connection connection) throws SQLException {
+        PreparedStatement selectOrders;
+        String select = "select Order_ID, Timestamp_start, Timestamp_end from `order`\n" +
+                "  inner join rooms\n" +
+                "  on `order`.Room_ID = rooms.Room_ID\n" +
+                "  where `order`.Room_ID = ?";
+        selectOrders = connection.prepareStatement(select);
+        selectOrders.setInt(1, roomID);
+        return selectOrders.executeQuery();
+    }
+
+    public ResultSet getOrdersFromRoom(int roomID, String date, Connection connection) throws SQLException, ParseException {
+        // TODO: date burde kunne ta inn et timestamp, og strings formatert som "yyyy-mm-dd hh:ss" og "yyyy-mm-dd"
+        System.out.println("Room_ID recieved: " + roomID);
+        System.out.println("Date as String recieved: " + date);
+        PreparedStatement selectOrders;
+        String select = "select Order_ID, Timestamp_start, Timestamp_end from `order`\n" +
+                "  inner join rooms\n" +
+                "  on `order`.Room_ID = rooms.Room_ID\n" +
+                "  where DATE(`order`.Timestamp_start) like ?\n" +
+                "  and `order`.Room_ID = ?";
+        selectOrders = connection.prepareStatement(select);
+        selectOrders.setString(1, date);
+        selectOrders.setInt(2, roomID);
+        return selectOrders.executeQuery();
+    }
+
     /**
-     *
      * @param orderID    The ID of the Order you want to delete
      * @param connection The Connection object with the connection to the database
      * @return true if something was deleted, false if nothing was affected
@@ -295,15 +308,87 @@ public class DbFunctionality {
      */
     public boolean deleteOrder(int orderID, Connection connection) throws SQLException {
         PreparedStatement deleteOrder;
-        // Prepare a delete-query for execution,
         String delete = "delete from `Order` where Order_ID = ?";
         deleteOrder = connection.prepareStatement(delete);
-        // and set the value of Order_ID to the given orderID.
         deleteOrder.setInt(1, orderID);
-        // We need to use the executeUpdate method to execute and delete rows from the database.
         int result = deleteOrder.executeUpdate();
-        // ExecuteUpdate returns 1 if something is deleted, or 0 otherwise, and we return this as a boolean.
         return result == 1;
     }
 
+    public int getOrderID(Connection connection) throws SQLException {
+        PreparedStatement selectOrderID;
+        String select = "select Order_ID from `order`";
+        selectOrderID = connection.prepareStatement(select);
+        ResultSet resultSet = selectOrderID.executeQuery();
+
+        while (resultSet.next()) {
+            System.out.println("orderID from method: " + (resultSet.getInt("Order_ID") + 1));
+            return resultSet.getInt("Order_ID") + 1;
+        }
+
+        return 1;
+    }
+
+    // TODO: Dokumentere metodene under
+    public ResultSet getMostBookedRoom(Connection connection) throws SQLException {
+        return getMostBookedRoom(5, connection);
+    }
+
+    public ResultSet getMostBookedRoom(int howMany, Connection connection) throws SQLException {
+        PreparedStatement selectBookedRoom;
+        //TODO: teste metoden og implementere i en Servlet
+        String select = "SELECT room_id, COUNT(*) as amount FROM `order` GROUP BY room_id ORDER BY amount DESC LIMIT ?";
+        selectBookedRoom = connection.prepareStatement(select);
+        selectBookedRoom.setInt(1, howMany);
+
+        return selectBookedRoom.executeQuery();
+    }
+
+    public ResultSet getMostActiveUsers(Connection connection) throws SQLException {
+        return getMostActiveUsers(5, connection);
+    }
+
+    public ResultSet getMostActiveUsers(int howMany, Connection connection) throws SQLException {
+        PreparedStatement selectActiveUsers;
+        //TODO: teste metoden og implementere i en Servlet
+        String select = "SELECT user_id, COUNT(*) as amount FROM `order` GROUP BY user_id ORDER BY amount DESC LIMIT ?";
+        selectActiveUsers = connection.prepareStatement(select);
+        selectActiveUsers.setInt(1, howMany);
+
+        return selectActiveUsers.executeQuery();
+    }
+
+    /**
+     * @param requestedUserID
+     * @param connection
+     * @return ArrayList with order objects.
+     * @throws SQLException
+     * @throws ParseException
+     */
+    public ArrayList<Order> getOrderListByUserID(int requestedUserID, Connection connection) throws SQLException, ParseException {
+        //creates database query
+        PreparedStatement selectUserID;
+        //selects all orders by id
+        String query = "select * from `order` where User_ID= ?";
+        selectUserID = connection.prepareStatement(query);
+        selectUserID.setInt(1, requestedUserID);
+        ResultSet resultSet = selectUserID.executeQuery();
+        //crates list for orders
+        ArrayList<Order> orders = new ArrayList<>();
+        //inserts order objects into list
+        while (resultSet.next()) {
+            int orderID = resultSet.getInt("Order_ID");
+            int userID = resultSet.getInt("User_ID");
+            int roomID = resultSet.getInt("Room_ID");
+            Timestamp timestampStart = resultSet.getTimestamp("Timestamp_start");
+            Timestamp timestampEnd = resultSet.getTimestamp("Timestamp_end");
+            Order order = new Order(orderID, userID, roomID, timestampStart, timestampEnd);
+            orders.add(order);
+        }
+        //returns the list of order objects.
+        return orders;
+    }
 }
+
+
+

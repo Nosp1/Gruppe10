@@ -6,9 +6,10 @@ import Tools.DbTool;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
@@ -30,13 +31,15 @@ import java.sql.SQLException;
 
 @WebServlet(name = "Servlets.ServletLogin", urlPatterns = {"/Servlets.ServletLogin"})
 public class ServletLogin extends AbstractServlet {
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
+            System.out.println("Login attempt started");
             //prints start of html tags.
             printNav(out);
             //gets the username -> email in this case.
-            String userName = request.getParameter("username").toLowerCase();
+            String userName = request.getParameter("loginemail").toLowerCase();
             String lowercaseUsername = userName.toLowerCase();
             //gets the users password.
             String password = request.getParameter("loginpassword");
@@ -56,6 +59,8 @@ public class ServletLogin extends AbstractServlet {
                     out.print("<br>");
                     //redirects the user to the loggedIn.html
                     ServletContext servletContext = getServletContext();
+                    HttpSession session = request.getSession();
+                    session.setAttribute("userEmail",userName);
                     servletContext.getRequestDispatcher("/loggedIn.html").forward(request, response);
                     //if the login fails
                 } else {
@@ -69,7 +74,7 @@ public class ServletLogin extends AbstractServlet {
 
             }
             //prints script to establish connection between bootstrap and html
-            scriptBootstrap(out);
+            addBootStrapFunctionality(out);
             out.print("</body>");
             out.print("</html>");
             //prints errors: if the database fails, if the password is wrong.

@@ -1,8 +1,7 @@
 package Servlets;
 
-import Classes.AbstractRoom;
-import Classes.Grouproom;
-import Classes.Order;
+import Classes.Rooms.AbstractRoom;
+import Classes.Rooms.Grouproom;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 
@@ -11,11 +10,12 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Timestamp;
+
 
 /**
  * Author Hanne, Henriette, Hedda, Trym, Brisdalen
@@ -30,8 +30,16 @@ public class ServletRoomOptions extends AbstractPostServlet {
             printNav(out);
             //retrieves the value of button Add Room
             String action = request.getParameter("action").toLowerCase();
+            HttpSession httpSession = request.getSession();
+            String userName = (String) httpSession.getAttribute("userEmail");
+            System.out.println(userName
+            );
 
-            if(action.contains("add")) {
+            if (action.contains("add")) {
+                DbTool dbTool = new DbTool();
+                //establishes connection to database
+                Connection connection = dbTool.dbLogIn(out);
+                DbFunctionality dbFunctionality = new DbFunctionality();
                 //retrieves the data in the text-box Add RoomID
                 int roomID = Integer.parseInt(request.getParameter("Add_roomID"));
                 //retrieves the Room name from the text-box Room Name
@@ -41,62 +49,61 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 //retrieves the room capacity from the text-box Room Capacity
                 int maxCapacity = Integer.parseInt(request.getParameter("maxCapacity"));
 
-                DbTool dbTool = new DbTool();
-                //establishes connection to database
-                Connection connection = dbTool.dbLogIn(out);
-                DbFunctionality dbFunctionality = new DbFunctionality();
-                //
+                // Opprett et Grouproom objekt fra dataen hentet fra HTML formen
                 AbstractRoom room = new Grouproom(roomID, roomName, roomBuilding, maxCapacity);
                 // TODO: Bruker kun grupperom typen for nå
                 //Adds the room to the database
                 dbFunctionality.addRoom(room, connection);
-                //TODO: legg til annen knapp for å forbli logget inn.
+                //TODO: Kanskje legge til if statement som
+                // dispatcher deg tilbake til loggedin istedenfor knapp? for mer flytt og mindre klikks
                 //prints return button.
-                addHomeButton(out);
-
-            // TODO: Lag HTML side med action som fjerner et rom
-            } else if(action.contains("delete")) {
-                //retrieves the
-                int roomID = Integer.parseInt(request.getParameter("Delete_roomID"));
+                addHomeLoggedInButton(out);
+            } else if (action.contains("delete room")) {
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
+                //todo add boolean statement to confirm deletion.
+                //todo Cannot delete room because orders with the room exists.
 
                 dbFunctionality.deleteRoom(roomID, connection);
+                addHomeLoggedInButton(out);
 
-                addHomeButton(out);
-
-            } else if(action.contains("show")) {
+            } else if (action.contains("cancel")) {
+                //todo add documentation
+                int orderID = Integer.parseInt( request.getParameter("Cancel_Order_ID"));
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
-                dbFunctionality.printRooms(out, connection);
 
+                if (dbFunctionality.deleteOrder(orderID,connection)) {
+                    out.println("Order canceled ");
+                   addHomeLoggedInButton(out);
+
+                }
+
+            }
+            else if (action.contains("show")) {
+                DbTool dbTool = new DbTool();
+                Connection connection = dbTool.dbLogIn(out);
+                DbFunctionality dbFunctionality = new DbFunctionality();
+
+                dbFunctionality.printRooms(out, connection);
+                addHomeLoggedInButton(out);
 
             } else if (action.contains("gotoprofile")) {
                 ServletContext servletContext = getServletContext();
-                servletContext.getRequestDispatcher("/profile.html").forward(request,response);
+                //todo Send session with Username
+                HttpSession session = request.getSession();
+                session.setAttribute("userEmail", userName);
+                servletContext.getRequestDispatcher("/profile.html").forward(request, response);
 
-            } else if(action.contains("reserve")) {
-                int roomId = Integer.parseInt(request.getParameter("Reserve_RoomId"));
-                Timestamp timestampStart = Timestamp.valueOf(request.getParameter("Reserve_startTime"));
-                Timestamp timeestampEnd = Timestamp.valueOf(request.getParameter("Reserve_endTime"));
-
-                DbTool dbTool = new DbTool();
-                Connection connection = dbTool.dbLogIn(out);
-                DbFunctionality dbFunctionality = new DbFunctionality();
-
-                // TODO ADD AUTOMATIC ORDERID AND USERID
-                Order order = new Order(1,1, roomId, timestampStart, timeestampEnd);
-                dbFunctionality.addOrder(order, connection);
             }
 
-            scriptBootstrap(out);
+            addBootStrapFunctionality(out);
             out.print("</body>");
             out.print("</html>");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
 }

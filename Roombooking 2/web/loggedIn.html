@@ -20,7 +20,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="index.html">Roombooking</a>
+            <a class="navbar-brand" href="loggedIn.html">Roombooking</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -96,6 +96,8 @@
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseReserveRoom" role="button"
                 aria-controls="#collapseReserveRoom">Reserve a room
         </button>
+        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseCancelRoom" role="button"
+        aria-controls="#collapseCancelRoom">Cancel a booking</button>
     </div>
 </div>
 <!-- Submit button for Browse -->
@@ -107,7 +109,7 @@
         </div>
     </form>
 </div>
-<!-- Form for Add a room -->
+<!-- Form for Add a room TODO: Ikke legg til roomID selv? burde autoinkrementere-->
 <div class="collapse container" id="collapseAddRoom">
     <form action="./Servlets.ServletRoomOptions" method="post">
         <h1>Add a room</h1>
@@ -116,7 +118,6 @@
             <input type="number" id="Add_roomID" name="Add_roomID">
         </div>
         <div>
-            <!-- TODO: Change to roomName -->
             <label for="Add_roomName">Room Name</label>
             <input type="text" id="Add_roomName" name="Add_roomName">
         </div>
@@ -129,7 +130,7 @@
             <input type="number" id="maxCapacity" name="maxCapacity">
         </div>
         <div>
-            <input class="submit btn-default btn-lg" type="submit" name="action" value="Add room">
+            <input class="submit btn-default btn-lg" type="submit" name="action" value="Add_room">
         </div>
     </form>
 </div>
@@ -149,21 +150,56 @@
 
 <!-- Form for Reserve a room -->
 <div class="collapse container" id="collapseReserveRoom">
-    <form action="./Servlets.ServletRoomOptions" method="post">
+    <form action="./Servlets.ServletRoomBooking" method="post">
         <h1>Reserve a room</h1>
         <div>
-            <label for="Reserve_roomID">Room ID</label>
-            <input type="text" id="Reserve_roomID" name="Reserve_roomID">
-            <label for="Reserve_startTime"start Time</label>
-            <input type="time" id="Reserve_startTime" name=Reserve_startTime">
-            <label for="Reserve_endTime"End Time</label>
-            <input type="time" id="Reserve_endTime" name="Reserve_endTime">
+            <label for="Reserve_Room_ID">Room ID</label>
+            <input type="text" id="Reserve_Room_ID" name="Reserve_Room_ID">
         </div>
+
+        <div>
+            <label for="Reserve_Timestamp_start_date" for="Reserve_Timestamp_start_time">Booking start</label>
+            <input type="date" id="Reserve_Timestamp_start_date" name="Reserve_Timestamp_start_date" onfocusout="updateEndDate()"/>
+            <span class="validateReserveTime">
+                <input type="time" id="Reserve_Timestamp_start_time" class="ReserveTime" name="Reserve_Timestamp_start_time"
+                       min="08:00" max="22:00" onfocusout="checkInputStart(event)"/>
+            </span>
+        </div>
+
+        <div>
+            <label for="Reserve_Timestamp_end_date" for="Reserve_Timestamp_end_time">Booking end</label>
+            <input type="date" id="Reserve_Timestamp_end_date" name="Reserve_Timestamp_end_date" tabindex="-1" readonly="readonly"/>
+            <span class="validateReserveTime">
+                <input type="time" id="Reserve_Timestamp_end_time" class="ReserveTime" name="Reserve_Timestamp_end_time"
+                       min="08:00" max="22:00" onfocusout="checkInputEnd(event)"/>
+            </span>
+        </div>
+
         <div>
             <input class="submit btn-default btn-lg" type="submit" name="action" value="Reserve room">
         </div>
+
+        <div class="timeLimitMessage" style="display: none;">
+            <p> The time must be between 08:00 and 21:59 </p>
+        </div>
     </form>
 
+</div>
+<!-- Form for Cancel a booking -->
+<div class="collapse container" id="collapseCancelRoom">
+    <form action="./Servlets.ServletRoomOptions" method="post">
+        <h1>
+            Cancel booking
+        </h1>
+        <div>
+            <label for="Cancel_Order_ID">Order ID</label>
+            <input type="text" id="Cancel_Order_ID" name="Cancel_Order_ID">
+        </div>
+        <div>
+            <input class="submit btn-default btn-lg" type="submit" name="action" value="cancel">
+        </div>
+
+    </form>
 </div>
 
 <script
@@ -171,6 +207,7 @@
         integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
         crossorigin="anonymous"></script>
 <script src="bootstrap.js"></script>
+<script src="date-time-reserve.js"></script>
 
 </body>
 </html>
