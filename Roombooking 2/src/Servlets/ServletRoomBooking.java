@@ -15,10 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.text.ParseException;
 
 /**
@@ -114,23 +111,32 @@ public class ServletRoomBooking extends AbstractPostServlet {
 
 
             } else if (action.contains("update")) {
-                String formOrderID = ( request.getParameter("Update_orderID"));
+
+                // Henter order ID
+                String formOrderID = request.getParameter("Update_orderID");
                 int orderID = Integer.parseInt(formOrderID);
+
+                // Henter Timestamp sin start dato og tid og gjør dem om til en variabel
+                String timestampStartDate = request.getParameter("Update_Timestamp_start_date");
                 String timestampStartTime = request.getParameter("Update_Timestamp_start_time");
+                String timestampStart = timestampStartDate + " " + timestampStartTime;
+
+                // Henter Timestamp sin slutt dato og tid og gjør dem om til en variabel
+                String timestampEndDate = request.getParameter("Update_Timestamp_end_date");
                 String timestampEndTime = request.getParameter("Update_Timestamp_end_time");
+                String timestampEnd = timestampEndDate + " " + timestampEndTime;
+
+                // Oppretter en kobling med databasen
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
-                Order order = new Order(orderID,timestampStartTime, timestampEndTime);
-                dbFunctionality.updateOrderInformation(order,connection);
 
-                // FØRST HENT FRAM FRA Databasen, deretter OPPDATERE INFO OG Databasen.
-
+                // Lager en ny ordre og gir den variabelnavn order
+                Order order = new Order(orderID, timestampStart, timestampEnd);
 
 
-                // Hent roomID, Timestamp_start og _end for å sjekke reservasjonen
-
-
+                //Bruker metoden i dbfunctionality til å update ordren.
+                dbFunctionality.updateOrderInformation(order, connection);
 
 
             }

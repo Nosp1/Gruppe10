@@ -220,9 +220,18 @@
 
                 <div>
                     <label for="Update_Timestamp_start_date" for="Update_Timestamp_start_time">Update the booking start</label>
-                    <input type="date" id="Update_Timestamp_start_date" name="Update_Timestamp_start_date" onfocusout="updateEndDate()"/>
+                    <input type="date" id="Update_Timestamp_start_date" name="Update_Timestamp_start_date" onfocusout="updateStartDate()"/>
                     <span class="validateUpdateTime">
                 <input type="time" id="Update_Timestamp_start_time" class="UpdateTime" name="Update_Timestamp_start_time"
+                       min="08:00" max="22:00" onfocusout="checkInputStart(event)"/>
+            </span>
+                </div>
+
+                <div>
+                    <label for="Update_Timestamp_end_date" for="Update_Timestamp_end_time">Update the booking start</label>
+                    <input type="date" id="Update_Timestamp_end_date" name="Update_Timestamp_end_date" onfocusout="updateEndDate()"/>
+                    <span class="validateUpdateTime">
+                <input type="time" id="Update_Timestamp_end_time" class="UpdateTime" name="Update_Timestamp_end_time"
                        min="08:00" max="22:00" onfocusout="checkInputStart(event)"/>
             </span>
                 </div>
