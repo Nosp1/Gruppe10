@@ -29,7 +29,7 @@ public abstract class AbstractUser {
     Constructor
      */
 
-    public AbstractUser( String firstName, String lastName,String userName, String dob, String password, UserType userType) {
+    public AbstractUser(String firstName, String lastName, String userName, String dob, String password, UserType userType) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.userName = userName;
@@ -39,6 +39,7 @@ public abstract class AbstractUser {
 
         orders = new ArrayList<>();
     }
+
     public AbstractUser(int userID, ArrayList<Order> orderList) {
 
         this.userName = userName;
@@ -48,16 +49,27 @@ public abstract class AbstractUser {
     public void showOrders() {
         //todo add print outwriter not sout.out.
         //Viser orders
-        for(Order o: orders) {
+        for (Order o : orders) {
             System.out.println(o);
         }
     }
 
     public void showOrders(PrintWriter out) {
-        //todo add print outwriter not sout.out.
         //Viser orders
-        for(Order o: orders) {
-            out.println(o + "\n");
+        for (Order o : orders) {
+            out.println(
+                    "<div class=\"container\">\n" +
+                            "<form>\n" +
+                            "<table>\n" +
+                            "        <tr>\n" +
+                            "            <td> \n " + " RoomID " + " " + o.getRoomID() + "</td>" + " " + " \n" +
+                            "            <td> \n " + " " + " From " + " " + o.getTimestampStart() + "  " + "</td>\n" +
+                                        "<td> \n" + " " + " To " + " " + o.getTimestampEnd() + " " + "</td>\n" +
+                            "        </tr>\n" +
+                            "</table>" +
+                            "</div>" +
+                            "</form>");
+
         }
     }
 

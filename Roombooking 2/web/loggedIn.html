@@ -96,6 +96,8 @@
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseReserveRoom" role="button"
                 aria-controls="#collapseReserveRoom">Reserve a room
         </button>
+        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseCancelRoom" role="button"
+        aria-controls="#collapseCancelRoom">Cancel a booking</button>
         <!-- Edit a booking collapse button -->
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseEditBooking" role="button"
                 aria-controls="#collapseEditBooking">Edit a booking
@@ -187,6 +189,19 @@
     </form>
 
 </div>
+<!-- Form for Cancel a booking -->
+<div class="collapse container" id="collapseCancelRoom">
+    <form action="./Servlets.ServletRoomOptions" method="post">
+        <h1>
+            Cancel booking
+        </h1>
+        <div>
+            <label for="Cancel_Order_ID">Order ID</label>
+            <input type="text" id="Cancel_Order_ID" name="Cancel_Order_ID">
+        </div>
+        <div>
+            <input class="submit btn-default btn-lg" type="submit" name="action" value="cancel">
+        </div>
 <!-- Form for Editing a booking -->
 <div class="collapse container" id="collapseEditBooking">
     <form action="./Servlets.ServletRoomBooking" method="post">
@@ -195,6 +210,9 @@
             <label for="Edit_Booking">Edit</label>
             <input type="text" id="Edit_Booking" name="Edit_Booking">
         </div>
+
+    </form>
+</div>
 
         <div>
             <input class="submit btn-default btn-lg" type="submit" name="action" value="Edit Booking">
