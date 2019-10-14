@@ -81,7 +81,7 @@ public class RoombookingTests {
     @Test
     public void testRoom() {
         System.out.println("testRoom");
-        AbstractRoom testRoom = new Grouproom(testRoomID, testRoomName, "TEST", 10);
+        AbstractRoom testRoom = new Grouproom(testRoomID, testRoomName, "TEST", 10, true, true);
         try {
             dbFunctionality.addRoom(testRoom, testConnection);
             String statement = "SELECT Room_name FROM Rooms WHERE Room_ID = ?";
@@ -107,7 +107,7 @@ public class RoombookingTests {
     @Test
     public void testOrder() throws SQLException {
         System.out.println("testOrder");
-        AbstractRoom testRoom = new Grouproom(testRoomID, testRoomName, "TEST", 10);
+        AbstractRoom testRoom = new Grouproom(testRoomID, testRoomName, "TEST", 10, true, true);
 
         int orderID = dbFunctionality.getOrderID(testConnection);
         int firstOrderID = orderID;
