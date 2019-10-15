@@ -113,10 +113,10 @@
 <div class="collapse container" id="collapseAddRoom">
     <form action="./Servlets.ServletRoomOptions" method="post">
         <h1>Add a room</h1>
-        <div>
+        <!--div>
             <label for="Add_roomID">Room ID</label>
             <input type="number" id="Add_roomID" name="Add_roomID">
-        </div>
+        </div-->
         <div>
             <label for="Add_roomName">Room Name</label>
             <input type="text" id="Add_roomName" name="Add_roomName">
@@ -130,7 +130,17 @@
             <input type="number" id="maxCapacity" name="maxCapacity">
         </div>
         <div>
-            <input class="submit btn-default btn-lg" type="submit" name="action" value="Add_room">
+
+            <label for="hasTavle">Finnes det tavle</label>
+            <input type="checkbox" name="hasTavle" id="hasTavle" value="Tavle">
+        </div>
+        <div>
+            <label for="hasProjektor">Finnes det projektor</label>
+            <input type="checkbox" name="hasProjektor" id="hasProjektor" value="Projektor">
+        </div>
+        <div>
+            <input class="submit btn-default btn-lg" type="submit" name="action" value="Add room">
+
         </div>
     </form>
 </div>

@@ -15,11 +15,12 @@ import java.util.Properties;
  * @see EmailUtil for email cunstructon
  */
 public class TLSEmail {
-    String fromEmail = "grproom@gmail.com"; //required valid email id
-    String password = "dennIS93"; //required valid password for email id
-
+    private String fromEmail;
+    private String password;
 
     public TLSEmail() {
+        fromEmail = "grproom@gmail.com"; //required valid email id
+        password  = "dennIS93"; //required valid password for email id
     }
 
     /**

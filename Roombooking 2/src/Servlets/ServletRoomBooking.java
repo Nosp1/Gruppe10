@@ -115,7 +115,6 @@ public class ServletRoomBooking extends AbstractPostServlet {
                     System.out.println(notAvailableErrorMessage);
                     out.println(notAvailableErrorMessage);
                 }
-
             }
         } catch (SQLException | ParseException e) {
             e.printStackTrace();
