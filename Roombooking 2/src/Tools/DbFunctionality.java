@@ -382,9 +382,32 @@ public class DbFunctionality {
         return orders;
     }
 
-    public void getTodayOrders(int orderId, PrintWriter out, Connection connection) throws SQLException {
-        // Select all elements from the Order table,
-        String strSelect = "SELECT * FROM `order` WHERE DATE_FORMAT(Timestamp_start, '%Y-%m-%d') = CURDATE() AND Room_ID="+ Integer.toString(orderId);
+    public boolean checkRoom(int roomID, Connection connection) throws SQLException {
+        PreparedStatement stmt;
+        String query = "select * from rooms where Room_ID = ?";
+        stmt = connection.prepareStatement(query);
+        // stmt.setString(1, Integer.toString(roomID));
+        stmt.setInt(1, roomID);
+
+        ResultSet resultSet = stmt.executeQuery();
+        if (resultSet.next()) {
+            return true;
+        }
+        /* while (resultSet.next()) {
+            if (Boolean.valueOf(resultSet.getString("Room_name"))) {
+                return true;
+            } else {
+                return false;
+            }
+        } */
+
+        // Return false if there is no result set(?)
+        return false;
+    }
+
+    public void getTodayOrders(int roomId, PrintWriter out, Connection connection) throws SQLException {
+        // Select all elements from the Order table
+        String strSelect = "SELECT * FROM `order` WHERE DATE_FORMAT(Timestamp_start, '%Y-%m-%d') = CURDATE() AND Room_ID="+ Integer.toString(roomId);
         PreparedStatement statement = connection.prepareStatement(strSelect);
         // and store them in a ResultSet.
         ResultSet resultSet = statement.executeQuery(strSelect);
