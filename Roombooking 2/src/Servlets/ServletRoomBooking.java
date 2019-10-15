@@ -109,7 +109,6 @@ public class ServletRoomBooking extends AbstractPostServlet {
                     out.println(notAvailableErrorMessage);
                 }
 
-
             } else if (action.contains("update")) {
 
                 // Henter order ID
@@ -137,8 +136,6 @@ public class ServletRoomBooking extends AbstractPostServlet {
 
                 //Bruker metoden i dbfunctionality til å update ordren.
                 dbFunctionality.updateOrderInformation(order, connection);
-
-
             }
         } catch (SQLException | ParseException e) {
             e.printStackTrace();

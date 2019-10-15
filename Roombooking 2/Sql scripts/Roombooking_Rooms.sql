@@ -9,6 +9,8 @@ CREATE TABLE if not exists roombooking.rooms
     Room_name        VARCHAR(255),
     Room_building    VARCHAR(255),
     Room_maxCapacity int(11),
+    Tavle            VARCHAR(3),
+    Prosjektor       VARCHAR(3),
     CONSTRAINT R_Room_ID_PK PRIMARY KEY (Room_ID)
 );
 

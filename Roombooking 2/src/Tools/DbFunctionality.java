@@ -188,12 +188,27 @@ public class DbFunctionality {
     public void addRoom(AbstractRoom room, Connection connection) throws SQLException {
         PreparedStatement insertNewRoom;
 
-        String ins = "insert into Rooms (Room_ID, Room_name, Room_building, Room_maxCapacity) values (?,?,?,?)";
+        String ins = "insert into Rooms (Room_ID, Room_name, Room_building, Room_maxCapacity, Tavle, Prosjektor) values (?,?,?,?,?,?)";
         insertNewRoom = connection.prepareStatement(ins);
         insertNewRoom.setInt(1, room.getRoomID());
         insertNewRoom.setString(2, room.getRoomName());
         insertNewRoom.setString(3, room.getRoomBuilding());
         insertNewRoom.setString(4, String.valueOf(room.getMaxCapacity()));
+
+        boolean tavle = room.hasTavle();
+        if(tavle) {
+            insertNewRoom.setString(5, "JA");
+        } else {
+            insertNewRoom.setString(5, "NEI");
+        }
+
+        boolean prosjektor = room.hasProsjektor();
+        if(prosjektor) {
+            insertNewRoom.setString(6, "JA");
+        } else {
+            insertNewRoom.setString(6, "NEI");
+        }
+
         insertNewRoom.execute();
     }
 
@@ -218,11 +233,13 @@ public class DbFunctionality {
         String strSelect = "Select * from Rooms";
         PreparedStatement statement = connection.prepareStatement(strSelect);
         ResultSet resultSet = statement.executeQuery(strSelect);
-        out.print("Your results are:" + "<br>");
+        out.print("Your results are:" + "<br><br>");
         while (resultSet.next()) {
-            out.print(resultSet.getString("Room_ID") + " : " + resultSet.getString("Room_building") + "<br>");
+            out.println(resultSet.getString("Room_ID") + " : " + resultSet.getString("Room_name"));
+            out.println("Plasser: " + resultSet.getString("Room_maxCapacity") + "<br>");
+            out.println("Tavle: " + resultSet.getString("Tavle"));
+            out.println("Projektor: " + resultSet.getString("Projektor") + "<br><br>");
         }
-
     }
 
     public void addOrder(Order order, Connection connection) throws SQLException {
@@ -316,9 +333,23 @@ public class DbFunctionality {
         return result == 1;
     }
 
+    public int getRoomID(Connection connection) throws SQLException {
+        PreparedStatement selectRoomID;
+        String select = "select Room_ID from rooms order by Room_ID desc limit 1";
+        selectRoomID = connection.prepareStatement(select);
+        ResultSet resultSet = selectRoomID.executeQuery();
+
+        while (resultSet.next()) {
+            System.out.println("roomID from method: " + (resultSet.getInt("Room_ID") + 1));
+            return resultSet.getInt("Room_ID") + 1;
+        }
+
+        return 1;
+    }
+
     public int getOrderID(Connection connection) throws SQLException {
         PreparedStatement selectOrderID;
-        String select = "select Order_ID from `order`";
+        String select = "select Order_ID from `order` order by Order_ID desc limit 1";
         selectOrderID = connection.prepareStatement(select);
         ResultSet resultSet = selectOrderID.executeQuery();
 
