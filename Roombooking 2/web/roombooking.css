@@ -145,6 +145,7 @@ body {
 
 .card-clicked {
     border-color: #73d7f0;
+    box-shadow: 0 0.1em 0.1em black;
 }
 
 .navbar{
