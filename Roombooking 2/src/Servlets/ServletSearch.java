@@ -20,7 +20,7 @@ public class ServletSearch extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int orderId = Integer.parseInt(request.getParameter("orderId"));
+        int roomId = Integer.parseInt(request.getParameter("roomId"));
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
@@ -28,7 +28,11 @@ public class ServletSearch extends HttpServlet {
             Connection connection = dbTool.dbLogIn(out);
             DbFunctionality dbFunctionality = new DbFunctionality();
             try {
-                dbFunctionality.getTodayOrders(orderId, out, connection);
+                if (!dbFunctionality.checkRoom(roomId, connection)) {
+                    out.print("{\"error\": \"Room not found\"}");
+                    return;
+                }
+                dbFunctionality.getTodayOrders(roomId, out, connection);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
