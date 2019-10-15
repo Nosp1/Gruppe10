@@ -96,11 +96,18 @@
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseReserveRoom" role="button"
                 aria-controls="#collapseReserveRoom">Reserve a room
         </button>
+        <!-- Delete a room collapse button -->
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseCancelRoom" role="button"
-        aria-controls="#collapseCancelRoom">Cancel a booking</button>
+        aria-controls="#collapseCancelRoom">Cancel a booking
+        </button>
+
+        <!-- Update a booking collapse button -->
+        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseUpdateBooking" role="button"
+                aria-controls="#collapseUpdateBooking">Update a booking
+        </button>
     </div>
 </div>
-<!-- Submit button for Browse -->
+        <!-- Submit button for Browse -->
 <div class="collapse container" id="collapseBrowse">
     <form action="./Servlets.ServletRoomOptions" method="post">
         <h1>Click beneath to show all rooms</h1>
@@ -205,14 +212,49 @@
             <label for="Cancel_Order_ID">Order ID</label>
             <input type="text" id="Cancel_Order_ID" name="Cancel_Order_ID">
         </div>
+
         <div>
             <input class="submit btn-default btn-lg" type="submit" name="action" value="cancel">
         </div>
-
     </form>
 </div>
 
-<script
+<!-- Form for Updating a booking -->
+        <div class="collapse container" id="collapseUpdateBooking">
+            <form action="./Servlets.ServletRoomBooking" method="post">
+                <h1>Update a order</h1>
+                <div>
+                    <label for="Update_orderID">Order ID</label>
+                    <input type="text" id="Update_orderID" name="Update_orderID">
+                </div>
+
+                <div>
+                    <label for="Update_Timestamp_start_date" for="Update_Timestamp_start_time">Update the booking start</label>
+                    <input type="date" id="Update_Timestamp_start_date" name="Update_Timestamp_start_date" onfocusout="updateStartDate()"/>
+                    <span class="validateUpdateTime">
+                <input type="time" id="Update_Timestamp_start_time" class="UpdateTime" name="Update_Timestamp_start_time"
+                       min="08:00" max="22:00" onfocusout="checkInputStart(event)"/>
+            </span>
+                </div>
+
+                <div>
+                    <label for="Update_Timestamp_end_date" for="Update_Timestamp_end_time">Update the booking start</label>
+                    <input type="date" id="Update_Timestamp_end_date" name="Update_Timestamp_end_date" onfocusout="updateEndDate()"/>
+                    <span class="validateUpdateTime">
+                <input type="time" id="Update_Timestamp_end_time" class="UpdateTime" name="Update_Timestamp_end_time"
+                       min="08:00" max="22:00" onfocusout="checkInputStart(event)"/>
+            </span>
+                </div>
+
+                <div>
+                    <input class="submit btn-default btn-lg" type="submit" name="action" value="Update room">
+                </div>
+            </form>
+        </div>
+
+
+
+        <script
         src="https://code.jquery.com/jquery-3.4.1.js"
         integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
         crossorigin="anonymous"></script>
