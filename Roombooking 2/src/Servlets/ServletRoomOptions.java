@@ -65,7 +65,6 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 //todo add boolean statement to confirm deletion.
                 //todo Cannot delete room because orders with the room exists.
                 int roomID = Integer.parseInt(request.getParameter("Add_roomID"));
-
                 dbFunctionality.deleteRoom(roomID, connection);
                 addHomeLoggedInButton(out);
 
