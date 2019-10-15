@@ -188,7 +188,7 @@ public class DbFunctionality {
     public void addRoom(AbstractRoom room, Connection connection) throws SQLException {
         PreparedStatement insertNewRoom;
 
-        String ins = "insert into Rooms (Room_ID, Room_name, Room_building, Room_maxCapacity, Tavle, Prosjektor) values (?,?,?,?,?,?)";
+        String ins = "insert into Rooms (Room_ID, Room_name, Room_building, Room_maxCapacity, Tavle, Projektor) values (?,?,?,?,?,?)";
         insertNewRoom = connection.prepareStatement(ins);
         insertNewRoom.setInt(1, room.getRoomID());
         insertNewRoom.setString(2, room.getRoomName());
@@ -202,7 +202,7 @@ public class DbFunctionality {
             insertNewRoom.setString(5, "NEI");
         }
 
-        boolean prosjektor = room.hasProsjektor();
+        boolean prosjektor = room.hasProjektor();
         if(prosjektor) {
             insertNewRoom.setString(6, "JA");
         } else {
@@ -233,12 +233,14 @@ public class DbFunctionality {
         String strSelect = "Select * from Rooms";
         PreparedStatement statement = connection.prepareStatement(strSelect);
         ResultSet resultSet = statement.executeQuery(strSelect);
-        out.print("Your results are:" + "<br><br>");
+        out.print("<h2>Your results are:" + "</h2><br>");
         while (resultSet.next()) {
-            out.println(resultSet.getString("Room_ID") + " : " + resultSet.getString("Room_name"));
-            out.println("Plasser: " + resultSet.getString("Room_maxCapacity") + "<br>");
-            out.println("Tavle: " + resultSet.getString("Tavle"));
-            out.println("Projektor: " + resultSet.getString("Projektor") + "<br><br>");
+            out.print("<div class=\"room-card\" id=\"room-cards\">");
+            out.print("<p>" + resultSet.getString("Room_ID") + " : " + resultSet.getString("Room_name"));
+            out.print(" Plasser: " + resultSet.getString("Room_maxCapacity") + "</p>");
+            out.print("<p>Tavle: " + resultSet.getString("Tavle"));
+            out.print(" Projektor: " + resultSet.getString("Projektor") + "</p>");
+            out.println("</div>");
         }
     }
 

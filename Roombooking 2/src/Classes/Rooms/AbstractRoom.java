@@ -13,7 +13,7 @@ public abstract class AbstractRoom {
     protected RoomType roomType;
     protected int maxCapacity;
     protected boolean hasTavle;
-    protected boolean hasProsjektor;
+    protected boolean hasProjektor;
 
     public AbstractRoom(int roomID, String roomName, String roomBuilding, RoomType roomType, boolean hasTavle, boolean hasProsjektor) {
         this.roomID = roomID;
@@ -21,7 +21,7 @@ public abstract class AbstractRoom {
         this.roomBuilding = roomBuilding;
         this.roomType = roomType;
         this.hasTavle = hasTavle;
-        this.hasProsjektor = hasProsjektor;
+        this.hasProjektor = hasProsjektor;
     }
 
     public int getRoomID() {
@@ -70,11 +70,11 @@ public abstract class AbstractRoom {
         this.hasTavle = hasTavle;
     }
 
-    public boolean hasProsjektor() {
-        return hasProsjektor;
+    public boolean hasProjektor() {
+        return hasProjektor;
     }
 
-    public void setHasProsjektor(boolean hasProsjektor) {
-        this.hasProsjektor = hasProsjektor;
+    public void setHasProjektor(boolean hasProjektor) {
+        this.hasProjektor = hasProjektor;
     }
 }

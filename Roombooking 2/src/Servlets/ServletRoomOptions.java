@@ -118,6 +118,7 @@ public class ServletRoomOptions extends AbstractPostServlet {
             }
 
             addBootStrapFunctionality(out);
+            out.print("<script src=\"card-rooms.js\"></script>");
             out.print("</body>");
             out.print("</html>");
         } catch (SQLException e) {

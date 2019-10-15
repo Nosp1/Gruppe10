@@ -8,7 +8,6 @@ import Classes.User.Student;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.mail.Session;
@@ -70,7 +69,7 @@ public class EmailTest {
     @Test
     public void testSendEmail() {
         AbstractUser testUser = new Student("Ola", "Nordmann", testUserEmail, "1234", "1900-01-01");
-         Session session = tlsEmail.NoReplyEmail(testUser.getUserName());
+        Session session = tlsEmail.NoReplyEmail(testUser.getUserName());
         EmailUtil emailUtil =  new EmailUtil();
         String subject = EmailTemplates.getWelcome();
         String body = EmailTemplates.welcomeMessageBody(testUserEmail);
