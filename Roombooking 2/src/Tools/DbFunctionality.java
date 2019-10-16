@@ -18,6 +18,7 @@ import java.util.ArrayList;
  * handles the queries to and from the database.
  *
  * @author trym, brisdalen, alena
+ * @author trym, brisdalen, sæthra
  */
 public class DbFunctionality {
     Statement statement;
@@ -188,16 +189,38 @@ public class DbFunctionality {
     public void addRoom(AbstractRoom room, Connection connection) throws SQLException {
         PreparedStatement insertNewRoom;
 
-        String ins = "insert into Rooms (Room_ID, Room_name, Room_building, Room_maxCapacity) values (?,?,?,?)";
+        String ins = "insert into Rooms (Room_ID, Room_name, Room_building, Room_maxCapacity, Tavle, Prosjektor) values (?,?,?,?,?,?)";
         insertNewRoom = connection.prepareStatement(ins);
         insertNewRoom.setInt(1, room.getRoomID());
         insertNewRoom.setString(2, room.getRoomName());
         insertNewRoom.setString(3, room.getRoomBuilding());
         insertNewRoom.setString(4, String.valueOf(room.getMaxCapacity()));
+
+        boolean tavle = room.hasTavle();
+        if(tavle) {
+            insertNewRoom.setString(5, "JA");
+        } else {
+            insertNewRoom.setString(5, "NEI");
+        }
+
+        boolean prosjektor = room.hasProjektor();
+        if(prosjektor) {
+            insertNewRoom.setString(6, "JA");
+        } else {
+            insertNewRoom.setString(6, "NEI");
+        }
+
         insertNewRoom.execute();
     }
 
     public boolean deleteRoom(int roomID, Connection connection) throws SQLException {
+        // Delete orders associated with the room first, so there is no foreign key dependency.
+        PreparedStatement stmt;
+        String deleteOrder = "delete from `order` where Room_ID = ?";
+        stmt = connection.prepareStatement(deleteOrder);
+        stmt.setInt(1, roomID);
+        stmt.executeUpdate();
+
         PreparedStatement deleteRoom;
         String delete = "delete from Rooms where Room_ID = ?";
         deleteRoom = connection.prepareStatement(delete);
@@ -211,11 +234,15 @@ public class DbFunctionality {
         String strSelect = "Select * from Rooms";
         PreparedStatement statement = connection.prepareStatement(strSelect);
         ResultSet resultSet = statement.executeQuery(strSelect);
-        out.print("Your results are:" + "<br>");
+        out.print("<h2>Your results are:" + "</h2><br>");
         while (resultSet.next()) {
-            out.print(resultSet.getString("Room_ID") + " : " + resultSet.getString("Room_building") + "<br>");
+            out.print("<div class=\"room-card\" id=\"room-cards\">");
+            out.print("<p>" + resultSet.getString("Room_ID") + " : " + resultSet.getString("Room_name"));
+            out.print(" Plasser: " + resultSet.getString("Room_maxCapacity") + "</p>");
+            out.print("<p>Tavle: " + resultSet.getString("Tavle"));
+            out.print(" Projektor: " + resultSet.getString("Projektor") + "</p>");
+            out.println("</div>");
         }
-
     }
 
     public void addOrder(Order order, Connection connection) throws SQLException {
@@ -293,6 +320,7 @@ public class DbFunctionality {
         return selectOrders.executeQuery();
     }
 
+
     /**
      * @param orderID    The ID of the Order you want to delete
      * @param connection The Connection object with the connection to the database
@@ -308,9 +336,23 @@ public class DbFunctionality {
         return result == 1;
     }
 
+    public int getRoomID(Connection connection) throws SQLException {
+        PreparedStatement selectRoomID;
+        String select = "select Room_ID from rooms order by Room_ID desc limit 1";
+        selectRoomID = connection.prepareStatement(select);
+        ResultSet resultSet = selectRoomID.executeQuery();
+
+        while (resultSet.next()) {
+            System.out.println("roomID from method: " + (resultSet.getInt("Room_ID") + 1));
+            return resultSet.getInt("Room_ID") + 1;
+        }
+
+        return 1;
+    }
+
     public int getOrderID(Connection connection) throws SQLException {
         PreparedStatement selectOrderID;
-        String select = "select Order_ID from `order`";
+        String select = "select Order_ID from `order` order by Order_ID desc limit 1";
         selectOrderID = connection.prepareStatement(select);
         ResultSet resultSet = selectOrderID.executeQuery();
 
@@ -339,6 +381,23 @@ public class DbFunctionality {
 
     public ResultSet getMostActiveUsers(Connection connection) throws SQLException {
         return getMostActiveUsers(5, connection);
+    }
+
+    public void updateOrderInformation (Order order, Connection connection) throws SQLException {
+        PreparedStatement updateOrderPS;
+
+        System.out.println("update order started");
+
+        String updateOrder = "UPDATE `order` "
+                + "set Timestamp_start = ?, Timestamp_end = ?"
+                + "WHERE Order_ID = ?";
+
+        updateOrderPS = connection.prepareStatement(updateOrder);
+        updateOrderPS.setTimestamp(1, order.getTimestampStart());
+        updateOrderPS.setTimestamp(2, order.getTimestampEnd());
+        updateOrderPS.setInt(3, order.getID());
+        updateOrderPS.execute();
+
     }
 
     public ResultSet getMostActiveUsers(int howMany, Connection connection) throws SQLException {
