@@ -71,7 +71,8 @@
     <div class="jumbotron">
         <h1 id="welcome" class="special-text">Welcome to Roombooking</h1>
         <!-- Log in button that collapses class: #collapseLogin -->
-        <button class="btn btn-success btn-lg" id="jumbotronButton" data-toggle="collapse" href="#collapseLogin" role="button"
+        <button class="btn btn-success btn-lg" id="jumbotronButton" data-toggle="collapse" href="#collapseLogin"
+                role="button"
                 aria-expanded="false"
                 aria-controls="#collapseLogin">Login
         </button>
@@ -156,9 +157,14 @@
     </form>
 </div>
 
-<div id="searchResult">
-
-
+<div id="searchResult" hidden>
+    <div style="color: black">Room is available:</div>
+    <div></div>
+</div>
+<div id="calendar" hidden>
+    <button style="color: black;">Previous day</button>
+    <input type="date">
+    <button style="color: black;">Next day</button>
 </div>
 
 <script

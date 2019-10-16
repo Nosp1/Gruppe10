@@ -17,7 +17,7 @@ import java.util.ArrayList;
 /**
  * handles the queries to and from the database.
  *
- * @author trym, brisdalen
+ * @author trym, brisdalen, alena
  */
 public class DbFunctionality {
     Statement statement;
@@ -393,35 +393,48 @@ public class DbFunctionality {
         if (resultSet.next()) {
             return true;
         }
-        /* while (resultSet.next()) {
-            if (Boolean.valueOf(resultSet.getString("Room_name"))) {
-                return true;
-            } else {
-                return false;
-            }
-        } */
-
-        // Return false if there is no result set(?)
         return false;
     }
 
-    public void getTodayOrders(int roomId, PrintWriter out, Connection connection) throws SQLException {
-        // Select all elements from the Order table
-        String strSelect = "SELECT * FROM `order` WHERE DATE_FORMAT(Timestamp_start, '%Y-%m-%d') = CURDATE() AND Room_ID="+ Integer.toString(roomId);
+    public void searchOrders(int roomId, String date, PrintWriter out, Connection connection) throws SQLException {
+        String strSelect = null;
+        if (roomId < 0) {
+            strSelect = "SELECT * FROM `order` WHERE DATE_FORMAT(Timestamp_start, '%Y-%m-%d') = '" + date + "'";
+        } else {
+            strSelect = "SELECT * FROM `order` WHERE DATE_FORMAT(Timestamp_start, '%Y-%m-%d') = '" + date + "' AND Room_ID="+ Integer.toString(roomId);
+        }
         PreparedStatement statement = connection.prepareStatement(strSelect);
-        // and store them in a ResultSet.
         ResultSet resultSet = statement.executeQuery(strSelect);
-        // Loop through all elements of the ResultSet
         out.print("[");
         int i = 0;
         while (resultSet.next()) {
             if (i > 0) {
                 out.print(",");
             }
-            // and print the Room name and building of the current result.
-            out.print("{\"start\": \"" + resultSet.getTimestamp("Timestamp_start") + "\", \"end\": \"" + resultSet.getTimestamp("Timestamp_end") + "\"}");
+            out.print("{\"roomId\":" + resultSet.getInt("Room_ID") + ",\"start\": \"" + resultSet.getTimestamp("Timestamp_start") + "\", \"end\": \"" + resultSet.getTimestamp("Timestamp_end") + "\"}");
             i++;
         }
+        if (roomId < 0) {
+            strSelect = "SELECT * FROM `rooms`";
+            statement = connection.prepareStatement(strSelect);
+            resultSet = statement.executeQuery(strSelect);
+            String roomNumbers = "";
+            int j = 0;
+            while (resultSet.next()) {
+                if (j > 0) {
+                    roomNumbers = roomNumbers + ",";
+                }
+                j++;
+                roomNumbers = roomNumbers + String.valueOf(resultSet.getInt("Room_ID"));
+            }
+            if (i == 0) {
+                out.print("[" + roomNumbers + "]");
+            } else {
+                out.print(",[" + roomNumbers + "]");
+
+            }
+        }
+
         out.print("]");
     }
 }
