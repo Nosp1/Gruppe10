@@ -138,6 +138,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
 
                 //Bruker metoden i dbfunctionality til å update ordren.
                 dbFunctionality.updateOrderInformation(order, connection);
+                addBootStrapFunctionality(out);
             }
         } catch (SQLException | ParseException e) {
             e.printStackTrace();
