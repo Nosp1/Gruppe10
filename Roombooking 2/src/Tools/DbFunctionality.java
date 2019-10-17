@@ -17,6 +17,7 @@ import java.util.ArrayList;
 /**
  * handles the queries to and from the database.
  *
+ * @author trym, brisdalen, alena
  * @author trym, brisdalen, sæthra
  */
 public class DbFunctionality {
@@ -438,6 +439,62 @@ public class DbFunctionality {
         }
         //returns the list of order objects.
         return orders;
+    }
+
+    public boolean checkRoom(int roomID, Connection connection) throws SQLException {
+        PreparedStatement stmt;
+        String query = "select * from rooms where Room_ID = ?";
+        stmt = connection.prepareStatement(query);
+        // stmt.setString(1, Integer.toString(roomID));
+        stmt.setInt(1, roomID);
+
+        ResultSet resultSet = stmt.executeQuery();
+        if (resultSet.next()) {
+            return true;
+        }
+        return false;
+    }
+
+    public void searchOrders(int roomId, String date, PrintWriter out, Connection connection) throws SQLException {
+        String strSelect = null;
+        if (roomId < 0) {
+            strSelect = "SELECT * FROM `order` WHERE DATE_FORMAT(Timestamp_start, '%Y-%m-%d') = '" + date + "'";
+        } else {
+            strSelect = "SELECT * FROM `order` WHERE DATE_FORMAT(Timestamp_start, '%Y-%m-%d') = '" + date + "' AND Room_ID="+ Integer.toString(roomId);
+        }
+        PreparedStatement statement = connection.prepareStatement(strSelect);
+        ResultSet resultSet = statement.executeQuery(strSelect);
+        out.print("[");
+        int i = 0;
+        while (resultSet.next()) {
+            if (i > 0) {
+                out.print(",");
+            }
+            out.print("{\"roomId\":" + resultSet.getInt("Room_ID") + ",\"start\": \"" + resultSet.getTimestamp("Timestamp_start") + "\", \"end\": \"" + resultSet.getTimestamp("Timestamp_end") + "\"}");
+            i++;
+        }
+        if (roomId < 0) {
+            strSelect = "SELECT * FROM `rooms`";
+            statement = connection.prepareStatement(strSelect);
+            resultSet = statement.executeQuery(strSelect);
+            String roomNumbers = "";
+            int j = 0;
+            while (resultSet.next()) {
+                if (j > 0) {
+                    roomNumbers = roomNumbers + ",";
+                }
+                j++;
+                roomNumbers = roomNumbers + String.valueOf(resultSet.getInt("Room_ID"));
+            }
+            if (i == 0) {
+                out.print("[" + roomNumbers + "]");
+            } else {
+                out.print(",[" + roomNumbers + "]");
+
+            }
+        }
+
+        out.print("]");
     }
 }
 

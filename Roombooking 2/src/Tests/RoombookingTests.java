@@ -9,16 +9,18 @@ import Tools.DbFunctionality;
 import Tools.DbTool;
 import org.junit.Before;
 import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.*;
 import java.text.ParseException;
 
-import static org.junit.Assert.assertEquals;
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 /**
  * Test class for all features related to user functionality.

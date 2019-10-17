@@ -42,7 +42,7 @@
                     </ul>
                 </li>
             </ul>
-            <form class="navbar-form navbar-left">
+            <form class="navbar-form navbar-left" id="search-form">
                 <div class="form-group">
                     <input type="text" class="form-control" placeholder="Search">
                 </div>
@@ -51,8 +51,8 @@
             <ul class="nav navbar-nav navbar-right">
                 <li>
                     <a href="./profile.html">User <span class="glyphicon glyphicon-user"
-                                                                aria-hidden="true"></span>
-                </a>
+                                                        aria-hidden="true"></span>
+                    </a>
                 </li>
 
                 <li class="dropdown">
@@ -80,8 +80,9 @@
         </button>
         <!-- Go to profile collapse button -->
         <form action="./Servlets.ServletRoomOptions" method="post">
-        <button type="submit" name="action" class="btn btn-success btn-lg" role="button" value="gotoprofile">Go to profile
-        </button>
+            <button type="submit" name="action" class="btn btn-success btn-lg" role="button" value="gotoprofile">Go to
+                profile
+            </button>
         </form>
 
         <!-- Add a room collapse button -->
@@ -109,7 +110,7 @@
 </div>
         <!-- Submit button for Browse -->
 <div class="collapse container" id="collapseBrowse">
-    <form action="./Servlets.ServletRoomOptions" method="post">
+    <form action="./Servlets.ServletRoomOptions" id="ListOfRooms" method="post">
         <h1>Click beneath to show all rooms</h1>
         <div>
             <input class="submit btn-default btn-lg" type="submit" name="action" value="Show all rooms">
@@ -176,16 +177,19 @@
 
         <div>
             <label for="Reserve_Timestamp_start_date" for="Reserve_Timestamp_start_time">Booking start</label>
-            <input type="date" id="Reserve_Timestamp_start_date" name="Reserve_Timestamp_start_date" onfocusout="updateEndDate()"/>
+            <input type="date" id="Reserve_Timestamp_start_date" name="Reserve_Timestamp_start_date"
+                   onfocusout="updateEndDate()"/>
             <span class="validateReserveTime">
-                <input type="time" id="Reserve_Timestamp_start_time" class="ReserveTime" name="Reserve_Timestamp_start_time"
+                <input type="time" id="Reserve_Timestamp_start_time" class="ReserveTime"
+                       name="Reserve_Timestamp_start_time"
                        min="08:00" max="22:00" onfocusout="checkInputStart(event)"/>
             </span>
         </div>
 
         <div>
             <label for="Reserve_Timestamp_end_date" for="Reserve_Timestamp_end_time">Booking end</label>
-            <input type="date" id="Reserve_Timestamp_end_date" name="Reserve_Timestamp_end_date" tabindex="-1" readonly="readonly"/>
+            <input type="date" id="Reserve_Timestamp_end_date" name="Reserve_Timestamp_end_date" tabindex="-1"
+                   readonly="readonly"/>
             <span class="validateReserveTime">
                 <input type="time" id="Reserve_Timestamp_end_time" class="ReserveTime" name="Reserve_Timestamp_end_time"
                        min="08:00" max="22:00" onfocusout="checkInputEnd(event)"/>
@@ -260,6 +264,7 @@
         crossorigin="anonymous"></script>
 <script src="bootstrap.js"></script>
 <script src="date-time-reserve.js"></script>
+<script src="script.js"></script>
 
 </body>
 </html>
