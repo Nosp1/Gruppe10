@@ -160,8 +160,10 @@ public class DbFunctionality {
         resultSet.next();
         //todo funker dette?
         getUser.closeOnCompletion();
-         return Integer.parseInt(resultSet.getString(1));
 
+        int result = Integer.parseInt(resultSet.getString(1));
+        resultSet.close();
+        return result;
     }
 
     /**
@@ -188,29 +190,33 @@ public class DbFunctionality {
      */
     public void addRoom(AbstractRoom room, Connection connection) throws SQLException {
         PreparedStatement insertNewRoom;
+        try {
+            String ins = "insert into Rooms (Room_ID, Room_name, Room_building, Room_maxCapacity, Tavle, Prosjektor) values (?,?,?,?,?,?)";
+            insertNewRoom = connection.prepareStatement(ins);
+            insertNewRoom.setInt(1, room.getRoomID());
+            insertNewRoom.setString(2, room.getRoomName());
+            insertNewRoom.setString(3, room.getRoomBuilding());
+            insertNewRoom.setString(4, String.valueOf(room.getMaxCapacity()));
 
-        String ins = "insert into Rooms (Room_ID, Room_name, Room_building, Room_maxCapacity, Tavle, Prosjektor) values (?,?,?,?,?,?)";
-        insertNewRoom = connection.prepareStatement(ins);
-        insertNewRoom.setInt(1, room.getRoomID());
-        insertNewRoom.setString(2, room.getRoomName());
-        insertNewRoom.setString(3, room.getRoomBuilding());
-        insertNewRoom.setString(4, String.valueOf(room.getMaxCapacity()));
+            boolean tavle = room.hasTavle();
+            if (tavle) {
+                insertNewRoom.setString(5, "JA");
+            } else {
+                insertNewRoom.setString(5, "NEI");
+            }
 
-        boolean tavle = room.hasTavle();
-        if(tavle) {
-            insertNewRoom.setString(5, "JA");
-        } else {
-            insertNewRoom.setString(5, "NEI");
+            boolean prosjektor = room.hasProjektor();
+            if (prosjektor) {
+                insertNewRoom.setString(6, "JA");
+            } else {
+                insertNewRoom.setString(6, "NEI");
+            }
+
+            insertNewRoom.execute();
         }
-
-        boolean prosjektor = room.hasProjektor();
-        if(prosjektor) {
-            insertNewRoom.setString(6, "JA");
-        } else {
-            insertNewRoom.setString(6, "NEI");
+        finally {
+            connection.close();
         }
-
-        insertNewRoom.execute();
     }
 
     public boolean deleteRoom(int roomID, Connection connection) throws SQLException {
