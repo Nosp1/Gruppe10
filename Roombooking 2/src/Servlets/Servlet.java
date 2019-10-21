@@ -61,8 +61,8 @@ public class Servlet extends AbstractPostServlet {
                     ServletContext servletContext = getServletContext();
                     servletContext.getRequestDispatcher("/index.html").forward(request,response);
                 }
-                else {
 
+                else {
                     dbFunctionality.addUser(newUser, connection);
                     out.println("<p> You have successfully registered</p>");
                     //Generates and sends a welcome email to the newly registered user
@@ -82,6 +82,7 @@ public class Servlet extends AbstractPostServlet {
                     //prints HomeButton.
                     addHomeButton(out);
                 }
+
             } else {
                 //if the user is not registered.
                 out.print("something went wrong");
