@@ -12,8 +12,8 @@ import java.io.PrintWriter;
 
 public abstract class AbstractServlet extends HttpServlet {
     /**
-    * Method allows all children of  {@code AbstractServlet}
-    to call the bootstrap.js ref and jquery for responsive Navbar.
+     * Method allows all children of  {@code AbstractServlet}
+     to call the bootstrap.js ref and jquery for responsive Navbar.
      * @param out for printing html
      */
     void addBootStrapFunctionality(PrintWriter out) {
@@ -121,5 +121,5 @@ public abstract class AbstractServlet extends HttpServlet {
                         "</nav>"
         );
     }
-}
 
+}

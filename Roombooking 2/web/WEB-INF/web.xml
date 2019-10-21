@@ -8,5 +8,4 @@
         <res-type>javax.sql.DataSource</res-type>
         <res-auth>Container</res-auth>
     </resource-ref>
-    <request-character-encoding>UTF-8</request-character-encoding>
 </web-app>

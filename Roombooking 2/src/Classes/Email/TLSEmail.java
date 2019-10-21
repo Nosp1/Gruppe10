@@ -4,25 +4,28 @@ import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import java.util.Properties;
+
 /**
  * Outgoing Mail (SMTP) Server
  * requires TLS: smtp.gmail.com (use authentication)
  * Use Authentication: Yes
  * Port for TLS/STARTTLS: 587
+ *
  * @author trym
  * @see EmailUtil for email cunstructon
- *
  */
 public class TLSEmail {
-    String fromEmail = "grproom@gmail.com"; //required valid email id
-    String password = "dennIS93"; //required valid password for email id
-
+    private String fromEmail;
+    private String password;
 
     public TLSEmail() {
+        fromEmail = "grproom@gmail.com"; //required valid email id
+        password  = "dennIS93"; //required valid password for email id
     }
 
     /**
      * Method takes in a {@code String} object and sends it to {@code SendSecureEmail}
+     *
      * @param toEmail methods takes in recipient email.
      */
     public Session NoReplyEmail(String toEmail) {
@@ -32,11 +35,11 @@ public class TLSEmail {
         //calls on TLSE to establish host,port, authentication and starttls
         return tlsEmail.SendSecureEmail(fromEmail, password, toEmail);
     }
+
     /**
-     *
      * @param fromEmail is the senders Email id
-     * @param password is the senders Email Password
-     * @param toEmail is the recipient email
+     * @param password  is the senders Email Password
+     * @param toEmail   is the recipient email
      */
     private Session SendSecureEmail(String fromEmail, String password, String toEmail) {
         Properties props = new Properties();
@@ -57,9 +60,9 @@ public class TLSEmail {
             }
         };
         //gets the host,port, Sender EmailID and password
-        getSession(props,auth);
+        getSession(props, auth);
         //returns the email session to prepare for sending;
-        return getSession(props,auth);
+        return getSession(props, auth);
     }
 
     private Session getSession(Properties props, Authenticator auth) {

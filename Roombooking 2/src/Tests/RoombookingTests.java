@@ -9,16 +9,18 @@ import Tools.DbFunctionality;
 import Tools.DbTool;
 import org.junit.Before;
 import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.*;
 import java.text.ParseException;
 
-import static org.junit.Assert.assertEquals;
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 /**
  * Test class for all features related to user functionality.
@@ -71,7 +73,7 @@ public class RoombookingTests {
             e.printStackTrace();
         } finally {
             try {
-                assertTrue(dbFunctionality.deleteUser(testUserEmail, testConnection));
+                assertTrue(dbFunctionality.deleteUserByEmail(testUserEmail, testConnection));
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -81,7 +83,7 @@ public class RoombookingTests {
     @Test
     public void testRoom() {
         System.out.println("testRoom");
-        AbstractRoom testRoom = new Grouproom(testRoomID, testRoomName, "TEST", 10);
+        AbstractRoom testRoom = new Grouproom(testRoomID, testRoomName, "TEST", 10, true, true);
         try {
             dbFunctionality.addRoom(testRoom, testConnection);
             String statement = "SELECT Room_name FROM Rooms WHERE Room_ID = ?";
@@ -107,7 +109,7 @@ public class RoombookingTests {
     @Test
     public void testOrder() throws SQLException {
         System.out.println("testOrder");
-        AbstractRoom testRoom = new Grouproom(testRoomID, testRoomName, "TEST", 10);
+        AbstractRoom testRoom = new Grouproom(testRoomID, testRoomName, "TEST", 10, true, true);
 
         int orderID = dbFunctionality.getOrderID(testConnection);
         int firstOrderID = orderID;
