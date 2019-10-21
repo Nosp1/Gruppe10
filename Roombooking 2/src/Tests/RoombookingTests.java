@@ -9,7 +9,8 @@ import Tools.DbFunctionality;
 import Tools.DbTool;
 import org.junit.Before;
 import org.junit.Ignore;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
+
 
 
 import java.security.NoSuchAlgorithmException;
@@ -17,9 +18,10 @@ import java.security.spec.InvalidKeySpecException;
 import java.sql.*;
 import java.text.ParseException;
 
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 
 /**
