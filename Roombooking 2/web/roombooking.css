@@ -47,6 +47,49 @@ body {
     margin-top: 10px;
     margin-bottom: 5px;
 }
+#collapseAddRoom input {
+    width: 100%;
+    clear: both;
+}
+
+#collapseDeleteRoom input {
+    width: 100%;
+    clear: both;
+    margin-bottom: 10px;
+}
+
+#Reserve_Room_ID input {
+    width: 100%;
+    clear: both;
+    margin-bottom: 10px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 form {
     display: inline-block;
