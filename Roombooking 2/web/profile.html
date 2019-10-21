@@ -44,7 +44,7 @@
                     </ul>
                 </li>
             </ul>
-            <form class="navbar-form navbar-left">
+            <form class="navbar-form navbar-left" id="search-form">
                 <div class="form-group">
                     <input type="text" class="form-control" placeholder="Search">
                 </div>
@@ -53,7 +53,7 @@
             <ul class="nav navbar-nav navbar-right">
                 <li>
                     <a href="profile.html">User <span class="glyphicon glyphicon-user"
-                                                        aria-hidden="true"></span>
+                                                      aria-hidden="true"></span>
                     </a>
                 </li>
 
@@ -89,8 +89,9 @@
 
         <!-- My reservations collapse button -->
         <form action="./Servlets.ServletReservations" method="post">
-        <button class="btn btn-success btn-lg"  href="#collapseShow" role="button" name="action" value="myreservations">My reservations
-        </button>
+            <button class="btn btn-success btn-lg" href="#collapseShow" role="button" name="action"
+                    value="myreservations">My reservations
+            </button>
         </form>
     </div>
 </div>
@@ -107,7 +108,7 @@
 </div>
 
 <!-- Submit button for Book Grouproom -->
-<div class ="collapse container" id="collapseBook">
+<div class="collapse container" id="collapseBook">
     <form action="./Servlets.ServletRoomOptions" method="post">
         <h1>Book grouproom</h1>
         <div>
@@ -117,14 +118,23 @@
 </div>
 
 <!-- Submit button for My Reservations -->
-<div class ="collapse container" id="collapseShow">
+<div class="collapse container" id="collapseShow">
 
 </div>
-
+<div id="searchResult" hidden>
+    <div style="color: black">Room is available:</div>
+    <div></div>
+</div>
+<div id="calendar" hidden>
+    <button style="color: black;">Previous day</button>
+    <input type="date">
+    <button style="color: black;">Next day</button>
+</div>
 <script
         src="https://code.jquery.com/jquery-3.4.1.js"
         integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
         crossorigin="anonymous"></script>
 <script src="bootstrap.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

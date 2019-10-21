@@ -17,7 +17,8 @@ import java.util.ArrayList;
 /**
  * handles the queries to and from the database.
  *
- * @author trym, brisdalen
+ * @author trym, brisdalen, alena
+ * @author trym, brisdalen, sæthra
  */
 public class DbFunctionality {
     Statement statement;
@@ -159,8 +160,10 @@ public class DbFunctionality {
         resultSet.next();
         //todo funker dette?
         getUser.closeOnCompletion();
-         return Integer.parseInt(resultSet.getString(1));
 
+        int result = Integer.parseInt(resultSet.getString(1));
+        resultSet.close();
+        return result;
     }
 
     /**
@@ -187,14 +190,33 @@ public class DbFunctionality {
      */
     public void addRoom(AbstractRoom room, Connection connection) throws SQLException {
         PreparedStatement insertNewRoom;
+        try {
+            String ins = "insert into Rooms (Room_ID, Room_name, Room_building, Room_maxCapacity, Tavle, Prosjektor) values (?,?,?,?,?,?)";
+            insertNewRoom = connection.prepareStatement(ins);
+            insertNewRoom.setInt(1, room.getRoomID());
+            insertNewRoom.setString(2, room.getRoomName());
+            insertNewRoom.setString(3, room.getRoomBuilding());
+            insertNewRoom.setString(4, String.valueOf(room.getMaxCapacity()));
 
-        String ins = "insert into Rooms (Room_ID, Room_name, Room_building, Room_maxCapacity) values (?,?,?,?)";
-        insertNewRoom = connection.prepareStatement(ins);
-        insertNewRoom.setInt(1, room.getRoomID());
-        insertNewRoom.setString(2, room.getRoomName());
-        insertNewRoom.setString(3, room.getRoomBuilding());
-        insertNewRoom.setString(4, String.valueOf(room.getMaxCapacity()));
-        insertNewRoom.execute();
+            boolean tavle = room.hasTavle();
+            if (tavle) {
+                insertNewRoom.setString(5, "JA");
+            } else {
+                insertNewRoom.setString(5, "NEI");
+            }
+
+            boolean prosjektor = room.hasProjektor();
+            if (prosjektor) {
+                insertNewRoom.setString(6, "JA");
+            } else {
+                insertNewRoom.setString(6, "NEI");
+            }
+
+            insertNewRoom.execute();
+        }
+        finally {
+            connection.close();
+        }
     }
 
     public boolean deleteRoom(int roomID, Connection connection) throws SQLException {
@@ -218,11 +240,15 @@ public class DbFunctionality {
         String strSelect = "Select * from Rooms";
         PreparedStatement statement = connection.prepareStatement(strSelect);
         ResultSet resultSet = statement.executeQuery(strSelect);
-        out.print("Your results are:" + "<br>");
+        out.print("<h2>Your results are:" + "</h2><br>");
         while (resultSet.next()) {
-            out.print(resultSet.getString("Room_ID") + " : " + resultSet.getString("Room_building") + "<br>");
+            out.print("<div class=\"room-card\" id=\"room-cards\">");
+            out.print("<p>" + resultSet.getString("Room_ID") + " : " + resultSet.getString("Room_name"));
+            out.print(" Plasser: " + resultSet.getString("Room_maxCapacity") + "</p>");
+            out.print("<p>Tavle: " + resultSet.getString("Tavle"));
+            out.print(" Projektor: " + resultSet.getString("Projektor") + "</p>");
+            out.println("</div>");
         }
-
     }
 
     public void addOrder(Order order, Connection connection) throws SQLException {
@@ -300,6 +326,7 @@ public class DbFunctionality {
         return selectOrders.executeQuery();
     }
 
+
     /**
      * @param orderID    The ID of the Order you want to delete
      * @param connection The Connection object with the connection to the database
@@ -315,9 +342,23 @@ public class DbFunctionality {
         return result == 1;
     }
 
+    public int getRoomID(Connection connection) throws SQLException {
+        PreparedStatement selectRoomID;
+        String select = "select Room_ID from rooms order by Room_ID desc limit 1";
+        selectRoomID = connection.prepareStatement(select);
+        ResultSet resultSet = selectRoomID.executeQuery();
+
+        while (resultSet.next()) {
+            System.out.println("roomID from method: " + (resultSet.getInt("Room_ID") + 1));
+            return resultSet.getInt("Room_ID") + 1;
+        }
+
+        return 1;
+    }
+
     public int getOrderID(Connection connection) throws SQLException {
         PreparedStatement selectOrderID;
-        String select = "select Order_ID from `order`";
+        String select = "select Order_ID from `order` order by Order_ID desc limit 1";
         selectOrderID = connection.prepareStatement(select);
         ResultSet resultSet = selectOrderID.executeQuery();
 
@@ -346,6 +387,23 @@ public class DbFunctionality {
 
     public ResultSet getMostActiveUsers(Connection connection) throws SQLException {
         return getMostActiveUsers(5, connection);
+    }
+
+    public void updateOrderInformation (Order order, Connection connection) throws SQLException {
+        PreparedStatement updateOrderPS;
+
+        System.out.println("update order started");
+
+        String updateOrder = "UPDATE `order` "
+                + "set Timestamp_start = ?, Timestamp_end = ?"
+                + "WHERE Order_ID = ?";
+
+        updateOrderPS = connection.prepareStatement(updateOrder);
+        updateOrderPS.setTimestamp(1, order.getTimestampStart());
+        updateOrderPS.setTimestamp(2, order.getTimestampEnd());
+        updateOrderPS.setInt(3, order.getID());
+        updateOrderPS.execute();
+
     }
 
     public ResultSet getMostActiveUsers(int howMany, Connection connection) throws SQLException {
@@ -387,6 +445,62 @@ public class DbFunctionality {
         }
         //returns the list of order objects.
         return orders;
+    }
+
+    public boolean checkRoom(int roomID, Connection connection) throws SQLException {
+        PreparedStatement stmt;
+        String query = "select * from rooms where Room_ID = ?";
+        stmt = connection.prepareStatement(query);
+        // stmt.setString(1, Integer.toString(roomID));
+        stmt.setInt(1, roomID);
+
+        ResultSet resultSet = stmt.executeQuery();
+        if (resultSet.next()) {
+            return true;
+        }
+        return false;
+    }
+
+    public void searchOrders(int roomId, String date, PrintWriter out, Connection connection) throws SQLException {
+        String strSelect = null;
+        if (roomId < 0) {
+            strSelect = "SELECT * FROM `order` WHERE DATE_FORMAT(Timestamp_start, '%Y-%m-%d') = '" + date + "'";
+        } else {
+            strSelect = "SELECT * FROM `order` WHERE DATE_FORMAT(Timestamp_start, '%Y-%m-%d') = '" + date + "' AND Room_ID="+ Integer.toString(roomId);
+        }
+        PreparedStatement statement = connection.prepareStatement(strSelect);
+        ResultSet resultSet = statement.executeQuery(strSelect);
+        out.print("[");
+        int i = 0;
+        while (resultSet.next()) {
+            if (i > 0) {
+                out.print(",");
+            }
+            out.print("{\"roomId\":" + resultSet.getInt("Room_ID") + ",\"start\": \"" + resultSet.getTimestamp("Timestamp_start") + "\", \"end\": \"" + resultSet.getTimestamp("Timestamp_end") + "\"}");
+            i++;
+        }
+        if (roomId < 0) {
+            strSelect = "SELECT * FROM `rooms`";
+            statement = connection.prepareStatement(strSelect);
+            resultSet = statement.executeQuery(strSelect);
+            String roomNumbers = "";
+            int j = 0;
+            while (resultSet.next()) {
+                if (j > 0) {
+                    roomNumbers = roomNumbers + ",";
+                }
+                j++;
+                roomNumbers = roomNumbers + String.valueOf(resultSet.getInt("Room_ID"));
+            }
+            if (i == 0) {
+                out.print("[" + roomNumbers + "]");
+            } else {
+                out.print(",[" + roomNumbers + "]");
+
+            }
+        }
+
+        out.print("]");
     }
 }
 

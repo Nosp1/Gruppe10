@@ -17,8 +17,8 @@ public class Grouproom extends AbstractRoom {
      * @param roomBuilding name of building example: B
      * @param maxCapacity max capacity in the room
      */
-    public Grouproom(int roomID, String roomName, String roomBuilding, int maxCapacity) {
-        super(roomID, roomName, roomBuilding, RoomType.GROUPROOM);
+    public Grouproom(int roomID, String roomName, String roomBuilding, int maxCapacity, boolean tavle, boolean prosjektor) {
+        super(roomID, roomName, roomBuilding, RoomType.GROUPROOM, tavle, prosjektor);
         setMaxCapacity(maxCapacity);
     }
 

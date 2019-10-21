@@ -8,7 +8,6 @@ import Classes.User.Student;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.mail.Session;
