@@ -18,6 +18,7 @@ public class DbTool {
     public Connection dbLogIn(PrintWriter out) {
         try {
             Context context = new InitialContext();
+            // TODO: Endre denne og alt i databasen til til lowercase, siden det ikke funker i Windows
             DataSource dataSource = (DataSource) context.lookup("java:comp/env/jdbc/localhost/roombooking");
             connection = dataSource.getConnection();
 
