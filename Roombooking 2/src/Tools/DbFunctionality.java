@@ -19,6 +19,8 @@ import java.util.ArrayList;
  * handles the queries to and from the database.
  *
  * @author trym, brisdalen, sæthra & alena
+ * TODO: checkUser: closed. Adduser:closed
+ * TODO: getUser: Open. getUserID open.
  */
 public class DbFunctionality {
     Statement statement;
