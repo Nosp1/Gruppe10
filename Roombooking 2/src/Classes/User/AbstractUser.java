@@ -47,7 +47,6 @@ public abstract class AbstractUser {
     }
 
     public void showOrders() {
-        //todo add print outwriter not sout.out.
         //Viser orders
         for (Order o : orders) {
             System.out.println(o);

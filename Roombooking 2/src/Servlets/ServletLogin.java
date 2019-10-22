@@ -69,8 +69,22 @@ public class ServletLogin extends AbstractServlet {
                             }
                      NB: Ikke gjøre det mulig å komme til admin-siden ved kun URL eller med parameter
                      */
+                    session.setAttribute("userEmail", userName);
                     servletContext.getRequestDispatcher("/loggedIn.html").forward(request, response);
                     //if the login fails
+                    try {
+                        System.out.println("attempting to close");
+                        connection.close();
+                        if (!connection.isClosed()) {
+                            System.out.println("connection is not closed ");
+                        }
+                        else {
+                            System.out.println("connection is closed");
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        System.out.println("connection failed" + e);
+                    }
                 } else {
                     // If not TODO: Add out.print error message for wrong password vs email
                     System.out.println("fail");
@@ -79,7 +93,6 @@ public class ServletLogin extends AbstractServlet {
                 }
                 //adds a return button if the login fails.
                 addHomeButton(out);
-
             }
             //prints script to establish connection between bootstrap and html
             addBootStrapFunctionality(out);
@@ -90,6 +103,4 @@ public class ServletLogin extends AbstractServlet {
             e.printStackTrace();
         }
     }
-
-
 }

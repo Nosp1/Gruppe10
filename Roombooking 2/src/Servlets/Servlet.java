@@ -59,10 +59,14 @@ public class Servlet extends AbstractPostServlet {
                     out.println("You have already registered with that email");
 
                     ServletContext servletContext = getServletContext();
-                    servletContext.getRequestDispatcher("/index.html").forward(request,response);
-                }
+                    servletContext.getRequestDispatcher("/index.html").forward(request, response);
+                    try {
+                        connection.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                } else {
 
-                else {
                     dbFunctionality.addUser(newUser, connection);
                     out.println("<p> You have successfully registered</p>");
                     //Generates and sends a welcome email to the newly registered user
@@ -79,8 +83,14 @@ public class Servlet extends AbstractPostServlet {
                     String body = EmailTemplates.welcomeMessageBody(capName);
                     //sends email
                     newEmail.sendEmail(session, newUser.getUserName(), welcome, body);
-                    //prints HomeButton.
+                    //prints HomeButton & closes connection to sql.
                     addHomeButton(out);
+                    try {
+                        connection.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+
+                    }
                 }
 
             } else {
