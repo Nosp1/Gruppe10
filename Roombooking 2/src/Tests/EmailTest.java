@@ -24,14 +24,13 @@ import static org.junit.Assert.assertTrue;
  * @author trym
  */
 public class EmailTest {
-    DbTool dbTool;
-    DbFunctionality dbFunctionality;
-    TLSEmail tlsEmail;
-    Connection testConnection;
+    private DbTool dbTool;
+    private DbFunctionality dbFunctionality;
+    private TLSEmail tlsEmail;
+    private Connection testConnection;
     //the test users email address
-    String testUserEmail = "trymerlend@hotmail.no";
-    String testAdminEmail = "grpoom@gmail.com";
-    String testAdminPw = "dennIS93";
+    private String testUserEmail = "trymerlend@hotmail.no";
+
 
 
     @Before
@@ -41,27 +40,6 @@ public class EmailTest {
         dbFunctionality = new DbFunctionality();
         testConnection = dbTool.dbLogIn();
     }
-
-    @Test
-    public void testAddAdminEmail() {
-        //sends test email, pw and connection to db func method.
-        dbFunctionality.addAdminEmail(testAdminEmail, testAdminPw, testConnection);
-        String statement = "Select Email_name from Email where Email_name = ?";
-        try {
-            PreparedStatement preparedStatement = testConnection.prepareStatement(statement);
-            preparedStatement.setString(1, testAdminEmail);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                assertEquals(resultSet.getString("Email_name"), testAdminEmail);
-                System.out.println(resultSet.getString("Email_name"));
-            }
-            assertTrue(dbFunctionality.deleteAdminEmail(testAdminEmail, testConnection));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-    }
-
     /**
      * Tests the email function
      * asserts whether recipient email is equal to test email.
