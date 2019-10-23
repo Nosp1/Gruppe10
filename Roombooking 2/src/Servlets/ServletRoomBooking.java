@@ -113,16 +113,17 @@ public class ServletRoomBooking extends AbstractPostServlet {
 
             } else if (action.contains("update")) {
 
-                // Henter order ID
+                // ID på hvilken order du vil endre hentes fra request.
                 String formOrderID = request.getParameter("Update_orderID");
                 int orderID = Integer.parseInt(formOrderID);
 
-                // Henter Timestamp sin start dato og tid og gjør dem om til en variabel
+                // Endret start tidspunkt hentes fra request,
                 String timestampStartDate = request.getParameter("Update_Timestamp_start_date");
                 String timestampStartTime = request.getParameter("Update_Timestamp_start_time");
+                // og formateres til riktig format i en string.
                 String timestampStart = timestampStartDate + " " + timestampStartTime;
 
-                // Henter Timestamp sin slutt dato og tid og gjør dem om til en variabel
+                // Det samme gjøres med det nye slutt tidspunktet.
                 String timestampEndDate = request.getParameter("Update_Timestamp_end_date");
                 String timestampEndTime = request.getParameter("Update_Timestamp_end_time");
                 String timestampEnd = timestampEndDate + " " + timestampEndTime;
