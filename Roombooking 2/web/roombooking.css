@@ -103,19 +103,38 @@ body {
 #Reserve_Room_ID input {
     width: 100%;
     clear: both;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
+#reserveroomid {
+    display: flex;
+    margin-bottom: 46px;
+}
+#Reserve_Room_ID {
+    flex: 1;
+}
+#label_roomid {
+    padding-right: 30px;
+}
+#reserve_start {
+    display: flex;
+}
+#Reserve_Timestamp_start_date {
+    flex: 1;
 
+}
+#label_start {
+    padding-right: 2px;
+}
+#reserve_end {
+    display: flex;
 
-
-
-
-
-
-
-
-
-
+}
+#Reserve_Timestamp_end_date {
+    flex: 1;
+}
+#label_end {
+    padding-right: 11px;
+}
 
 
 
