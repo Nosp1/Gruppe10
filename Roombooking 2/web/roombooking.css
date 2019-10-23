@@ -61,13 +61,12 @@ body {
 -------------------------*/
 #collapseExample {
     color: white;
-    /*width: border-box; /*
+    width: border-box;
     /*text-align: center; */
 }
 #collapseLogin {
     color: white;
-    /*width: border-box; */
-    text-align: center;
+    width: border-box;
 }
 #welcome{
     -webkit-text-stroke: 1px black;
@@ -170,25 +169,6 @@ body {
 
 .navbar-default {
     background: linear-gradient(to top left, #ae988a 0%, #e2e0d5 100%) fixed;
-}
-
-.room-card {
-    background-color: #e2e0d5;
-    width: 20%;
-    border: 0.2em solid #e1cab9;
-    border-radius: 1em;
-    padding-top: 0.8em;
-    margin: auto auto 1em;
-}
-
-.room-card p {
-    color: black;
-    text-shadow: none;
-}
-
-.card-clicked {
-    border-color: #73d7f0;
-    box-shadow: 0 0.1em 0.1em black;
 }
 
 .navbar{
