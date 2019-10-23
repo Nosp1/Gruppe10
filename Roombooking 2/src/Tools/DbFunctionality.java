@@ -6,6 +6,7 @@ import Classes.Rooms.AbstractRoom;
 import Classes.User.AbstractUser;
 import Classes.User.Student;
 import Passwords.PasswordHashAndCheck;
+import org.apache.commons.dbutils.DbUtils;
 
 import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
@@ -17,8 +18,9 @@ import java.util.ArrayList;
 /**
  * handles the queries to and from the database.
  *
- * @author trym, brisdalen, alena
- * @author trym, brisdalen, sæthra
+ * @author trym, brisdalen, sæthra & alena
+ * TODO: checkUser: closed. Adduser:closed
+ * TODO: getUser: Open. getUserID open.
  */
 public class DbFunctionality {
     Statement statement;
@@ -29,49 +31,9 @@ public class DbFunctionality {
         passwordHashAndCheck = new PasswordHashAndCheck();
     }
 
-    /**
-     * Temp method for adding Admin Email for sending out booking confirmation to registered users.
-     */
-    public void addAdminEmail(String email, String password, Connection connection) {
-        PreparedStatement insertEmail;
-        try {
-            String ins = "insert into Email (Email_name, Email_Password, Email_Salt) values (?,?,?)";
-            insertEmail = connection.prepareStatement(ins);
-            insertEmail.setString(1, email);
-            String hashing = passwordHashAndCheck.stringToSaltedHash(password);
-            insertEmail.setString(2, hashing);
-            String[] hashParts = hashing.split(":");
-            insertEmail.setString(3, hashParts[0]);
-            insertEmail.execute();
-        } catch (SQLException | NoSuchAlgorithmException | InvalidKeySpecException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public boolean deleteAdminEmail(String adminUser, Connection connection) throws SQLException {
-        PreparedStatement deleteAdminUser;
-        String delete = "delete from  Email where Email_name = ?";
-        deleteAdminUser = connection.prepareStatement(delete);
-        deleteAdminUser.setString(1, adminUser);
-        int result = deleteAdminUser.executeUpdate();
-        return result == 1;
-
-    }
-
-    public TLSEmail getAdminEmail(String requestEmail, Connection connection) throws SQLException, InvalidKeySpecException, NoSuchAlgorithmException {
-        PreparedStatement getEmail;
-        String select = "delete from `Email` where Email_name = ?";
-        getEmail = connection.prepareStatement(select);
-        getEmail.setString(1, requestEmail);
-        ResultSet resultSet = getEmail.executeQuery();
-        resultSet.next();
-        String email = resultSet.getString("Email_name");
-        //String password = passwordHashAndCheck.(resultSet.getString("Email_Password"),resultSet.getString("Email_Salt"));
-        return null;
-    }
-
-    public void addUser(AbstractUser user, Connection conn) {
-        PreparedStatement insertNewUser;
+    //connection closes
+    public void addUser(AbstractUser user, Connection conn) throws SQLException {
+        PreparedStatement insertNewUser = null;
 
         try {
             String ins = "insert into User (User_firstName, User_lastName, User_email, User_dob, User_password, User_salt) values (?,?,?,?,?,?)";
@@ -93,10 +55,17 @@ public class DbFunctionality {
 
         } catch (SQLException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
+        } finally {
+            //closes the query and connection
+            assert insertNewUser != null;
+            insertNewUser.close();
+            conn.close();
         }
     }
 
     /**
+     * Connection closes in Servlet not here because of connection object being used by multiple queries.
+     *
      * @param username   The user's attempted login email
      * @param password   The user's attempted password
      * @param connection The Connection object to a given database
@@ -106,22 +75,53 @@ public class DbFunctionality {
      * @throws NoSuchAlgorithmException
      */
     public boolean checkUser(String username, String password, Connection connection) throws SQLException, InvalidKeySpecException, NoSuchAlgorithmException {
-        PreparedStatement stmt;
-        String query = "select * from user where User_email = ?";
-        stmt = connection.prepareStatement(query);
-        stmt.setString(1, username);
-        // Check if the attempted email matches any emails in the database
-        ResultSet resultSet = stmt.executeQuery();
-        while (resultSet.next()) {
-            if (resultSet.getString("User_email").toLowerCase().matches(username)) {
-                // If the email is found, store the hashed string in the variabled "storedPassword"
-                String storedPassword = resultSet.getString("User_password");
+        PreparedStatement stmt = null;
+        ResultSet resultSet = null;
+        try {
+            String query = "select * from user where User_email = ?";
+            stmt = connection.prepareStatement(query);
+            stmt.setString(1, username);
+            // Check if the attempted email matches any emails in the database
+            resultSet = stmt.executeQuery();
+            while (resultSet.next()) {
+                if (resultSet.getString("User_email").toLowerCase().matches(username)) {
+                    // If the email is found, store the hashed string in the variabled "storedPassword"
+                    String storedPassword = resultSet.getString("User_password");
                 /* Return true or false if the input password matches the stored password
                    after hashing. */
-                return passwordHashAndCheck.validatePassword(password, storedPassword);
-            } else {
-                // No user with that email found
-                return false;
+                    return passwordHashAndCheck.validatePassword(password, storedPassword);
+                } else {
+                    // No user with that email found
+                    return false;
+                }
+            }
+        } finally {
+            assert resultSet != null;
+            try {
+                resultSet.close();
+                if (resultSet.isClosed()) {
+                    System.out.println("resultset closed");
+                } else {
+                    System.out.println("resultset not closed");
+                }
+                stmt.close();
+                if (stmt.isClosed()) {
+                    System.out.println("statement is closed");
+                }
+                else {
+                    System.out.println("statement is not closed");
+                }
+                DbUtils.closeQuietly(stmt);
+                DbUtils.closeQuietly(resultSet);
+                if(stmt.isClosed()) {
+                    System.out.println("statement is closed");
+
+                }
+                else {
+                    System.out.println("stmt is not closed");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
         // Return false if there is no result set(?)
@@ -129,20 +129,29 @@ public class DbFunctionality {
     }
 
     public AbstractUser getUser(String requestedUserEmail, Connection connection) throws SQLException {
-        PreparedStatement selectUser;
-        //select the User from the User table with the corresponding User_ID
-        String select = "select * from user where User_email = ?";
-        selectUser = connection.prepareStatement(select);
-        selectUser.setString(1, requestedUserEmail);
-        ResultSet resultSet = selectUser.executeQuery();
-        resultSet.next();
-        String firstName = resultSet.getString("User_firstName");
-        String lastName = resultSet.getString("User_lastName");
-        String userName = resultSet.getString("User_email");
-        String dob = resultSet.getNString("User_dob");
-        String password = resultSet.getString("User_password");
+        PreparedStatement selectUser = null;
+        ResultSet resultSet = null;
+        try {
+            //select the User from the User table with the corresponding User_ID
+            String select = "select * from user where User_email = ?";
+            selectUser = connection.prepareStatement(select);
+            selectUser.setString(1, requestedUserEmail);
+            resultSet = selectUser.executeQuery();
+            resultSet.next();
+            String firstName = resultSet.getString("User_firstName");
+            String lastName = resultSet.getString("User_lastName");
+            String userName = resultSet.getString("User_email");
+            String dob = resultSet.getNString("User_dob");
+            String password = resultSet.getString("User_password");
 
-        return new Student(firstName, lastName, userName, password, dob);
+            return new Student(firstName, lastName, userName, password, dob);
+        } finally {
+            assert selectUser != null;
+            selectUser.closeOnCompletion();
+            assert resultSet != null;
+            resultSet.close();
+
+        }
     }
 
     /**
@@ -160,8 +169,10 @@ public class DbFunctionality {
         resultSet.next();
         //todo funker dette?
         getUser.closeOnCompletion();
-         return Integer.parseInt(resultSet.getString(1));
 
+        int result = Integer.parseInt(resultSet.getString(1));
+        resultSet.close();
+        return result;
     }
 
     /**
@@ -188,29 +199,33 @@ public class DbFunctionality {
      */
     public void addRoom(AbstractRoom room, Connection connection) throws SQLException {
         PreparedStatement insertNewRoom;
+        try {
+            String ins = "insert into Rooms (Room_ID, Room_name, Room_building, Room_maxCapacity, Tavle, Prosjektor) values (?,?,?,?,?,?)";
+            insertNewRoom = connection.prepareStatement(ins);
+            insertNewRoom.setInt(1, room.getRoomID());
+            insertNewRoom.setString(2, room.getRoomName());
+            insertNewRoom.setString(3, room.getRoomBuilding());
+            insertNewRoom.setString(4, String.valueOf(room.getMaxCapacity()));
 
-        String ins = "insert into Rooms (Room_ID, Room_name, Room_building, Room_maxCapacity, Tavle, Prosjektor) values (?,?,?,?,?,?)";
-        insertNewRoom = connection.prepareStatement(ins);
-        insertNewRoom.setInt(1, room.getRoomID());
-        insertNewRoom.setString(2, room.getRoomName());
-        insertNewRoom.setString(3, room.getRoomBuilding());
-        insertNewRoom.setString(4, String.valueOf(room.getMaxCapacity()));
+            boolean tavle = room.hasTavle();
+            if (tavle) {
+                insertNewRoom.setString(5, "JA");
+            } else {
+                insertNewRoom.setString(5, "NEI");
+            }
 
-        boolean tavle = room.hasTavle();
-        if(tavle) {
-            insertNewRoom.setString(5, "JA");
-        } else {
-            insertNewRoom.setString(5, "NEI");
+            boolean prosjektor = room.hasProjektor();
+            if (prosjektor) {
+                insertNewRoom.setString(6, "JA");
+            } else {
+                insertNewRoom.setString(6, "NEI");
+            }
+
+            insertNewRoom.execute();
         }
-
-        boolean prosjektor = room.hasProjektor();
-        if(prosjektor) {
-            insertNewRoom.setString(6, "JA");
-        } else {
-            insertNewRoom.setString(6, "NEI");
+        finally {
+            connection.close();
         }
-
-        insertNewRoom.execute();
     }
 
     public boolean deleteRoom(int roomID, Connection connection) throws SQLException {
