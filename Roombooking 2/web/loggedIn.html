@@ -25,7 +25,7 @@
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
+            <!--ul-- class="nav navbar-nav">
                 <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
                 <li><a href="#">Link</a></li>
                 <li class="dropdown">
@@ -41,7 +41,7 @@
                         <li><a href="#">One more separated link</a></li>
                     </ul>
                 </li>
-            </ul>
+            </ul-->
             <form class="navbar-form navbar-left" id="search-form">
                 <div class="form-group">
                     <input type="text" class="form-control" placeholder="Search">
@@ -55,7 +55,18 @@
                     </a>
                 </li>
 
-                <li class="dropdown">
+                <li>
+                   <div id="logout">
+                       <form action="./Servlets.ServletLogOut" method="post">
+                           <div>
+                               <input class="submit btn-default btn-lg" type="submit" name="action" value="Log out"/>
+                           </div>
+                       </form>
+                   </div>
+
+                </li>
+
+                <!--li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false">Dropdown <span class="caret"></span></a>
                     <ul class="dropdown-menu">
@@ -65,7 +76,7 @@
                         <li role="separator" class="divider"></li>
                         <li><a href="#">Separated link</a></li>
                     </ul>
-                </li>
+                </li-->
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
@@ -170,13 +181,14 @@
 <div class="collapse container" id="collapseReserveRoom">
     <form action="./Servlets.ServletRoomBooking" method="post">
         <h1>Reserve a room</h1>
-        <div>
-            <label for="Reserve_Room_ID">Room ID</label>
+        <div id="reserveroomid">
+            <label for="Reserve_Room_ID" id="label_roomid"> Room ID</label>
             <input type="text" id="Reserve_Room_ID" name="Reserve_Room_ID">
         </div>
 
-        <div>
-            <label for="Reserve_Timestamp_start_date" for="Reserve_Timestamp_start_time">Booking start</label>
+        <div id="reserve_start">
+            <label for="Reserve_Timestamp_start_date" for="Reserve_Timestamp_start_time" id="label_start">Booking start</label>
+
             <input type="date" id="Reserve_Timestamp_start_date" name="Reserve_Timestamp_start_date"
                    onfocusout="updateEndDate()"/>
             <span class="validateReserveTime">
@@ -186,8 +198,8 @@
             </span>
         </div>
 
-        <div>
-            <label for="Reserve_Timestamp_end_date" for="Reserve_Timestamp_end_time">Booking end</label>
+        <div id="reserve_end">
+            <label for="Reserve_Timestamp_end_date" for="Reserve_Timestamp_end_time" id="label_end">Booking end</label>
             <input type="date" id="Reserve_Timestamp_end_date" name="Reserve_Timestamp_end_date" tabindex="-1"
                    readonly="readonly"/>
             <span class="validateReserveTime">
