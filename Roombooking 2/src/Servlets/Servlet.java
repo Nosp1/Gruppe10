@@ -92,6 +92,7 @@ public class Servlet extends AbstractPostServlet {
 
                     }
                 }
+
             } else {
                 //if the user is not registered.
                 out.print("something went wrong");
