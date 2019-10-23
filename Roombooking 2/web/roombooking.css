@@ -9,7 +9,9 @@ body {
     background-color: #fff;
     background: linear-gradient(to top left, #ae988a 0%, #e2e0d5  100%) fixed;
     text-align: center;
+    background: linear-gradient(to top left, #ae988a 0%, #e2e0d5  100%) fixed;
 }
+
 form {
     display: inline-block;
     color: white;
@@ -36,6 +38,49 @@ input[readonly="readonly"]
 }
 
 
+.navbar-default {
+    background: linear-gradient(to top left, #ae988a 0%, #e2e0d5 100%) fixed;
+}
+
+.navbar{
+    font-weight: 530;
+    text-decoration-color: #000000;
+
+}
+
+.btn-secondary{
+    background-color: #42a28f;
+
+}
+.btn-default {
+    background-color: #7aa39a;
+}
+.btn-success {
+    background-color:#7aa39a;
+    border-color: #fffce1;
+}
+
+.btn-success:hover {
+    background-color: #42a28f;
+    border-color: #e6e6e6;
+}
+
+.btn-default:hover {
+    color: #333;
+    background-color: #e6e6e6;
+    border-color: #adadad;
+}
+
+.btn-success:focus,
+.btn-success.focus {
+    color: #fff;
+    background-color: #42a28f;
+    border-color: #e6e6e6;
+}
+
+
+/* ID SELECTORS
+-------------------------*/
 
 #welcome{
     -webkit-text-stroke: 1px black;
@@ -43,22 +88,6 @@ input[readonly="readonly"]
     margin-bottom: 10px;
 }
 
-
-
-
-
-body {
-    background: linear-gradient(to top left, #ae988a 0%, #e2e0d5  100%) fixed;
-
-}
-
-
-
-
-
-
-/* ID SELECTORS
--------------------------*/
 #collapseExample {
     color: white;
     width: border-box;
@@ -67,11 +96,6 @@ body {
 #collapseLogin {
     color: white;
     width: border-box;
-}
-#welcome{
-    -webkit-text-stroke: 1px black;
-    text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-    margin-bottom: 10px;
 }
 
 #collapseExample {
@@ -106,73 +130,9 @@ body {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-.btn-secondary{
-    background-color: #42a28f;
-
-}
-.btn-default {
-    background-color: #7aa39a;
-}
-.btn-success {
-    background-color:#7aa39a;
-    border-color: #fffce1;
-}
-
-.btn-success:hover {
-    background-color: #42a28f;
-    border-color: #e6e6e6;
-}
-
-.btn-default:hover {
-    color: #333;
-    background-color: #e6e6e6;
-    border-color: #adadad;
-}
-
-.btn-success:focus,
-.btn-success.focus {
-    color: #fff;
-    background-color: #42a28f;
-    border-color: #e6e6e6;
-}
-
 #collapseExample input {
     width: 100%;
     clear: both;
 }
 
-.navbar-default {
-    background: linear-gradient(to top left, #ae988a 0%, #e2e0d5 100%) fixed;
-}
 
-.navbar{
-    font-weight: 530;
-    text-decoration-color: #000000;
-
-}
