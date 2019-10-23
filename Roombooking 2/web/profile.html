@@ -93,6 +93,14 @@
                     value="myreservations">My reservations
             </button>
         </form>
+
+        <!-- Report missing objects and false collapse button -->
+        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseReport"
+                role="button"
+                aria-expanded="false"
+                aria-controls="#collapseReport">Report missing objects / false
+        </button>
+
     </div>
 </div>
 
@@ -101,6 +109,7 @@
 <div class="collapse container" id="collapseEdit">
     <form action="./Servlets.ServletRoomOptions" method="post">
         <h1>Edit Profile Details</h1>
+
         <div>
             <input class="submit btn-default btn-lg" type="submit" name="action" value="Edit my details">
         </div>
@@ -130,6 +139,26 @@
     <input type="date">
     <button style="color: black;">Next day</button>
 </div>
+
+<!-- TODO LEGG TIL NY SERVLET HER-->
+<!-- Submit button for Report missing objects / false  -->
+
+<div class="collapse container" id="collapseReport">
+  <form>
+        <h1>Report missing objects / false </h1>
+      <div>
+          <textarea rows="4" cols="50">
+SKRIV INN TEKST HER
+</textarea>
+      </div>
+            <div>
+                <input class="submit btn-default btn-lg" type="submit" name="action" value="Report">
+            </div>
+
+        </div>
+    </form>
+</div>
+
 <script
         src="https://code.jquery.com/jquery-3.4.1.js"
         integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
