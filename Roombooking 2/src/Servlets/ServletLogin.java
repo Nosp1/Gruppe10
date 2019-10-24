@@ -28,7 +28,7 @@ import java.sql.SQLException;
  * @see DbTool
  */
 
-@WebServlet (name = "Servlets.ServletLogin", urlPatterns = {"/Servlets.ServletLogin"})
+@WebServlet(name = "Servlets.ServletLogin", urlPatterns = {"/Servlets.ServletLogin"})
 public class ServletLogin extends AbstractServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -59,7 +59,7 @@ public class ServletLogin extends AbstractServlet {
                     //redirects the user to the loggedIn.html
                     ServletContext servletContext = getServletContext();
                     HttpSession session = request.getSession();
-                    session.setAttribute("userEmail",userName);
+                    session.setAttribute("userEmail", userName);
                     /* TODO: Sende til ulike sider ut ifra bruker-type (student, administrator o.l.)
                     f.eks:  sjekk UserType i database utifra brukernavn
                             if(user.userType.equals("admin") {
@@ -77,8 +77,7 @@ public class ServletLogin extends AbstractServlet {
                         connection.close();
                         if (!connection.isClosed()) {
                             System.out.println("connection is not closed ");
-                        }
-                        else {
+                        } else {
                             System.out.println("connection is closed");
                         }
                         out.close();
@@ -89,9 +88,16 @@ public class ServletLogin extends AbstractServlet {
                     }
                 } else {
                     // If not TODO: Add out.print error message for wrong password vs email
+                    if (connection.isClosed()) {
+                        System.out.println("connection closed");
+                    } else {
+                        connection.close();
+                        System.out.println("connection not closed");
+                    }
                     System.out.println("fail");
                     out.println("Sorry, we do not recognize \"" + lowercaseUsername + "\".");
                     out.print("<br>");
+
                 }
                 //adds a return button if the login fails.
                 addHomeButton(out);

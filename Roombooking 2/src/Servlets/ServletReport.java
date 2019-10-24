@@ -48,8 +48,8 @@ public class ServletReport extends AbstractPostServlet {
                 }
                 int reportID = 1;
 
-                Report newReport = new Report(reportID, responseString, userID, roomID);
-                dbFunctionality.insertReport(newReport, out, connection);
+                Report newReport = new Report(responseString, userID, roomID);
+                dbFunctionality.insertReport(newReport, connection);
                 DbUtils.closeQuietly(connection);
                 if (connection.isClosed()) {
                     System.out.println("connection closed");
