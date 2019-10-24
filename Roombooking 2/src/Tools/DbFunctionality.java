@@ -262,7 +262,7 @@ public class DbFunctionality {
             out.print("<p>" + resultSet.getString("Room_ID") + " : " + resultSet.getString("Room_name"));
             out.print(" Plasser: " + resultSet.getString("Room_maxCapacity") + "</p>");
             out.print("<p>Tavle: " + resultSet.getString("Tavle"));
-            out.print(" Projektor: " + resultSet.getString("Projektor") + "</p>");
+            out.print(" Projektor: " + resultSet.getString("Prosjektor") + "</p>");
             out.println("</div>");
         }
     }
@@ -545,13 +545,12 @@ public class DbFunctionality {
         out.print("]");
     }
 
-    public void insertReport (Report userReport, PrintWriter out, Connection connection)throws SQLException {
-        String strInsert="Insert into UserReport(Report_ID, Report_Response, User_ID, Room_ID) Values (?,?,?,?)" ;
+    public void insertReport(Report userReport, Connection connection)throws SQLException {
+        String strInsert="Insert into UserReport( Report_Response, User_ID, Room_ID) Values (?,?,?)" ;
         PreparedStatement statement = connection.prepareStatement(strInsert);
-        statement.setInt(1, userReport.getReportID());
-        statement.setString(2, userReport.getReportResponse());
-        statement.setInt(3, userReport.getUserID());
-        statement.setInt(4,userReport.getRoomID());
+        statement.setString(1, userReport.getReportResponse());
+        statement.setInt(2, userReport.getUserID());
+        statement.setInt(3,userReport.getRoomID());
 
         statement.execute();
     }
