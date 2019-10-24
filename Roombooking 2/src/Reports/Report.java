@@ -12,7 +12,12 @@ public class Report {
         this.userID = userID;
         this.roomID = roomID;
     }
+    public Report(String reportResponse, int userID,int roomID) {
+        this.reportResponse = reportResponse;
+        this.userID = userID;
+        this.roomID = roomID;
 
+    }
     public int getReportID() {
         return reportID;
     }
