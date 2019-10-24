@@ -26,7 +26,7 @@ public class ServletReport extends AbstractPostServlet {
         try (PrintWriter out = response.getWriter()) {
 
             //prints start of html tags.
-            printNav(out);
+            printLoggedInNav(out);
             out.println("<h2 class=\"report_processing\">Your report is under process../>");
             //gets the username -> email in this case.
             HttpSession session = request.getSession();

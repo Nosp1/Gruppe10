@@ -36,7 +36,7 @@ public class ServletReservations extends AbstractServlet {
         try (PrintWriter out = response.getWriter()) {
 
             //prints start of html tags.
-            printNav(out);
+            printLoggedInNav(out);
             out.println("Here are the reservations:");
             //gets the username -> email in this case.
             HttpSession session = request.getSession();

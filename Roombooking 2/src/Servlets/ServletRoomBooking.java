@@ -29,7 +29,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try (PrintWriter out = response.getWriter()) {
             //prints the beginning of a  html-page.
-            printNav(out);
+            printLoggedInNav(out);
             //retrieves the value of the Reserve a Room button
             String action = request.getParameter("action").toLowerCase();
             HttpSession httpSession = request.getSession();
