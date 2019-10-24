@@ -5,6 +5,7 @@ package Servlets;
  */
 
 
+import Reports.Report;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 
@@ -38,7 +39,16 @@ public class ServletReport extends AbstractPostServlet {
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
                 int userID = dbFunctionality.getUserId(userName, connection);
+                String roomIDString = request.getParameter("Report_Room_ID");
+                int roomID = Integer.parseInt(roomIDString);
+                String responseString = request.getParameter("Report_TextArea");
+                if(responseString.isEmpty()) {
+                    responseString = "No value.";
+                }
+                int reportID = 1;
 
+                Report newReport = new Report(reportID, responseString, userID, roomID);
+                dbFunctionality.insertReport(newReport, out, connection);
             } else {
                 //adds a return button if the Report fails.
 

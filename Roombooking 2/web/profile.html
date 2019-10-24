@@ -147,9 +147,12 @@
   <form action="./Servlets.ServletReport" method="post">
         <h1>Report missing objects / false </h1>
       <div>
-          <textarea rows="4" cols="50">
-SKRIV INN TEKST HER
+          <div><label for="Report_Room_ID">Room ID</label></div>
+          <input type="text" id="Report_Room_ID" name="Report_Room_ID">
+          <div><textarea rows="4" cols="50" name="Report_TextArea">
+<!-- SKRIV INN TEKST HER -->
 </textarea>
+          </div>
       </div>
             <div>
                 <input class="submit btn-default btn-lg" type="submit" name="action" value="Report">

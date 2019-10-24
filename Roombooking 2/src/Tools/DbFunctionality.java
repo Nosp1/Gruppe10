@@ -6,6 +6,7 @@ import Classes.Rooms.AbstractRoom;
 import Classes.User.AbstractUser;
 import Classes.User.Student;
 import Passwords.PasswordHashAndCheck;
+import Reports.Report;
 import org.apache.commons.dbutils.DbUtils;
 
 import java.io.PrintWriter;
@@ -509,10 +510,15 @@ public class DbFunctionality {
         out.print("]");
     }
 
-    public void insertReport (PrintWriter out, Connection connection)throws SQLException {
+    public void insertReport (Report userReport, PrintWriter out, Connection connection)throws SQLException {
         String strInsert="Insert into UserReport(Report_ID, Report_Response, User_ID, Room_ID) Values (?,?,?,?)" ;
         PreparedStatement statement = connection.prepareStatement(strInsert);
-        statement.setInt(1, );
+        statement.setInt(1, userReport.getReportID());
+        statement.setString(2, userReport.getReportResponse());
+        statement.setInt(3, userReport.getUserID());
+        statement.setInt(4,userReport.getRoomID());
+
+        statement.execute();
     }
 
     public void printReport(PrintWriter out, Connection connection)throws SQLException {
