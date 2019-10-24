@@ -23,6 +23,10 @@ input[readonly="readonly"]
 {
     background-color:#D3D3D3;
 }
+
+textarea {
+    color: #080808;
+}
 /* CLASS SELECTORS
 ----------------------------------*/
 .jumbotron {
