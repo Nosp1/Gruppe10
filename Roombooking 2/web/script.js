@@ -30,7 +30,7 @@ $("#calendar button:nth-of-type(2)").on('click', function () {
 });
 
 $('#ListOfRooms').on('submit', function (evt) {
-    evt.preventDefault();
+    //evt.preventDefault();
     getRoomInfo(-1);
     $("#calendar").show();
     $("#searchResult").show();

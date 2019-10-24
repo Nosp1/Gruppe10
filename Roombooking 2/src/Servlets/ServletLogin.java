@@ -6,7 +6,6 @@ import Tools.DbTool;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -60,6 +59,16 @@ public class ServletLogin extends AbstractServlet {
                     //redirects the user to the loggedIn.html
                     ServletContext servletContext = getServletContext();
                     HttpSession session = request.getSession();
+                    session.setAttribute("userEmail",userName);
+                    /* TODO: Sende til ulike sider ut ifra bruker-type (student, administrator o.l.)
+                    f.eks:  sjekk UserType i database utifra brukernavn
+                            if(user.userType.equals("admin") {
+                                servletContext.getRequestDispatcher("/loggedInAdmin.html").forward(request, response);
+                            } else {
+                                servletContext.getRequestDispatcher("/loggedInDefault.html").forward(request, response);
+                            }
+                     NB: Ikke gjøre det mulig å komme til admin-siden ved kun URL eller med parameter
+                     */
                     session.setAttribute("userEmail", userName);
                     servletContext.getRequestDispatcher("/loggedIn.html").forward(request, response);
                     //if the login fails

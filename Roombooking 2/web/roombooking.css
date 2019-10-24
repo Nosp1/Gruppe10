@@ -126,9 +126,84 @@ input[readonly="readonly"]
 #Reserve_Room_ID input {
     width: 100%;
     clear: both;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
+}
+#reserveroomid {
+    display: flex;
+    margin-bottom: 46px;
+}
+#Reserve_Room_ID {
+    flex: 1;
+}
+#label_roomid {
+    padding-right: 30px;
+}
+#reserve_start {
+    display: flex;
+}
+#Reserve_Timestamp_start_date {
+    flex: 1;
+
+}
+#label_start {
+    padding-right: 2px;
+}
+#reserve_end {
+    display: flex;
+
+}
+#Reserve_Timestamp_end_date {
+    flex: 1;
+}
+#label_end {
+    padding-right: 11px;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.btn-secondary{
+    background-color: #42a28f;
+
+}
+.btn-default {
+    background-color: #7aa39a;
+}
+.btn-success {
+    background-color:#7aa39a;
+    border-color: #fffce1;
+}
+
+.btn-success:hover {
+    background-color: #42a28f;
+    border-color: #e6e6e6;
+}
+
+.btn-default:hover {
+    color: #333;
+    background-color: #e6e6e6;
+    border-color: #adadad;
+}
+
+.btn-success:focus,
+.btn-success.focus {
+    color: #fff;
+    background-color: #42a28f;
+    border-color: #e6e6e6;
+}
 
 #collapseExample input {
     width: 100%;
