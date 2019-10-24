@@ -107,17 +107,15 @@ public class DbFunctionality {
                 stmt.close();
                 if (stmt.isClosed()) {
                     System.out.println("statement is closed");
-                }
-                else {
+                } else {
                     System.out.println("statement is not closed");
                 }
                 DbUtils.closeQuietly(stmt);
                 DbUtils.closeQuietly(resultSet);
-                if(stmt.isClosed()) {
+                if (stmt.isClosed()) {
                     System.out.println("statement is closed");
 
-                }
-                else {
+                } else {
                     System.out.println("stmt is not closed");
                 }
             } catch (SQLException e) {
@@ -222,8 +220,7 @@ public class DbFunctionality {
             }
 
             insertNewRoom.execute();
-        }
-        finally {
+        } finally {
             connection.close();
         }
     }
@@ -398,7 +395,7 @@ public class DbFunctionality {
         return getMostActiveUsers(5, connection);
     }
 
-    public void updateOrderInformation (Order order, Connection connection) throws SQLException {
+    public void updateOrderInformation(Order order, Connection connection) throws SQLException {
         PreparedStatement updateOrderPS;
 
         System.out.println("update order started");
@@ -475,7 +472,7 @@ public class DbFunctionality {
         if (roomId < 0) {
             strSelect = "SELECT * FROM `order` WHERE DATE_FORMAT(Timestamp_start, '%Y-%m-%d') = '" + date + "'";
         } else {
-            strSelect = "SELECT * FROM `order` WHERE DATE_FORMAT(Timestamp_start, '%Y-%m-%d') = '" + date + "' AND Room_ID="+ Integer.toString(roomId);
+            strSelect = "SELECT * FROM `order` WHERE DATE_FORMAT(Timestamp_start, '%Y-%m-%d') = '" + date + "' AND Room_ID=" + Integer.toString(roomId);
         }
         PreparedStatement statement = connection.prepareStatement(strSelect);
         ResultSet resultSet = statement.executeQuery(strSelect);
@@ -511,7 +508,24 @@ public class DbFunctionality {
 
         out.print("]");
     }
+
+    public void insertReport (PrintWriter out, Connection connection)throws SQLException {
+        String strInsert="Insert into UserReport(Report_ID, Report_Response, User_ID, Room_ID) Values (?,?,?,?)" ;
+        PreparedStatement statement = connection.prepareStatement(strInsert);
+        statement.setInt(1, );
+    }
+
+    public void printReport(PrintWriter out, Connection connection)throws SQLException {
+        String strSelect="Select*From UserReport";
+        PreparedStatement statement = connection.prepareStatement(strSelect);
+        ResultSet resultSet = statement.executeQuery(strSelect);
+        while (resultSet.next()) {
+            out.print("<div class=\"room-card\" id=\"room-cards\">");
+            out.print("<p>" + resultSet.getString("Report_ID") + " : " + resultSet.getString("Report_Response"));
+            out.print(" Room: " + resultSet.getString("Room_ID") + "</p>");
+            out.println("</div>");
+        }
+    }
+
 }
-
-
 
