@@ -50,7 +50,7 @@ create table Email
 );
 
 CREATE TABLE UserReport(
-    Report_ID int,
+    Report_ID int auto_increment,
     Report_Response char (30),
     User_ID int,
     Room_ID int,
