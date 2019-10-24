@@ -103,6 +103,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
                     confirmationEmail.sendEmail(session,user.getUserName(),receipt,body);
                     out.println("<p>You have successfully booked" + roomID);
                     addHomeLoggedInButton(out);
+                    connection.close();
                 } else {
                     String notAvailableErrorMessage = "Sorry, that time and room is already taken.";
                     // Hvis ikke returneres en error til brukeren

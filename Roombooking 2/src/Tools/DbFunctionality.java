@@ -1,6 +1,5 @@
 package Tools;
 
-import Classes.Email.TLSEmail;
 import Classes.Order;
 import Classes.Rooms.AbstractRoom;
 import Classes.User.AbstractUser;
@@ -197,7 +196,7 @@ public class DbFunctionality {
      * @param connection The connection to the database.
      */
     public void addRoom(AbstractRoom room, Connection connection) throws SQLException {
-        PreparedStatement insertNewRoom;
+        PreparedStatement insertNewRoom = null;
         try {
             String ins = "insert into Rooms (Room_ID, Room_name, Room_building, Room_maxCapacity, Tavle, Prosjektor) values (?,?,?,?,?,?)";
             insertNewRoom = connection.prepareStatement(ins);
@@ -222,25 +221,35 @@ public class DbFunctionality {
 
             insertNewRoom.execute();
         } finally {
+            assert insertNewRoom != null;
+            insertNewRoom.closeOnCompletion();
             connection.close();
         }
     }
 
     public boolean deleteRoom(int roomID, Connection connection) throws SQLException {
         // Delete orders associated with the room first, so there is no foreign key dependency.
-        PreparedStatement stmt;
-        String deleteOrder = "delete from `order` where Room_ID = ?";
-        stmt = connection.prepareStatement(deleteOrder);
-        stmt.setInt(1, roomID);
-        stmt.executeUpdate();
+        PreparedStatement stmt = null;
+        PreparedStatement deleteRoom = null;
+        try {
+            String deleteOrder = "delete from `order` where Room_ID = ?";
+            stmt = connection.prepareStatement(deleteOrder);
+            stmt.setInt(1, roomID);
+            stmt.executeUpdate();
 
-        PreparedStatement deleteRoom;
-        String delete = "delete from Rooms where Room_ID = ?";
-        deleteRoom = connection.prepareStatement(delete);
-        deleteRoom.setInt(1, roomID);
-        int result = deleteRoom.executeUpdate();
-        // result er 1 hvis noe blir slettet, eller 0 hvis ingenting ble affected
-        return result == 1;
+
+            String delete = "delete from Rooms where Room_ID = ?";
+            deleteRoom = connection.prepareStatement(delete);
+            deleteRoom.setInt(1, roomID);
+            int result = deleteRoom.executeUpdate();
+            // result er 1 hvis noe blir slettet, eller 0 hvis ingenting ble affected
+            return result == 1;
+        } finally {
+            assert stmt != null;
+            stmt.closeOnCompletion();
+            assert deleteRoom != null;
+            deleteRoom.closeOnCompletion();
+        }
     }
 
     public void printRooms(PrintWriter out, Connection connection) throws SQLException {
@@ -259,17 +268,23 @@ public class DbFunctionality {
     }
 
     public void addOrder(Order order, Connection connection) throws SQLException {
-        PreparedStatement insertNewOrder;
+        PreparedStatement insertNewOrder = null;
         System.out.println("addOrder started");
+        try {
 
-        String ins = "insert into `order` (User_ID, Room_ID, Timestamp_start, Timestamp_end) VALUES (?,?,?,?)";
-        insertNewOrder = connection.prepareStatement(ins);
-        insertNewOrder.setInt(1, order.getUserID());
-        insertNewOrder.setInt(2, order.getRoomID());
-        insertNewOrder.setTimestamp(3, order.getTimestampStart());
-        insertNewOrder.setTimestamp(4, order.getTimestampEnd());
-        insertNewOrder.execute();
-        // TODO ADD RECIEPT METHOD
+
+            String ins = "insert into `order` (User_ID, Room_ID, Timestamp_start, Timestamp_end) VALUES (?,?,?,?)";
+            insertNewOrder = connection.prepareStatement(ins);
+            insertNewOrder.setInt(1, order.getUserID());
+            insertNewOrder.setInt(2, order.getRoomID());
+            insertNewOrder.setTimestamp(3, order.getTimestampStart());
+            insertNewOrder.setTimestamp(4, order.getTimestampEnd());
+            insertNewOrder.execute();
+            // TODO ADD RECIEPT METHOD
+        } finally {
+            assert insertNewOrder != null;
+            insertNewOrder.closeOnCompletion();
+        }
     }
 
     /**
@@ -317,20 +332,28 @@ public class DbFunctionality {
         return selectOrders.executeQuery();
     }
 
+    //closes connection
     public ResultSet getOrdersFromRoom(int roomID, String date, Connection connection) throws SQLException, ParseException {
         // TODO: date burde kunne ta inn et timestamp, og strings formatert som "yyyy-mm-dd hh:ss" og "yyyy-mm-dd"
         System.out.println("Room_ID recieved: " + roomID);
         System.out.println("Date as String recieved: " + date);
-        PreparedStatement selectOrders;
-        String select = "select Order_ID, Timestamp_start, Timestamp_end from `order`\n" +
-                "  inner join rooms\n" +
-                "  on `order`.Room_ID = rooms.Room_ID\n" +
-                "  where DATE(`order`.Timestamp_start) like ?\n" +
-                "  and `order`.Room_ID = ?";
-        selectOrders = connection.prepareStatement(select);
-        selectOrders.setString(1, date);
-        selectOrders.setInt(2, roomID);
-        return selectOrders.executeQuery();
+        PreparedStatement selectOrders = null;
+        try {
+            String select = "select Order_ID, Timestamp_start, Timestamp_end from `order`\n" +
+                    "  inner join rooms\n" +
+                    "  on `order`.Room_ID = rooms.Room_ID\n" +
+                    "  where DATE(`order`.Timestamp_start) like ?\n" +
+                    "  and `order`.Room_ID = ?";
+            selectOrders = connection.prepareStatement(select);
+            selectOrders.setString(1, date);
+            selectOrders.setInt(2, roomID);
+            return selectOrders.executeQuery();
+        } finally {
+            assert selectOrders != null;
+            selectOrders.closeOnCompletion();
+
+        }
+
     }
 
 
@@ -349,15 +372,27 @@ public class DbFunctionality {
         return result == 1;
     }
 
+    //TODO closing works for this.
     public int getRoomID(Connection connection) throws SQLException {
-        PreparedStatement selectRoomID;
-        String select = "select Room_ID from rooms order by Room_ID desc limit 1";
-        selectRoomID = connection.prepareStatement(select);
-        ResultSet resultSet = selectRoomID.executeQuery();
+        PreparedStatement selectRoomID = null;
+        ResultSet resultSet = null;
+        try {
+            String select = "select Room_ID from rooms order by Room_ID desc limit 1";
+            selectRoomID = connection.prepareStatement(select);
+            resultSet = selectRoomID.executeQuery();
 
-        while (resultSet.next()) {
-            System.out.println("roomID from method: " + (resultSet.getInt("Room_ID") + 1));
-            return resultSet.getInt("Room_ID") + 1;
+            while (resultSet.next()) {
+                System.out.println("roomID from method: " + (resultSet.getInt("Room_ID") + 1));
+                return resultSet.getInt("Room_ID") + 1;
+
+            }
+        } finally {
+            //closes connection.
+            assert selectRoomID != null;
+            assert resultSet != null;
+            resultSet.close();
+            selectRoomID.closeOnCompletion();
+
         }
 
         return 1;

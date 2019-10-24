@@ -81,6 +81,8 @@ public class ServletLogin extends AbstractServlet {
                         else {
                             System.out.println("connection is closed");
                         }
+                        out.close();
+
                     } catch (SQLException e) {
                         e.printStackTrace();
                         System.out.println("connection failed" + e);

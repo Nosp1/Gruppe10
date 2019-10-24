@@ -41,7 +41,6 @@ public abstract class AbstractUser {
     }
 
     public AbstractUser(int userID, ArrayList<Order> orderList) {
-
         this.userName = userName;
         this.orders = orderList;
     }
