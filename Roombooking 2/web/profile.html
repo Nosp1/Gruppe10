@@ -21,8 +21,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/Roombooking_2_Web_exploded/loggedIn.html">Roombooking</a>
-
+            <a class="navbar-brand" href="/loggedin.html">Roombooking</a>
         </div>
 
        <!-- Collect the nav links, forms, and other content for toggling -->
@@ -41,6 +40,7 @@
                         <li><a href="#">Separated link</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a href="#">One more separated link</a></li>
+
                     </ul>
                 </li>
             </ul>
@@ -69,7 +69,7 @@
                     </ul>
                 </li>
             </ul>
-        </div>  /.navbar-collapse -->
+        </div>  <!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
 <div class="container" id="ProfileContainer">
@@ -144,12 +144,15 @@
 <!-- Submit button for Report missing objects / false  -->
 
 <div class="collapse container" id="collapseReport">
-  <form>
+  <form action="./Servlets.ServletReport" method="post">
         <h1>Report missing objects / false </h1>
       <div>
-          <textarea rows="4" cols="50">
-SKRIV INN TEKST HER
+          <div><label for="Report_Room_ID">Room ID</label></div>
+          <input type="text" id="Report_Room_ID" name="Report_Room_ID">
+          <div><textarea rows="4" cols="50" name="Report_TextArea">
+      <!-- SKRIV INN TEKST HER -->
 </textarea>
+          </div>
       </div>
             <div>
                 <input class="submit btn-default btn-lg" type="submit" name="action" value="Report">

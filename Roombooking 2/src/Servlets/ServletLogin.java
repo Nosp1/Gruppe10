@@ -28,7 +28,7 @@ import java.sql.SQLException;
  * @see DbTool
  */
 
-@WebServlet(name = "Servlets.ServletLogin", urlPatterns = {"/Servlets.ServletLogin"})
+@WebServlet (name = "Servlets.ServletLogin", urlPatterns = {"/Servlets.ServletLogin"})
 public class ServletLogin extends AbstractServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
