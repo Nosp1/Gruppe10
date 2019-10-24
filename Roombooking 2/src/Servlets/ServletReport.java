@@ -8,6 +8,7 @@ package Servlets;
 import Reports.Report;
 import Tools.DbFunctionality;
 import Tools.DbTool;
+import org.apache.commons.dbutils.DbUtils;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +22,7 @@ import java.sql.SQLException;
 @WebServlet(name = "Servlets.ServletReport", urlPatterns = {"/Servlets.ServletReport"})
 public class ServletReport extends AbstractPostServlet {
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)  {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
 
@@ -42,13 +43,19 @@ public class ServletReport extends AbstractPostServlet {
                 String roomIDString = request.getParameter("Report_Room_ID");
                 int roomID = Integer.parseInt(roomIDString);
                 String responseString = request.getParameter("Report_TextArea");
-                if(responseString.isEmpty()) {
+                if (responseString.isEmpty()) {
                     responseString = "No value.";
                 }
                 int reportID = 1;
 
                 Report newReport = new Report(reportID, responseString, userID, roomID);
                 dbFunctionality.insertReport(newReport, out, connection);
+                DbUtils.closeQuietly(connection);
+                if (connection.isClosed()) {
+                    System.out.println("connection closed");
+                } else {
+                    System.out.println("connection is not closed");
+                }
             } else {
                 //adds a return button if the Report fails.
 
