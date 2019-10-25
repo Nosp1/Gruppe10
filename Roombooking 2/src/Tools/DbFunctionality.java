@@ -1,6 +1,5 @@
 package Tools;
 
-import Classes.Email.TLSEmail;
 import Classes.Order;
 import Classes.Rooms.AbstractRoom;
 import Classes.User.AbstractUser;
@@ -270,6 +269,7 @@ public class DbFunctionality {
         insertNewOrder.setInt(2, order.getRoomID());
         insertNewOrder.setTimestamp(3, order.getTimestampStart());
         insertNewOrder.setTimestamp(4, order.getTimestampEnd());
+
         insertNewOrder.execute();
         // TODO ADD RECIEPT METHOD
     }
