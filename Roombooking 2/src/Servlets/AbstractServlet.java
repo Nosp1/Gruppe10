@@ -121,5 +121,58 @@ public abstract class AbstractServlet extends HttpServlet {
                         "</nav>"
         );
     }
-
+    void printLoggedInNav(PrintWriter out) {
+        out.println("<!DOCTYPE html>\n" +
+                "<html lang=\"en\">\n" +
+                "<head>\n" +
+                "    <title>loggedIn</title>\n" +
+                "    <link rel=\"stylesheet\" type=\"text/css\" href=\"css/bootstrap.css\">\n" +
+                "    <link rel=\"stylesheet\" type=\"text/css\" href=\"roombooking.css\">\n" +
+                "    <meta charset=\"utf-8\">\n" +
+                "\n" +
+                "</head>\n" +
+                "<body>" +
+                "<nav class=\"navbar navbar-default\">\n" +
+                "    <div class=\"container-fluid\">\n" +
+                "        <!-- Brand and toggle get grouped for better mobile display -->\n" +
+                "        <div class=\"navbar-header\">\n" +
+                "            <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\"\n" +
+                "                    data-target=\"#bs-example-navbar-collapse-1\" aria-expanded=\"false\">\n" +
+                "                <span class=\"sr-only\">Toggle navigation</span>\n" +
+                "                <span class=\"icon-bar\"></span>\n" +
+                "                <span class=\"icon-bar\"></span>\n" +
+                "                <span class=\"icon-bar\"></span>\n" +
+                "            </button>\n" +
+                "            <a class=\"navbar-brand\" href=\"loggedIn.html\">Roombooking</a>\n" +
+                "        </div>\n" +
+                "\n" +
+                "        <!-- Collect the nav links, forms, and other content for toggling -->\n" +
+                "        <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\n" +
+                "            <form class=\"navbar-form navbar-left\" id=\"search-form\">\n" +
+                "                <div class=\"form-group\">\n" +
+                "                    <input type=\"text\" class=\"form-control\" placeholder=\"Search\">\n" +
+                "                </div>\n" +
+                "                <button type=\"submit\" class=\"btn btn-default\">Submit</button>\n" +
+                "            </form>\n" +
+                "            <ul class=\"nav navbar-nav navbar-right\">\n" +
+                "                <li>\n" +
+                "                    <a href=\"./profile.html\">User <span class=\"glyphicon glyphicon-user\"\n" +
+                "                                                        aria-hidden=\"true\"></span>\n" +
+                "                    </a>\n" +
+                "                </li>\n" +
+                "\n" +
+                "                <li>\n" +
+                "                    <div id=\"logout\">\n" +
+                "                        <form action=\"./Servlets.ServletLogOut\" method=\"post\">\n" +
+                "                            <div>\n" +
+                "                                <input class=\"submit btn-default btn-lg\" type=\"submit\" name=\"action\" value=\"Log out\"/>\n" +
+                "                            </div>\n" +
+                "                        </form>\n" +
+                "                    </div>\n" +
+                "                </li>\n" +
+                "            </ul>\n" +
+                "        </div><!-- /.navbar-collapse -->\n" +
+                "    </div><!-- /.container-fluid -->\n" +
+                "</nav>");
+    }
 }

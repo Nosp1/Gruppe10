@@ -25,23 +25,6 @@
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <!--ul-- class="nav navbar-nav">
-                <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-                <li><a href="#">Link</a></li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">Dropdown <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">Separated link</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">One more separated link</a></li>
-                    </ul>
-                </li>
-            </ul-->
             <form class="navbar-form navbar-left" id="search-form">
                 <div class="form-group">
                     <input type="text" class="form-control" placeholder="Search">
@@ -64,18 +47,6 @@
                         </form>
                     </div>
                 </li>
-
-                <!--li-- class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">Dropdown <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">Separated link</a></li>
-                    </ul>
-                </li-->
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
@@ -109,7 +80,7 @@
         </button>
         <!-- Delete a room collapse button -->
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseCancelRoom" role="button"
-        aria-controls="#collapseCancelRoom">Cancel a booking
+                aria-controls="#collapseCancelRoom">Cancel a booking
         </button>
 
         <!-- Update a booking collapse button -->
@@ -118,7 +89,7 @@
         </button>
     </div>
 </div>
-        <!-- Submit button for Browse -->
+<!-- Submit button for Browse -->
 <div class="collapse container" id="collapseBrowse">
     <form action="./Servlets.ServletRoomOptions" id="ListOfRooms" method="post">
         <h1>Click beneath to show all rooms</h1>
@@ -186,7 +157,8 @@
         </div>
 
         <div id="reserve_start">
-            <label for="Reserve_Timestamp_start_date" for="Reserve_Timestamp_start_time" id="label_start">Booking start</label>
+            <label for="Reserve_Timestamp_start_date" for="Reserve_Timestamp_start_time" id="label_start">Booking
+                start</label>
 
             <input type="date" id="Reserve_Timestamp_start_date" name="Reserve_Timestamp_start_date"
                    onfocusout="updateEndDate()"/>
@@ -235,47 +207,43 @@
 </div>
 
 <!-- Form for Updating a booking -->
-        <div class="collapse container" id="collapseUpdateBooking">
-            <form action="./Servlets.ServletRoomBooking" method="post">
-                <h1>Update a order</h1>
-                <div>
-                    <label for="Update_orderID">Order ID</label>
-                    <input type="text" id="Update_orderID" name="Update_orderID">
-                </div>
+<div class="collapse container" id="collapseUpdateBooking">
+    <form action="./Servlets.ServletRoomBooking" method="post">
+        <h1>Update a order</h1>
+        <div>
+            <label for="Update_orderID">Order ID</label>
+            <input type="text" id="Update_orderID" name="Update_orderID">
+        </div>
 
-                <div>
-                    <label for="Update_Timestamp_start_date" for="Update_Timestamp_start_time">Update the booking start</label>
-                    <input type="date" id="Update_Timestamp_start_date" name="Update_Timestamp_start_date"
-                           onfocusout="update_updateEndDate()"/>
-                    <span class="validateUpdateTime">
-                <input type="time" id="Update_Timestamp_start_time" class="UpdateTime" name="Update_Timestamp_start_time"
-                       min="08:00" max="22:00" onfocusout="update_checkInputStart(event)"/>
+        <div>
+            <label for="Update_Timestamp_start_date" for="Update_Timestamp_start_time">Update the booking start</label>
+            <input type="date" id="Update_Timestamp_start_date" name="Update_Timestamp_start_date"
+                   onfocusout="updateStartDate()"/>
+            <span class="validateUpdateTime">
+                <input type="time" id="Update_Timestamp_start_time" class="UpdateTime"
+                       name="Update_Timestamp_start_time"
+                       min="08:00" max="22:00" onfocusout="checkInputStart(event)"/>
             </span>
-                </div>
+        </div>
 
-                <div>
-                    <label for="Update_Timestamp_end_date" for="Update_Timestamp_end_time">Update the booking end</label>
-                    <input type="date" id="Update_Timestamp_end_date" name="Update_Timestamp_end_date" onfocusout="update_updateEndDate()"
-                           readonly="readonly"/>
-                    <span class="validateUpdateTime">
+        <div>
+            <label for="Update_Timestamp_end_date" for="Update_Timestamp_end_time">Update the booking start</label>
+            <input type="date" id="Update_Timestamp_end_date" name="Update_Timestamp_end_date"
+                   onfocusout="updateEndDate()"/>
+            <span class="validateUpdateTime">
                 <input type="time" id="Update_Timestamp_end_time" class="UpdateTime" name="Update_Timestamp_end_time"
                        min="08:00" max="22:00" onfocusout="update_checkInputEnd(event)"/>
             </span>
-                </div>
-
-                <div>
-                    <input class="submit btn-default btn-lg" type="submit" name="action" value="Update room">
-                </div>
-
-                <div class="timeLimitMessage" style="display: none;">
-                    <p> The time must be between 08:00 and 21:59 </p>
-                </div>
-            </form>
         </div>
 
+        <div>
+            <input class="submit btn-default btn-lg" type="submit" name="action" value="Update room">
+        </div>
+    </form>
+</div>
 
 
-        <script
+<script
         src="https://code.jquery.com/jquery-3.4.1.js"
         integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
         crossorigin="anonymous"></script>

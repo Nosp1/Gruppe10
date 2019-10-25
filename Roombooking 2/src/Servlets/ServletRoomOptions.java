@@ -28,7 +28,7 @@ public class ServletRoomOptions extends AbstractPostServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try (PrintWriter out = response.getWriter()) {
             //prints the beginning of a  html-page.
-            printNav(out);
+            printLoggedInNav(out);
             //retrieves the value of button Add Room
             String action = request.getParameter("action").toLowerCase();
             HttpSession httpSession = request.getSession();
@@ -74,7 +74,9 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 //TODO: Kanskje legge til if statement som
                 // dispatcher deg tilbake til loggedin istedenfor knapp? for mer flytt og mindre klikks
                 //prints return button.
+                out.println("Room " + roomName + " " + "has been successfully added");
                 addHomeLoggedInButton(out);
+                connection.close();
             }
 
             else if (action.contains("delete room")) {
@@ -83,9 +85,11 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 DbFunctionality dbFunctionality = new DbFunctionality();
                 //todo add boolean statement to confirm deletion.
                 //todo Cannot delete room because orders with the room exists.
-                int roomID = Integer.parseInt(request.getParameter("Add_roomID"));
+                int roomID = Integer.parseInt(request.getParameter("Delete_roomID"));
                 dbFunctionality.deleteRoom(roomID, connection);
+                out.println( "Room " + roomID + "has been successfully deleted");
                 addHomeLoggedInButton(out);
+                connection.close();
             }
 
             else if (action.contains("cancel")) {
@@ -99,6 +103,11 @@ public class ServletRoomOptions extends AbstractPostServlet {
                     out.println("Order canceled ");
                    addHomeLoggedInButton(out);
                 }
+                else {
+                    out.println("That's not a valid order");
+
+                }
+                connection.close();
             }
 
             else if (action.contains("show")) {
@@ -108,6 +117,7 @@ public class ServletRoomOptions extends AbstractPostServlet {
 
                 dbFunctionality.printRooms(out, connection);
                 addHomeLoggedInButton(out);
+                connection.close();
             }
 
             else if (action.contains("gotoprofile")) {

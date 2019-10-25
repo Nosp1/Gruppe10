@@ -59,7 +59,7 @@ public class ServletLogin extends AbstractServlet {
                     //redirects the user to the loggedIn.html
                     ServletContext servletContext = getServletContext();
                     HttpSession session = request.getSession();
-                    session.setAttribute("userEmail",userName);
+                    session.setAttribute("userEmail", userName);
                     /* TODO: Sende til ulike sider ut ifra bruker-type (student, administrator o.l.)
                     f.eks:  sjekk UserType i database utifra brukernavn
                             if(user.userType.equals("admin") {
@@ -77,19 +77,27 @@ public class ServletLogin extends AbstractServlet {
                         connection.close();
                         if (!connection.isClosed()) {
                             System.out.println("connection is not closed ");
-                        }
-                        else {
+                        } else {
                             System.out.println("connection is closed");
                         }
+                        out.close();
+
                     } catch (SQLException e) {
                         e.printStackTrace();
                         System.out.println("connection failed" + e);
                     }
                 } else {
                     // If not TODO: Add out.print error message for wrong password vs email
+                    if (connection.isClosed()) {
+                        System.out.println("connection closed");
+                    } else {
+                        connection.close();
+                        System.out.println("connection not closed");
+                    }
                     System.out.println("fail");
                     out.println("Sorry, we do not recognize \"" + lowercaseUsername + "\".");
                     out.print("<br>");
+
                 }
                 //adds a return button if the login fails.
                 addHomeButton(out);

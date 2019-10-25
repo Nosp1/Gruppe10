@@ -29,7 +29,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try (PrintWriter out = response.getWriter()) {
             //prints the beginning of a  html-page.
-            printNav(out);
+            printLoggedInNav(out);
             //retrieves the value of the Reserve a Room button
             String action = request.getParameter("action").toLowerCase();
             HttpSession httpSession = request.getSession();
@@ -103,6 +103,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
                     confirmationEmail.sendEmail(session,user.getUserName(),receipt,body);
                     out.println("<p>You have successfully booked" + roomID);
                     addHomeLoggedInButton(out);
+                    connection.close();
                 } else {
                     String notAvailableErrorMessage = "Sorry, that time and room is already taken.";
                     // Hvis ikke returneres en error til brukeren

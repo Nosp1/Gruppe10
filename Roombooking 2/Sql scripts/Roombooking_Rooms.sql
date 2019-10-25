@@ -48,3 +48,15 @@ create table Email
     constraint Email_Email_name_uindex
         unique (Email_name)
 );
+
+CREATE TABLE UserReport(
+    Report_ID int auto_increment,
+    Report_Response char (30),
+    User_ID int,
+    Room_ID int,
+
+    CONSTRAINT PK_Report PRIMARY KEY (Report_ID),
+    CONSTRAINT FK_ReportUser FOREIGN KEY(User_ID) REFERENCES User (User_ID),
+    CONSTRAINT FK_ReportRoom FOREIGN KEY(Room_ID) REFERENCES Rooms (Room_ID)
+    );
+
