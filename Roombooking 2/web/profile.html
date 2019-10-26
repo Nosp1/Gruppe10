@@ -26,11 +26,11 @@
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <form class="navbar-form navbar-left" id="search-form">
+            <form class="navbar-form navbar-left" id="navbar-search-form">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search">
+                    <input type="text" class="form-control" id="navbar-search-input" placeholder="Search">
                 </div>
-                <button type="submit" class="btn btn-default">Submit</button>
+                <button type="button" class="btn btn-default" id="navbar-search-button">Submit</button>
             </form>
             <ul class="nav navbar-nav navbar-right">
                 <li>
@@ -127,18 +127,19 @@
   <form action="./Servlets.ServletReport" method="post">
         <h1>Report missing objects / false </h1>
       <div>
-          <div><label for="Report_Room_ID">Room ID</label></div>
+          <div>
+              <label for="Report_Room_ID">Room ID</label>
+          </div>
           <input type="text" id="Report_Room_ID" name="Report_Room_ID">
-          <div><textarea rows="4" cols="50" name="Report_TextArea">
-      <!-- SKRIV INN TEKST HER -->
-</textarea>
+          <div>
+              <textarea rows="4" cols="50" name="Report_TextArea">
+                -- SKRIV INN TEKST HER --
+              </textarea>
           </div>
       </div>
             <div>
                 <input class="submit btn-default btn-lg" type="submit" name="action" value="Report">
             </div>
-
-        </div>
     </form>
 </div>
 
