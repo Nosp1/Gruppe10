@@ -24,6 +24,10 @@ public abstract class AbstractServlet extends HttpServlet {
                 "<script src=\"bootstrap.js\"></script>");
     }
 
+    void loadJSScripts(PrintWriter out) {
+        out.println("<script src=\"script.js\"></script>");
+    }
+
     /**
      * Prints a html button that returns you to landing page index.html
      * @param out to print html
@@ -148,11 +152,11 @@ public abstract class AbstractServlet extends HttpServlet {
                 "\n" +
                 "        <!-- Collect the nav links, forms, and other content for toggling -->\n" +
                 "        <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">\n" +
-                "            <form class=\"navbar-form navbar-left\" id=\"search-form\">\n" +
+                "            <form class=\"navbar-form navbar-left\" id=\"navbar-search-form\">\n" +
                 "                <div class=\"form-group\">\n" +
-                "                    <input type=\"text\" class=\"form-control\" placeholder=\"Search\">\n" +
+                "                    <input type=\"text\" class=\"form-control\" id=\"navbar-search-input\" placeholder=\"Search\">\n" +
                 "                </div>\n" +
-                "                <button type=\"submit\" class=\"btn btn-default\">Submit</button>\n" +
+                "                <button type=\"button\" class=\"btn btn-default\" id=\"navbar-search-button\">Submit</button>\n" +
                 "            </form>\n" +
                 "            <ul class=\"nav navbar-nav navbar-right\">\n" +
                 "                <li>\n" +

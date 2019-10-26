@@ -29,6 +29,7 @@ public class ServletRoomOptions extends AbstractPostServlet {
         try (PrintWriter out = response.getWriter()) {
             //prints the beginning of a  html-page.
             printLoggedInNav(out);
+            // Duplikat av de 4 neste linjene i ServletRoomBooking
             //retrieves the value of button Add Room
             String action = request.getParameter("action").toLowerCase();
             HttpSession httpSession = request.getSession();
@@ -88,7 +89,9 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 int roomID = Integer.parseInt(request.getParameter("Delete_roomID"));
                 dbFunctionality.deleteRoom(roomID, connection);
                 out.println( "Room " + roomID + "has been successfully deleted");
-                addHomeLoggedInButton(out);
+
+                addBootStrapFunctionality(out);
+                loadJSScripts(out);
                 connection.close();
             }
 
@@ -101,12 +104,14 @@ public class ServletRoomOptions extends AbstractPostServlet {
 
                 if (dbFunctionality.deleteOrder(orderID,connection)) {
                     out.println("Order canceled ");
-                   addHomeLoggedInButton(out);
+                    addHomeLoggedInButton(out);
                 }
                 else {
                     out.println("That's not a valid order");
 
                 }
+                addBootStrapFunctionality(out);
+                loadJSScripts(out);
                 connection.close();
             }
 
@@ -117,6 +122,9 @@ public class ServletRoomOptions extends AbstractPostServlet {
 
                 dbFunctionality.printRooms(out, connection);
                 addHomeLoggedInButton(out);
+
+                addBootStrapFunctionality(out);
+                loadJSScripts(out);
                 connection.close();
             }
 
@@ -129,7 +137,12 @@ public class ServletRoomOptions extends AbstractPostServlet {
             }
 
             addBootStrapFunctionality(out);
+            out.print("<script\n" +
+                    "        src=\"https://code.jquery.com/jquery-3.4.1.js\"\n" +
+                    "        integrity=\"sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=\"\n" +
+                    "        crossorigin=\"anonymous\"></script>");
             out.print("<script src=\"card-rooms.js\"></script>");
+            loadJSScripts(out);
             out.print("</body>");
             out.print("</html>");
         } catch (SQLException e) {
