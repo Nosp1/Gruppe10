@@ -55,13 +55,13 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 /*retrieves the checkbox values for "hasTavle" and "hasProsjektor", not sent
                 with the request if they are unchecked, so set them to true if they are not null */
                 String[] values = request.getParameterValues("hasTavle");
-                if(values != null) {
+                if (values != null) {
                     hasTavle = true;
                 }
                 System.out.println("hasTavle: " + hasTavle);
-                
+
                 values = request.getParameterValues("hasProjektor");
-                if(values != null) {
+                if (values != null) {
                     hasProjektor = true;
                 }
                 System.out.println("hasProjektor: " + hasProjektor);
@@ -77,9 +77,7 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 out.println("Room " + roomName + " " + "has been successfully added");
                 addHomeLoggedInButton(out);
                 connection.close();
-            }
-
-            else if (action.contains("delete room")) {
+            } else if (action.contains("delete room")) {
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
@@ -87,30 +85,25 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 //todo Cannot delete room because orders with the room exists.
                 int roomID = Integer.parseInt(request.getParameter("Delete_roomID"));
                 dbFunctionality.deleteRoom(roomID, connection);
-                out.println( "Room " + roomID + "has been successfully deleted");
+                out.println("Room " + roomID + "has been successfully deleted");
                 addHomeLoggedInButton(out);
                 connection.close();
-            }
-
-            else if (action.contains("cancel")) {
+            } else if (action.contains("cancel")) {
                 //todo add documentation
-                int orderID = Integer.parseInt( request.getParameter("Cancel_Order_ID"));
+                int orderID = Integer.parseInt(request.getParameter("Cancel_Order_ID"));
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
 
-                if (dbFunctionality.deleteOrder(orderID,connection)) {
+                if (dbFunctionality.deleteOrder(orderID, connection)) {
                     out.println("Order canceled ");
-                   addHomeLoggedInButton(out);
-                }
-                else {
+                    addHomeLoggedInButton(out);
+                } else {
                     out.println("That's not a valid order");
 
                 }
                 connection.close();
-            }
-
-            else if (action.contains("show")) {
+            } else if (action.contains("show")) {
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
@@ -118,9 +111,7 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 dbFunctionality.printRooms(out, connection);
                 addHomeLoggedInButton(out);
                 connection.close();
-            }
-
-            else if (action.contains("gotoprofile")) {
+            } else if (action.contains("gotoprofile")) {
                 ServletContext servletContext = getServletContext();
                 //todo Send session with Username
                 HttpSession session = request.getSession();
