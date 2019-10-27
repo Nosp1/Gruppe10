@@ -5,6 +5,7 @@ import Classes.User.AbstractUser;
 import Classes.User.Student;
 import Tools.DbFunctionality;
 import Tools.DbTool;
+import org.apache.commons.dbutils.DbUtils;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -31,8 +32,9 @@ import java.text.ParseException;
 @WebServlet(name = "Servlets.ServletReservations", urlPatterns = {"/Servlets.ServletReservations"})
 public class ServletReservations extends AbstractServlet {
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)  {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         response.setContentType("text/html;charset=UTF-8");
+        Connection connection = null;
         try (PrintWriter out = response.getWriter()) {
 
             //prints start of html tags.
@@ -46,14 +48,12 @@ public class ServletReservations extends AbstractServlet {
             if (action.contains("myreservations")) {
                 DbTool dbTool = new DbTool();
                 //Establishes connection to database
-                Connection connection = dbTool.dbLogIn(out);
+                connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
-                int userID = dbFunctionality.getUserId(userName,connection);
-                AbstractUser user = new Student(userID,dbFunctionality.getOrderListByUserID(userID,connection));
+                int userID = dbFunctionality.getUserId(userName, connection);
+                AbstractUser user = new Student(userID, dbFunctionality.getOrderListByUserID(userID, connection));
                 user.showOrders(out);
-            }
-
-            else{
+            } else {
                 //adds a return button if the login fails.
 
                 addHomeButton(out);
@@ -66,8 +66,18 @@ public class ServletReservations extends AbstractServlet {
             //prints errors: if the database fails, if the password is wrong.
         } catch (SQLException | IOException | ParseException e) {
             e.printStackTrace();
+        } finally {
+            DbUtils.closeQuietly(connection);
+            try {
+                assert connection != null;
+                if (connection.isClosed()) {
+                    System.out.println("connection closed");
+                } else {
+                    System.out.println(connection + "is not closed");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
-
-
 }

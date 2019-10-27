@@ -159,18 +159,23 @@ public class DbFunctionality {
      * @throws SQLException
      */
     public int getUserId(String userEmail, Connection connection) throws SQLException {
-        PreparedStatement getUser;
-        String query = "Select User_ID from user where User_Email = (?)";
-        getUser = connection.prepareStatement(query);
-        getUser.setString(1, userEmail);
-        ResultSet resultSet = getUser.executeQuery();
-        resultSet.next();
-        //todo funker dette?
-        getUser.closeOnCompletion();
-
-        int result = Integer.parseInt(resultSet.getString(1));
-        resultSet.close();
-        return result;
+        PreparedStatement getUser = null;
+        ResultSet resultSet = null;
+        try {
+            String query = "Select User_ID from user where User_Email = (?)";
+            getUser = connection.prepareStatement(query);
+            getUser.setString(1, userEmail);
+            resultSet = getUser.executeQuery();
+            resultSet.next();
+            //todo funker dette?
+            int result = Integer.parseInt(resultSet.getString(1));
+            return result;
+        } finally {
+            assert getUser != null;
+            getUser.close();
+            assert resultSet != null;
+            resultSet.close();
+        }
     }
 
     /**
@@ -551,18 +556,18 @@ public class DbFunctionality {
         out.print("]");
     }
 
-    public void insertReport(Report userReport, Connection connection)throws SQLException {
-        String strInsert="Insert into UserReport( Report_Response, User_ID, Room_ID) Values (?,?,?)" ;
+    public void insertReport(Report userReport, Connection connection) throws SQLException {
+        String strInsert = "Insert into UserReport( Report_Response, User_ID, Room_ID) Values (?,?,?)";
         PreparedStatement statement = connection.prepareStatement(strInsert);
         statement.setString(1, userReport.getReportResponse());
         statement.setInt(2, userReport.getUserID());
-        statement.setInt(3,userReport.getRoomID());
+        statement.setInt(3, userReport.getRoomID());
 
         statement.execute();
     }
 
-    public void printReport(PrintWriter out, Connection connection)throws SQLException {
-        String strSelect="Select*From UserReport";
+    public void printReport(PrintWriter out, Connection connection) throws SQLException {
+        String strSelect = "Select*From UserReport";
         PreparedStatement statement = connection.prepareStatement(strSelect);
         ResultSet resultSet = statement.executeQuery(strSelect);
         while (resultSet.next()) {

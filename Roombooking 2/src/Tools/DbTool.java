@@ -13,7 +13,6 @@ import java.sql.*;
  */
 public class DbTool {
     Connection connection;
-    Statement statement;
 
     public Connection dbLogIn(PrintWriter out) {
         try {
