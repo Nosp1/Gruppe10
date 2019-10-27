@@ -364,12 +364,18 @@ public class DbFunctionality {
      * @throws SQLException
      */
     public boolean deleteOrder(int orderID, Connection connection) throws SQLException {
-        PreparedStatement deleteOrder;
-        String delete = "delete from `Order` where Order_ID = ?";
-        deleteOrder = connection.prepareStatement(delete);
-        deleteOrder.setInt(1, orderID);
-        int result = deleteOrder.executeUpdate();
-        return result == 1;
+        PreparedStatement deleteOrder = null;
+        try {
+            String delete = "delete from `Order` where Order_ID = ?";
+            deleteOrder = connection.prepareStatement(delete);
+            deleteOrder.setInt(1, orderID);
+            int result = deleteOrder.executeUpdate();
+            return result == 1;
+        } finally {
+            assert deleteOrder != null;
+            deleteOrder.close();
+
+        }
     }
 
     //TODO closing works for this.
