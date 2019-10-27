@@ -1,9 +1,36 @@
 $.ajaxSetup({cache: false});
-$('#search-form').on('submit', function (evt) {
-    evt.preventDefault();
-    const roomId = +$('.navbar-form .form-group input[type="text"]').val();
+
+$(function() {
+    $(document.body).append("<div id=\"searchResult\" hidden>\n" +
+        "    <div style=\"color: black\">Room is available:</div>\n" +
+        "</div>\n" +
+        "<div id=\"calendar\" hidden>\n" +
+        "    <button style=\"color: black;\">Previous day</button>\n" +
+        "    <input type=\"date\">\n" +
+        "    <button style=\"color: black;\">Next day</button>\n" +
+        "</div>");
+});
+
+$('#navbar-search-button').on('click', function() {
+    const roomID = $('#navbar-search-input').val();
+    if (roomID < 0) {
+        return alert("Room number is not correct! RoomID be higher than 0.");
+    }
+    getRoomInfo(roomID);
+    $("#calendar").show();
+    $("#searchResult").show();
+});
+
+// Aktiveres når search-rooms knappen blir trykket på
+$('#navbar-search-button').on('click', function () {
+    console.log("navbar search button clicked")
+    // preventDefault stopper redirect
+    //evt.preventDefault();
+    // Hent roomID fra text-feltet i navbaren
+    const roomId = $('#navbar-search-input').val();
+    // Varsle brukeren om roomID er mindre enn 0
     if (roomId < 0) {
-        return alert("Room number is not correct!");
+        return alert("Room number is not correct! RoomID be higher than 0.");
     }
     getRoomInfo(roomId);
     $("#calendar").show();
@@ -29,17 +56,28 @@ $("#calendar button:nth-of-type(2)").on('click', function () {
     $('#calendar input[type="date"]').val(date.toISOString().substring(0, 10));
 });
 
+/* Liker ikke at Show all rooms blir påvirket på denne måten
 $('#ListOfRooms').on('submit', function (evt) {
+    console.log("Show all rooms clicked");
+    // hvis denne preventDefault ikke er kommentert fungerer ikke printRooms knappen
     //evt.preventDefault();
     getRoomInfo(-1);
     $("#calendar").show();
     $("#searchResult").show();
 });
+*/
 
 function getRoomInfo(roomId) {
+    if (roomId < 0) {
+        return alert("Room number is not correct! RoomID be higher than 0.");
+    }
     const date = $('#calendar input[type="date"]').val();
+    /* Konstruer en query for bruk av HTTP GET
+       Vil f.eks bli 'roomID=1&date=2019-10-26
+    */
     const query = `roomId=${roomId}&date=${date}`;
     console.log('/Roombooking_2_Web_exploded/Servlets.ServletSearch?' + query);
+
     $.get('/Roombooking_2_Web_exploded/Servlets.ServletSearch?' + query, function (response) {
         console.log('response = ', response);
         const data = JSON.parse(response);

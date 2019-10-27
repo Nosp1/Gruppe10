@@ -29,6 +29,7 @@ public class ServletRoomOptions extends AbstractPostServlet {
         try (PrintWriter out = response.getWriter()) {
             //prints the beginning of a  html-page.
             printLoggedInNav(out);
+            // Duplikat av de 4 neste linjene i ServletRoomBooking
             //retrieves the value of button Add Room
             String action = request.getParameter("action").toLowerCase();
             HttpSession httpSession = request.getSession();
@@ -55,13 +56,13 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 /*retrieves the checkbox values for "hasTavle" and "hasProsjektor", not sent
                 with the request if they are unchecked, so set them to true if they are not null */
                 String[] values = request.getParameterValues("hasTavle");
-                if(values != null) {
+                if (values != null) {
                     hasTavle = true;
                 }
                 System.out.println("hasTavle: " + hasTavle);
-                
+
                 values = request.getParameterValues("hasProjektor");
-                if(values != null) {
+                if (values != null) {
                     hasProjektor = true;
                 }
                 System.out.println("hasProjektor: " + hasProjektor);
@@ -77,9 +78,7 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 out.println("Room " + roomName + " " + "has been successfully added");
                 addHomeLoggedInButton(out);
                 connection.close();
-            }
-
-            else if (action.contains("delete room")) {
+            } else if (action.contains("delete room")) {
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
@@ -88,39 +87,40 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 int roomID = Integer.parseInt(request.getParameter("Delete_roomID"));
                 dbFunctionality.deleteRoom(roomID, connection);
                 out.println( "Room " + roomID + "has been successfully deleted");
-                addHomeLoggedInButton(out);
-                connection.close();
-            }
 
-            else if (action.contains("cancel")) {
+                addBootStrapFunctionality(out);
+                loadJSScripts(out);
+                connection.close();
+            } else if (action.contains("cancel")) {
                 //todo add documentation
-                int orderID = Integer.parseInt( request.getParameter("Cancel_Order_ID"));
+                int orderID = Integer.parseInt(request.getParameter("Cancel_Order_ID"));
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
 
-                if (dbFunctionality.deleteOrder(orderID,connection)) {
+                if (dbFunctionality.deleteOrder(orderID, connection)) {
                     out.println("Order canceled ");
-                   addHomeLoggedInButton(out);
+                    addHomeLoggedInButton(out);
                 }
                 else {
                     out.println("That's not a valid order");
 
                 }
+                addBootStrapFunctionality(out);
+                loadJSScripts(out);
                 connection.close();
-            }
-
-            else if (action.contains("show")) {
+            } else if (action.contains("show")) {
                 DbTool dbTool = new DbTool();
                 Connection connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
 
                 dbFunctionality.printRooms(out, connection);
                 addHomeLoggedInButton(out);
-                connection.close();
-            }
 
-            else if (action.contains("gotoprofile")) {
+                addBootStrapFunctionality(out);
+                loadJSScripts(out);
+                connection.close();
+            } else if (action.contains("gotoprofile")) {
                 ServletContext servletContext = getServletContext();
                 //todo Send session with Username
                 HttpSession session = request.getSession();
@@ -129,7 +129,12 @@ public class ServletRoomOptions extends AbstractPostServlet {
             }
 
             addBootStrapFunctionality(out);
+            out.print("<script\n" +
+                    "        src=\"https://code.jquery.com/jquery-3.4.1.js\"\n" +
+                    "        integrity=\"sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=\"\n" +
+                    "        crossorigin=\"anonymous\"></script>");
             out.print("<script src=\"card-rooms.js\"></script>");
+            loadJSScripts(out);
             out.print("</body>");
             out.print("</html>");
         } catch (SQLException e) {
