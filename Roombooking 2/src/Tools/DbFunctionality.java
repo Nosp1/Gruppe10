@@ -4,6 +4,7 @@ import Classes.Order;
 import Classes.Rooms.AbstractRoom;
 import Classes.User.AbstractUser;
 import Classes.User.Student;
+import Classes.User.Teacher;
 import Passwords.PasswordHashAndCheck;
 import Reports.Report;
 import org.apache.commons.dbutils.DbUtils;
@@ -36,7 +37,7 @@ public class DbFunctionality {
         PreparedStatement insertNewUser = null;
 
         try {
-            String ins = "insert into User (User_firstName, User_lastName, User_email, User_dob, User_password, User_salt) values (?,?,?,?,?,?)";
+            String ins = "insert into User (User_firstName, User_lastName, User_email, User_dob, User_password, User_salt, User_Type) values (?,?,?,?,?,?,?)";
             insertNewUser = conn.prepareStatement(ins);
             insertNewUser.setString(1, user.getFirstName());
             insertNewUser.setString(2, user.getLastName());
@@ -49,8 +50,9 @@ public class DbFunctionality {
             insertNewUser.setString(5, hashing);
             // split by ":" because method returns <salts>:<hashed password>
             String[] hashParts = hashing.split(":");
-            // store the salt in the databse
+            // store the salt in the database
             insertNewUser.setString(6, hashParts[0]);
+            insertNewUser.setString(7, String.valueOf(user.getUserType()));
             insertNewUser.execute();
 
         } catch (SQLException | NoSuchAlgorithmException | InvalidKeySpecException e) {
@@ -150,6 +152,11 @@ public class DbFunctionality {
             resultSet.close();
 
         }
+        if (userType == "STUDENT") {
+            return new Student(firstName, lastName, userName, password, dob);
+        } else {
+            return new Teacher(firstName, lastName, userName, password, dob);
+        }
     }
 
     /**
@@ -210,6 +217,7 @@ public class DbFunctionality {
             insertNewRoom.setString(3, room.getRoomBuilding());
             insertNewRoom.setString(4, String.valueOf(room.getMaxCapacity()));
 
+        insertNewRoom.setString(5, String.valueOf(room.getRoomType()));
             boolean tavle = room.hasTavle();
             if (tavle) {
                 insertNewRoom.setString(5, "JA");

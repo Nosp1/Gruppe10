@@ -4,6 +4,7 @@ import Classes.Email.EmailUtil;
 import Classes.Email.TLSEmail;
 import Classes.User.AbstractUser;
 import Classes.User.Student;
+import Classes.User.Teacher;
 import Classes.Email.EmailTemplates;
 import Tools.DbFunctionality;
 import Tools.DbTool;
@@ -45,14 +46,22 @@ public class Servlet extends AbstractPostServlet {
                 String lastName = request.getParameter("lastName").toLowerCase();
                 String email = request.getParameter("email").toLowerCase();
                 String dob = request.getParameter("dob").toLowerCase();
+                String userType = request.getParameter("userType").toUpperCase();
                 String password = request.getParameter("password");
-
+                out.println(userType);
                 DbTool dbtool = new DbTool();
                 //establish connection to database
                 Connection connection = dbtool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
                 //generates a new user with the information from the form register
-                AbstractUser newUser = new Student(firstName, lastName, email, password, dob);
+                // AbstractUser newUser = new Student(firstName, lastName, email, password, dob);
+                AbstractUser newUser;
+                if (userType == "STUDENT") {
+                    newUser = new Student(firstName, lastName, email, password, dob);
+                } else {
+                    newUser = new Teacher(firstName, lastName, email, password, dob);
+                }
+
                 //sends the new users data and adds it to the database
                 //checks for already registered user.
                 if (dbFunctionality.checkUser(newUser.getUserName(), newUser.getPassword(), connection)) {
