@@ -56,7 +56,7 @@ public class Servlet extends AbstractPostServlet {
                 //generates a new user with the information from the form register
                 // AbstractUser newUser = new Student(firstName, lastName, email, password, dob);
                 AbstractUser newUser;
-                if (userType == "STUDENT") {
+                if (userType.contains("STUDENT")) {
                     newUser = new Student(firstName, lastName, email, password, dob);
                 } else {
                     newUser = new Teacher(firstName, lastName, email, password, dob);

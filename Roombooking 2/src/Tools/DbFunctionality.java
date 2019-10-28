@@ -143,13 +143,13 @@ public class DbFunctionality {
             String userName = resultSet.getString("User_email");
             String dob = resultSet.getNString("User_dob");
             String password = resultSet.getString("User_password");
+            String userType = resultSet.getString("User_Type");
             if (userType == "STUDENT") {
                 return new Student(firstName, lastName, userName, password, dob);
             } else {
                 return new Teacher(firstName, lastName, userName, password, dob);
             }
 
-            return new Student(firstName, lastName, userName, password, dob);
         } finally {
             assert selectUser != null;
             selectUser.closeOnCompletion();
