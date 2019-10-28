@@ -143,6 +143,11 @@ public class DbFunctionality {
             String userName = resultSet.getString("User_email");
             String dob = resultSet.getNString("User_dob");
             String password = resultSet.getString("User_password");
+            if (userType == "STUDENT") {
+                return new Student(firstName, lastName, userName, password, dob);
+            } else {
+                return new Teacher(firstName, lastName, userName, password, dob);
+            }
 
             return new Student(firstName, lastName, userName, password, dob);
         } finally {
@@ -152,11 +157,7 @@ public class DbFunctionality {
             resultSet.close();
 
         }
-        if (userType == "STUDENT") {
-            return new Student(firstName, lastName, userName, password, dob);
-        } else {
-            return new Teacher(firstName, lastName, userName, password, dob);
-        }
+
     }
 
     /**
