@@ -24,6 +24,7 @@ import java.text.ParseException;
  * @author brisdalen, sæthra
  */
 @WebServlet(name = "Servlets.ServletRoomBooking", urlPatterns = {"/Servlets.ServletRoomBooking"})
+
 public class ServletRoomBooking extends AbstractPostServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {

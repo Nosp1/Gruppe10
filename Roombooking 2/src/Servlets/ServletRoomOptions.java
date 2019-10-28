@@ -2,6 +2,7 @@ package Servlets;
 
 import Classes.Order;
 import Classes.Rooms.AbstractRoom;
+import Classes.Rooms.Auditorium;
 import Classes.Rooms.Grouproom;
 import Tools.DbFunctionality;
 import Tools.DbTool;
@@ -53,6 +54,7 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 //retrieves the room capacity from the text-box Room Capacity
                 int maxCapacity = Integer.parseInt(request.getParameter("maxCapacity"));
                 System.out.println("maxCapacity: " + maxCapacity);
+                String roomType = request.getParameter("typeRooms").toUpperCase();
                 boolean hasTavle = false;
                 boolean hasProjektor = false;
                 /*retrieves the checkbox values for "hasTavle" and "hasProsjektor", not sent
@@ -70,7 +72,13 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 System.out.println("hasProjektor: " + hasProjektor);
 
                 // Opprett et Grouproom objekt fra dataen hentet fra HTML formen
-                AbstractRoom room = new Grouproom(roomID, roomName, roomBuilding, maxCapacity, hasTavle, hasProjektor);
+                // AbstractRoom room = new Grouproom(roomID, roomName, roomBuilding, maxCapacity, hasTavle, hasProjektor);
+                AbstractRoom room;
+                if (roomType == "GROUPROOM") {
+                    room = new Grouproom(roomID, roomName, roomBuilding, maxCapacity, hasTavle, hasProjektor);
+                } else {
+                    room = new Auditorium(roomID, roomName, roomBuilding, maxCapacity, hasTavle, hasProjektor);
+                }
                 // TODO: Bruker kun grupperom typen for nå
                 //Adds the room to the database
                 dbFunctionality.addRoom(room, connection);
