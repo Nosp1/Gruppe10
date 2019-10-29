@@ -61,16 +61,17 @@ $('#ListOfRooms').on('submit', function (evt) {
     console.log("Show all rooms clicked");
     // hvis denne preventDefault ikke er kommentert fungerer ikke printRooms knappen
     evt.preventDefault();
-    getRoomInfo(-1);
+    const roomId = -1;
+    getRoomInfo(roomId);
     $("#calendar").show();
     $("#searchResult").show();
 });
 
 
 function getRoomInfo(roomId) {
-    if (roomId < 0) {
-        return alert("Room number is not correct! RoomID be higher than 0.");
-    }
+   // if (roomId < 0) {
+       // return alert("Room number is not correct! RoomID be higher than 0.");
+   // }
     const date = $('#calendar input[type="date"]').val();
     /* Konstruer en query for bruk av HTTP GET
        Vil f.eks bli 'roomID=1&date=2019-10-26
