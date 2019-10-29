@@ -35,7 +35,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
             String action = request.getParameter("action").toLowerCase();
             HttpSession httpSession = request.getSession();
             String userName = (String) httpSession.getAttribute("userEmail");
-            //TODO: Må ordne intersects; en booking med 10:30-11:00 og en annen med 11:00-11:30 returnerer at det overlapper
+
             if(action.contains("reserve")) {
                 System.out.println("Reserve started");
                 // Nødvendige klasser for database samhandling og funksjonalitet
@@ -64,7 +64,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
                     out.println(sameTimeErrorMessage);
                     return;
                 }
-
+                // new order to reserve
                 Order order = new Order(timestampStart, timestampEnd);
 
                 //TODO create db method to retrieve epost with userID from db.
@@ -96,6 +96,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
                     int userId = dbFunctionality.getUserId(userName, connection);
                     order = new Order(orderID, userId, roomID, timestampStart, timestampEnd);
                     dbFunctionality.addOrder(order, connection);
+
                     // Etter reservasjonen er lagt til i databasen sender vi en kvittering på epost.
                     Session session = tlsEmail.NoReplyEmail(user.getUserName());
                     EmailUtil confirmationEmail = new EmailUtil();
@@ -106,8 +107,8 @@ public class ServletRoomBooking extends AbstractPostServlet {
                     addHomeLoggedInButton(out);
                     connection.close();
                 } else {
-                    String notAvailableErrorMessage = "Sorry, that time and room is already taken.";
                     // Hvis ikke returneres en error til brukeren
+                    String notAvailableErrorMessage = "Sorry, that time and room is already taken.";
                     // TODO: Returner en error til brukeren om rommet er opptatt ved tidspunktet valgt
                     System.out.println(notAvailableErrorMessage);
                     out.println(notAvailableErrorMessage);
