@@ -388,7 +388,6 @@ public class DbFunctionality {
         } finally {
             assert deleteOrder != null;
             deleteOrder.close();
-
         }
     }
 

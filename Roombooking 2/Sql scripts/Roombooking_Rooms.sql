@@ -1,3 +1,4 @@
+DROP schema roombooking;
 CREATE DATABASE if not exists roombooking;
 USE roombooking;
 
