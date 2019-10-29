@@ -29,6 +29,7 @@ public class TLSEmail {
     /**
      * Reads locally stored password file as a string to parse the password for better security
      * @return data with stored password
+     * @param fileName the name of the locally stored file
      */
     private static String readFileAsString(String fileName) throws Exception
     {
