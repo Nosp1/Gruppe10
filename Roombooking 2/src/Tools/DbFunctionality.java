@@ -3,6 +3,7 @@ package Tools;
 import Classes.Order;
 import Classes.Rooms.AbstractRoom;
 import Classes.User.AbstractUser;
+import Classes.User.Admin;
 import Classes.User.Student;
 import Classes.User.Teacher;
 import Passwords.PasswordHashAndCheck;
@@ -37,7 +38,7 @@ public class DbFunctionality {
         PreparedStatement insertNewUser = null;
 
         try {
-            String ins = "insert into User (User_firstName, User_lastName, User_email, User_dob, User_password, User_salt, User_Type) values (?,?,?,?,?,?,?)";
+            String ins = "insert into User (User_firstName, User_lastName, User_email, User_dob, User_password, User_salt, User_type_ID) values (?,?,?,?,?,?,?)";
             insertNewUser = conn.prepareStatement(ins);
             insertNewUser.setString(1, user.getFirstName());
             insertNewUser.setString(2, user.getLastName());
@@ -54,7 +55,7 @@ public class DbFunctionality {
             insertNewUser.setString(6, hashParts[0]);
             // Set
             String userType = String.valueOf(user.getUserType());
-            switch(userType) {
+            switch (userType) {
                 case "TEACHER":
                     insertNewUser.setInt(7, 2);
                     break;
@@ -158,12 +159,13 @@ public class DbFunctionality {
             String userName = resultSet.getString("User_email");
             String dob = resultSet.getNString("User_dob");
             String password = resultSet.getString("User_password");
-            String userType = resultSet.getString("User_Type");
-            if (userType.contains( "STUDENT")) {
+            int userType = resultSet.getInt("User_Type_ID");
+            if (userType == 1) {
                 return new Student(firstName, lastName, userName, password, dob);
-            } else {
+            } else if (userType == 2) {
                 return new Teacher(firstName, lastName, userName, password, dob);
-            }
+            } else
+                return new Admin(firstName, lastName, userName, password, dob);
 
         } finally {
             assert selectUser != null;
@@ -233,7 +235,7 @@ public class DbFunctionality {
             insertNewRoom.setString(3, room.getRoomBuilding());
             insertNewRoom.setString(4, String.valueOf(room.getMaxCapacity()));
 
-        insertNewRoom.setString(5, String.valueOf(room.getRoomType()));
+            insertNewRoom.setString(5, String.valueOf(room.getRoomType()));
             boolean tavle = room.hasTavle();
             if (tavle) {
                 insertNewRoom.setString(5, "JA");
