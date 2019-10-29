@@ -114,7 +114,7 @@ public class Servlet extends AbstractPostServlet {
             addBootStrapFunctionality(out);
             out.println("</body>");
             out.println("</html>");
-        } catch (NoSuchAlgorithmException | SQLException | InvalidKeySpecException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

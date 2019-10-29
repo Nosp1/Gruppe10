@@ -148,7 +148,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
                 out.println("Order successfully updated!");
                 addBootStrapFunctionality(out);
             }
-        } catch (SQLException | ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             try {
