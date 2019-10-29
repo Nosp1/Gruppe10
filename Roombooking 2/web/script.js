@@ -56,7 +56,7 @@ $("#calendar button:nth-of-type(2)").on('click', function () {
     $('#calendar input[type="date"]').val(date.toISOString().substring(0, 10));
 });
 
-/* Liker ikke at Show all rooms blir påvirket på denne måten
+ //Liker ikke at Show all rooms blir påvirket på denne måten
 $('#ListOfRooms').on('submit', function (evt) {
     console.log("Show all rooms clicked");
     // hvis denne preventDefault ikke er kommentert fungerer ikke printRooms knappen
@@ -65,7 +65,7 @@ $('#ListOfRooms').on('submit', function (evt) {
     $("#calendar").show();
     $("#searchResult").show();
 });
-*/
+
 
 function getRoomInfo(roomId) {
     if (roomId < 0) {

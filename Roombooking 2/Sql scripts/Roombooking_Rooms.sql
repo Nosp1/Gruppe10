@@ -9,6 +9,7 @@ CREATE TABLE if not exists roombooking.rooms
     Room_name        VARCHAR(255),
     Room_building    VARCHAR(255),
     Room_maxCapacity int(11),
+    Room_Type        enum('CLASSROOM', 'GROUPROOM', 'AUDITORIUM'),
     Tavle            VARCHAR(3),
     Prosjektor       VARCHAR(3),
     CONSTRAINT R_Room_ID_PK PRIMARY KEY (Room_ID)
@@ -23,6 +24,7 @@ CREATE TABLE if not exists roombooking.user
     User_dob       varchar(40) NOT NULL,
     User_password  varchar(255),
     User_salt      varchar(100),
+    User_type      enum('STUDENT', 'TEACHER'),
     CONSTRAINT U_USER_ID_PK primary key (User_ID)
 );
 

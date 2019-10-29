@@ -4,6 +4,7 @@ import Classes.Order;
 import Classes.Rooms.AbstractRoom;
 import Classes.User.AbstractUser;
 import Classes.User.Student;
+import Classes.User.Teacher;
 import Passwords.PasswordHashAndCheck;
 import Reports.Report;
 import org.apache.commons.dbutils.DbUtils;
@@ -36,7 +37,7 @@ public class DbFunctionality {
         PreparedStatement insertNewUser = null;
 
         try {
-            String ins = "insert into User (User_firstName, User_lastName, User_email, User_dob, User_password, User_salt) values (?,?,?,?,?,?)";
+            String ins = "insert into User (User_firstName, User_lastName, User_email, User_dob, User_password, User_salt, User_Type) values (?,?,?,?,?,?,?)";
             insertNewUser = conn.prepareStatement(ins);
             insertNewUser.setString(1, user.getFirstName());
             insertNewUser.setString(2, user.getLastName());
@@ -49,8 +50,9 @@ public class DbFunctionality {
             insertNewUser.setString(5, hashing);
             // split by ":" because method returns <salts>:<hashed password>
             String[] hashParts = hashing.split(":");
-            // store the salt in the databse
+            // store the salt in the database
             insertNewUser.setString(6, hashParts[0]);
+            insertNewUser.setString(7, String.valueOf(user.getUserType()));
             insertNewUser.execute();
 
         } catch (SQLException | NoSuchAlgorithmException | InvalidKeySpecException e) {
@@ -141,8 +143,13 @@ public class DbFunctionality {
             String userName = resultSet.getString("User_email");
             String dob = resultSet.getNString("User_dob");
             String password = resultSet.getString("User_password");
+            String userType = resultSet.getString("User_Type");
+            if (userType == "STUDENT") {
+                return new Student(firstName, lastName, userName, password, dob);
+            } else {
+                return new Teacher(firstName, lastName, userName, password, dob);
+            }
 
-            return new Student(firstName, lastName, userName, password, dob);
         } finally {
             assert selectUser != null;
             selectUser.closeOnCompletion();
@@ -150,6 +157,7 @@ public class DbFunctionality {
             resultSet.close();
 
         }
+
     }
 
     /**
@@ -159,18 +167,23 @@ public class DbFunctionality {
      * @throws SQLException
      */
     public int getUserId(String userEmail, Connection connection) throws SQLException {
-        PreparedStatement getUser;
-        String query = "Select User_ID from user where User_Email = (?)";
-        getUser = connection.prepareStatement(query);
-        getUser.setString(1, userEmail);
-        ResultSet resultSet = getUser.executeQuery();
-        resultSet.next();
-        //todo funker dette?
-        getUser.closeOnCompletion();
-
-        int result = Integer.parseInt(resultSet.getString(1));
-        resultSet.close();
-        return result;
+        PreparedStatement getUser = null;
+        ResultSet resultSet = null;
+        try {
+            String query = "Select User_ID from user where User_Email = (?)";
+            getUser = connection.prepareStatement(query);
+            getUser.setString(1, userEmail);
+            resultSet = getUser.executeQuery();
+            resultSet.next();
+            //todo funker dette?
+            int result = Integer.parseInt(resultSet.getString(1));
+            return result;
+        } finally {
+            assert getUser != null;
+            getUser.close();
+            assert resultSet != null;
+            resultSet.close();
+        }
     }
 
     /**
@@ -205,6 +218,7 @@ public class DbFunctionality {
             insertNewRoom.setString(3, room.getRoomBuilding());
             insertNewRoom.setString(4, String.valueOf(room.getMaxCapacity()));
 
+        insertNewRoom.setString(5, String.valueOf(room.getRoomType()));
             boolean tavle = room.hasTavle();
             if (tavle) {
                 insertNewRoom.setString(5, "JA");
@@ -364,12 +378,18 @@ public class DbFunctionality {
      * @throws SQLException
      */
     public boolean deleteOrder(int orderID, Connection connection) throws SQLException {
-        PreparedStatement deleteOrder;
-        String delete = "delete from `Order` where Order_ID = ?";
-        deleteOrder = connection.prepareStatement(delete);
-        deleteOrder.setInt(1, orderID);
-        int result = deleteOrder.executeUpdate();
-        return result == 1;
+        PreparedStatement deleteOrder = null;
+        try {
+            String delete = "delete from `Order` where Order_ID = ?";
+            deleteOrder = connection.prepareStatement(delete);
+            deleteOrder.setInt(1, orderID);
+            int result = deleteOrder.executeUpdate();
+            return result == 1;
+        } finally {
+            assert deleteOrder != null;
+            deleteOrder.close();
+
+        }
     }
 
     //TODO closing works for this.
@@ -545,18 +565,18 @@ public class DbFunctionality {
         out.print("]");
     }
 
-    public void insertReport(Report userReport, Connection connection)throws SQLException {
-        String strInsert="Insert into UserReport( Report_Response, User_ID, Room_ID) Values (?,?,?)" ;
+    public void insertReport(Report userReport, Connection connection) throws SQLException {
+        String strInsert = "Insert into UserReport( Report_Response, User_ID, Room_ID) Values (?,?,?)";
         PreparedStatement statement = connection.prepareStatement(strInsert);
         statement.setString(1, userReport.getReportResponse());
         statement.setInt(2, userReport.getUserID());
-        statement.setInt(3,userReport.getRoomID());
+        statement.setInt(3, userReport.getRoomID());
 
         statement.execute();
     }
 
-    public void printReport(PrintWriter out, Connection connection)throws SQLException {
-        String strSelect="Select*From UserReport";
+    public void printReport(PrintWriter out, Connection connection) throws SQLException {
+        String strSelect = "Select*From UserReport";
         PreparedStatement statement = connection.prepareStatement(strSelect);
         ResultSet resultSet = statement.executeQuery(strSelect);
         while (resultSet.next()) {

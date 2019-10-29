@@ -2,9 +2,11 @@ package Servlets;
 
 import Classes.Order;
 import Classes.Rooms.AbstractRoom;
+import Classes.Rooms.Auditorium;
 import Classes.Rooms.Grouproom;
 import Tools.DbFunctionality;
 import Tools.DbTool;
+import org.apache.commons.dbutils.DbUtils;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -26,6 +28,7 @@ import java.sql.SQLException;
 public class ServletRoomOptions extends AbstractPostServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Connection connection = null;
         try (PrintWriter out = response.getWriter()) {
             //prints the beginning of a  html-page.
             printLoggedInNav(out);
@@ -40,7 +43,7 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 System.out.println("add room started");
                 DbTool dbTool = new DbTool();
                 //establishes connection to database
-                Connection connection = dbTool.dbLogIn(out);
+                connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
                 //retrieves the data in the text-box Add RoomID
                 int roomID = dbFunctionality.getRoomID(connection);
@@ -51,6 +54,7 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 //retrieves the room capacity from the text-box Room Capacity
                 int maxCapacity = Integer.parseInt(request.getParameter("maxCapacity"));
                 System.out.println("maxCapacity: " + maxCapacity);
+                String roomType = request.getParameter("typeRooms").toUpperCase();
                 boolean hasTavle = false;
                 boolean hasProjektor = false;
                 /*retrieves the checkbox values for "hasTavle" and "hasProsjektor", not sent
@@ -68,7 +72,13 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 System.out.println("hasProjektor: " + hasProjektor);
 
                 // Opprett et Grouproom objekt fra dataen hentet fra HTML formen
-                AbstractRoom room = new Grouproom(roomID, roomName, roomBuilding, maxCapacity, hasTavle, hasProjektor);
+                // AbstractRoom room = new Grouproom(roomID, roomName, roomBuilding, maxCapacity, hasTavle, hasProjektor);
+                AbstractRoom room;
+                if (roomType == "GROUPROOM") {
+                    room = new Grouproom(roomID, roomName, roomBuilding, maxCapacity, hasTavle, hasProjektor);
+                } else {
+                    room = new Auditorium(roomID, roomName, roomBuilding, maxCapacity, hasTavle, hasProjektor);
+                }
                 // TODO: Bruker kun grupperom typen for nå
                 //Adds the room to the database
                 dbFunctionality.addRoom(room, connection);
@@ -77,25 +87,24 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 //prints return button.
                 out.println("Room " + roomName + " " + "has been successfully added");
                 addHomeLoggedInButton(out);
-                connection.close();
             } else if (action.contains("delete room")) {
                 DbTool dbTool = new DbTool();
-                Connection connection = dbTool.dbLogIn(out);
+                connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
                 //todo add boolean statement to confirm deletion.
                 //todo Cannot delete room because orders with the room exists.
                 int roomID = Integer.parseInt(request.getParameter("Delete_roomID"));
                 dbFunctionality.deleteRoom(roomID, connection);
                 out.println( "Room " + roomID + "has been successfully deleted");
+                addHomeLoggedInButton(out);
 
                 addBootStrapFunctionality(out);
                 loadJSScripts(out);
-                connection.close();
             } else if (action.contains("cancel")) {
                 //todo add documentation
                 int orderID = Integer.parseInt(request.getParameter("Cancel_Order_ID"));
                 DbTool dbTool = new DbTool();
-                Connection connection = dbTool.dbLogIn(out);
+                connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
 
                 if (dbFunctionality.deleteOrder(orderID, connection)) {
@@ -108,10 +117,9 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 }
                 addBootStrapFunctionality(out);
                 loadJSScripts(out);
-                connection.close();
             } else if (action.contains("show")) {
                 DbTool dbTool = new DbTool();
-                Connection connection = dbTool.dbLogIn(out);
+                connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
 
                 dbFunctionality.printRooms(out, connection);
@@ -119,7 +127,7 @@ public class ServletRoomOptions extends AbstractPostServlet {
 
                 addBootStrapFunctionality(out);
                 loadJSScripts(out);
-                connection.close();
+
             } else if (action.contains("gotoprofile")) {
                 ServletContext servletContext = getServletContext();
                 //todo Send session with Username
@@ -140,5 +148,20 @@ public class ServletRoomOptions extends AbstractPostServlet {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        finally {
+            DbUtils.closeQuietly(connection);
+            try {
+                assert connection != null;
+                if (connection.isClosed()) {
+                    System.out.println("connection closed");
+                } else {
+                    System.out.println(connection + "is not closed");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        }
+
     }
 }

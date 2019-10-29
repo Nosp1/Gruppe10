@@ -24,6 +24,7 @@ public class ServletReport extends AbstractPostServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         response.setContentType("text/html;charset=UTF-8");
+        Connection connection = null;
         try (PrintWriter out = response.getWriter()) {
 
             //prints start of html tags.
@@ -37,7 +38,7 @@ public class ServletReport extends AbstractPostServlet {
             if (action.contains("report")) {
                 DbTool dbTool = new DbTool();
                 //Establishes connection to database
-                Connection connection = dbTool.dbLogIn(out);
+                connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
                 int userID = dbFunctionality.getUserId(userName, connection);
                 String roomIDString = request.getParameter("Report_Room_ID");
@@ -50,12 +51,6 @@ public class ServletReport extends AbstractPostServlet {
 
                 Report newReport = new Report(responseString, userID, roomID);
                 dbFunctionality.insertReport(newReport, connection);
-                DbUtils.closeQuietly(connection);
-                if (connection.isClosed()) {
-                    System.out.println("connection closed");
-                } else {
-                    System.out.println("connection is not closed");
-                }
             } else {
                 //adds a return button if the Report fails.
 
@@ -63,6 +58,18 @@ public class ServletReport extends AbstractPostServlet {
             }
         } catch (IOException | SQLException e) {
             e.printStackTrace();
+        }
+        finally {
+            DbUtils.closeQuietly(connection);
+            try {
+                if (connection.isClosed()) {
+                    System.out.println("connection closed");
+                } else {
+                    System.out.println("connection is not closed");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
