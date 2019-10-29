@@ -7,6 +7,7 @@ import Classes.Order;
 import Classes.User.AbstractUser;
 import Tools.DbFunctionality;
 import Tools.DbTool;
+import org.apache.commons.dbutils.DbUtils;
 
 import javax.mail.Session;
 import javax.servlet.annotation.WebServlet;
@@ -28,6 +29,7 @@ import java.text.ParseException;
 public class ServletRoomBooking extends AbstractPostServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Connection connection = null;
         try (PrintWriter out = response.getWriter()) {
             //prints the beginning of a  html-page.
             printLoggedInNav(out);
@@ -36,11 +38,11 @@ public class ServletRoomBooking extends AbstractPostServlet {
             HttpSession httpSession = request.getSession();
             String userName = (String) httpSession.getAttribute("userEmail");
             //TODO: Må ordne intersects; en booking med 10:30-11:00 og en annen med 11:00-11:30 returnerer at det overlapper
-            if(action.contains("reserve")) {
+            if (action.contains("reserve")) {
                 System.out.println("Reserve started");
                 // Nødvendige klasser for database samhandling og funksjonalitet
                 DbTool dbTool = new DbTool();
-                Connection connection = dbTool.dbLogIn(out);
+                connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
 
                 // Hent roomID, Timestamp_start og _end for å sjekke reservasjonen
@@ -57,7 +59,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
                 String timestampEnd = timestampEndDate + " " + timestampEndTime;
                 System.out.println(timestampEnd);
 
-                if(timestampStart.equals(timestampEnd)) {
+                if (timestampStart.equals(timestampEnd)) {
                     // Ikke reserver, returner feilmelding til brukeren
                     String sameTimeErrorMessage = "Sorry, the start and end-time is the same, and a booking can't be made.";
                     System.out.println(sameTimeErrorMessage);
@@ -100,11 +102,10 @@ public class ServletRoomBooking extends AbstractPostServlet {
                     Session session = tlsEmail.NoReplyEmail(user.getUserName());
                     EmailUtil confirmationEmail = new EmailUtil();
                     String receipt = EmailTemplates.getBookingReceipt();
-                    String body = EmailTemplates.bookingConfirmation(user.getFirstName().substring(0, 1).toUpperCase() + user.getFirstName().substring(1),order);
-                    confirmationEmail.sendEmail(session,user.getUserName(),receipt,body);
+                    String body = EmailTemplates.bookingConfirmation(user.getFirstName().substring(0, 1).toUpperCase() + user.getFirstName().substring(1), order);
+                    confirmationEmail.sendEmail(session, user.getUserName(), receipt, body);
                     out.println("<p>You have successfully booked" + roomID);
                     addHomeLoggedInButton(out);
-                    connection.close();
                 } else {
                     String notAvailableErrorMessage = "Sorry, that time and room is already taken.";
                     // Hvis ikke returneres en error til brukeren
@@ -132,7 +133,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
 
                 // Oppretter en kobling med databasen
                 DbTool dbTool = new DbTool();
-                Connection connection = dbTool.dbLogIn(out);
+                connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
 
                 // Lager en ny ordre og gir den variabelnavn order
@@ -146,6 +147,19 @@ public class ServletRoomBooking extends AbstractPostServlet {
             }
         } catch (SQLException | ParseException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                DbUtils.closeQuietly(connection);
+                assert connection != null;
+                if (connection.isClosed()) {
+                    System.out.println("connection is closed ");
+                } else {
+                    System.out.println("connection is not closed");
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }
