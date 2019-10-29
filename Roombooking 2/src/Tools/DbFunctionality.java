@@ -52,7 +52,22 @@ public class DbFunctionality {
             String[] hashParts = hashing.split(":");
             // store the salt in the database
             insertNewUser.setString(6, hashParts[0]);
-            insertNewUser.setString(7, String.valueOf(user.getUserType()));
+            // Set
+            String userType = String.valueOf(user.getUserType());
+            switch(userType) {
+                case "TEACHER":
+                    insertNewUser.setInt(7, 2);
+                    break;
+
+                case "ADMIN":
+                    insertNewUser.setInt(7, 3);
+                    break;
+
+                default:
+                    insertNewUser.setInt(7, 1);
+                    break;
+            }
+            //insertNewUser.setString(7, String.valueOf(user.getUserType()));
             insertNewUser.execute();
 
         } catch (SQLException | NoSuchAlgorithmException | InvalidKeySpecException e) {

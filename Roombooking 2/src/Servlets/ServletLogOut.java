@@ -17,6 +17,11 @@ public class ServletLogOut extends AbstractPostServlet {
         String action = request.getParameter("action").toLowerCase();
 
         if(action.contains("log out")) {
+            HttpSession session = request.getSession(false);
+            if(session != null) {
+                session.invalidate();
+            }
+
             ServletContext servletContext = getServletContext();
             servletContext.getRequestDispatcher("/index.html").forward(request, response);
         }
