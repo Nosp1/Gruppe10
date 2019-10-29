@@ -25,7 +25,7 @@ $('#navbar-search-button').on('click', function() {
 $('#navbar-search-button').on('click', function () {
     console.log("navbar search button clicked")
     // preventDefault stopper redirect
-    //evt.preventDefault();
+    evt.preventDefault();
     // Hent roomID fra text-feltet i navbaren
     const roomId = $('#navbar-search-input').val();
     // Varsle brukeren om roomID er mindre enn 0
@@ -60,7 +60,7 @@ $("#calendar button:nth-of-type(2)").on('click', function () {
 $('#ListOfRooms').on('submit', function (evt) {
     console.log("Show all rooms clicked");
     // hvis denne preventDefault ikke er kommentert fungerer ikke printRooms knappen
-    //evt.preventDefault();
+    evt.preventDefault();
     getRoomInfo(-1);
     $("#calendar").show();
     $("#searchResult").show();
