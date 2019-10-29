@@ -159,7 +159,7 @@ public class DbFunctionality {
             String dob = resultSet.getNString("User_dob");
             String password = resultSet.getString("User_password");
             String userType = resultSet.getString("User_Type");
-            if (userType == "STUDENT") {
+            if (userType.contains( "STUDENT")) {
                 return new Student(firstName, lastName, userName, password, dob);
             } else {
                 return new Teacher(firstName, lastName, userName, password, dob);
@@ -351,14 +351,19 @@ public class DbFunctionality {
 
 
     public ResultSet getAllOrdersFromRoom(int roomID, Connection connection) throws SQLException {
-        PreparedStatement selectOrders;
-        String select = "select Order_ID, Timestamp_start, Timestamp_end from `order`\n" +
-                "  inner join rooms\n" +
-                "  on `order`.Room_ID = rooms.Room_ID\n" +
-                "  where `order`.Room_ID = ?";
-        selectOrders = connection.prepareStatement(select);
-        selectOrders.setInt(1, roomID);
-        return selectOrders.executeQuery();
+        PreparedStatement selectOrders = null;
+        try {
+            String select = "select Order_ID, Timestamp_start, Timestamp_end from `order`\n" +
+                    "  inner join rooms\n" +
+                    "  on `order`.Room_ID = rooms.Room_ID\n" +
+                    "  where `order`.Room_ID = ?";
+            selectOrders = connection.prepareStatement(select);
+            selectOrders.setInt(1, roomID);
+            return selectOrders.executeQuery();
+        } finally {
+            assert selectOrders != null;
+            selectOrders.close();
+        }
     }
 
     //closes connection
