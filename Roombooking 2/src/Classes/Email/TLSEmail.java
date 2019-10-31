@@ -3,6 +3,8 @@ package Classes.Email;
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 /**
@@ -15,19 +17,38 @@ import java.util.Properties;
  * @see EmailUtil for email cunstructon
  */
 public class TLSEmail {
-    String fromEmail = "grproom@gmail.com"; //required valid email id
-    String password = "dennIS93"; //required valid password for email id
+    private String fromEmail;
+    private String password;
 
+    public TLSEmail() throws Exception {
+        fromEmail = "grproom@gmail.com"; //required valid email id
+        //stores the password from local file on the password variable for sending emails
+        password = readFileAsString("/Users/trym/go/src/github.com/Nosp1/is-200/Gruppe10/Roombooking 2/src/Classes/Email/password");
 
-    public TLSEmail() {
     }
+    /**
+     * Reads locally stored password file as a string to parse the password for better security
+     * @return data with stored password
+     * @param fileName the name of the locally stored file
+     */
+    private static String readFileAsString(String fileName) throws Exception
+    {
+        //initializes data string to store the read characters
+        String data = "";
+        //reads the characters in the file and replaces escaped quotes with an empty character
+        data = new String(Files.readAllBytes(Paths.get(fileName))).replaceAll("\"", "");
+        //prints for debugging
+        System.out.println(data);
+        //returns the stored value of data
+        return data;
 
+    }
     /**
      * Method takes in a {@code String} object and sends it to {@code SendSecureEmail}
      *
      * @param toEmail methods takes in recipient email.
      */
-    public Session NoReplyEmail(String toEmail) {
+    public Session NoReplyEmail(String toEmail) throws Exception {
         System.out.println("TLSEmail Start");
         //creates TlSEMAIL object
         TLSEmail tlsEmail = new TLSEmail();
