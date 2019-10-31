@@ -136,8 +136,10 @@ public class ServletRoomBooking extends AbstractPostServlet {
 
                 // Lager en ny ordre og gir den variabelnavn order
                 Order originalOrder = dbFunctionality.getOrder(orderID, connection);
-
                 int roomID = originalOrder.getRoomID();
+
+                Order order = new Order(timestampStart,timestampEnd);
+
 
                 ResultSet orders = dbFunctionality.getOrdersFromRoom(roomID, timestampStart.substring(0, 10), connection);
                 System.out.println("Resultset recieved");
@@ -152,14 +154,15 @@ public class ServletRoomBooking extends AbstractPostServlet {
                     Timestamp t2 = orders.getTimestamp("Timestamp_end");
                     Order other = new Order(t1, t2);
                     // Hvis order overlapper med noen settes available til false, og vi avslutter while-løkka
-                    if (originalOrder.intersects(other)) {
+                    if (order.intersects(other)) {
                         available = false;
                         break;
                     }
                 }
                 // Hvis det er ledig etter hele while-løkka,
                 if (available) {
-                    dbFunctionality.updateOrderInformation(originalOrder, connection);
+                    order = new Order(orderID, timestampStart, timestampEnd);
+                    dbFunctionality.updateOrderInformation(order, connection);
                     String availableMessage = "Order successfully updated!";
                     System.out.println(availableMessage);
                     out.println(availableMessage);
