@@ -54,6 +54,7 @@ public class Servlet extends AbstractPostServlet {
                 //establish connection to database
                 Connection connection = dbtool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
+
                 //generates a new user with the information from the form register
                 /* Create a new user, and assign a role depending on the userType
                 TODO: UserType in database, and userTypeRegistry*/
@@ -82,6 +83,13 @@ public class Servlet extends AbstractPostServlet {
 
                     dbFunctionality.addUser(newUser, connection);
                     out.println("<p> You have successfully registered</p>");
+                    //prints a redirect button according to the userType
+                    //TODO: kanskje til SWITCH seinere, om det blir flere userTypes?
+                    if(userType.contains("ADMIN")) {
+                        addRedirectButton(out, "loggedInAdmin.html");
+                    } else {
+                        addRedirectButton(out, "loggedIn.html");
+                    }
                     //Generates and sends a welcome email to the newly registered user
                     //todo refactor into method?
                     TLSEmail tlsEmail = new TLSEmail();
@@ -96,8 +104,7 @@ public class Servlet extends AbstractPostServlet {
                     String body = EmailTemplates.welcomeMessageBody(capName);
                     //sends email
                     newEmail.sendEmail(session, newUser.getUserName(), welcome, body);
-                    //prints HomeButton & closes connection to sql.
-                    addHomeButton(out);
+                    // closes connection to sql.
                     try {
                         connection.close();
                     } catch (SQLException e) {

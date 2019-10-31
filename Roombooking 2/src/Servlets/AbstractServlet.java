@@ -49,6 +49,17 @@ public abstract class AbstractServlet extends HttpServlet {
                 "                <a href=\"loggedIn.html\"> return</a>\n" +
                 "            </button>\n");
     }
+
+    /**
+     *
+     * @param out The response body to write to
+     * @param redirectTo The html page you want to redirect to
+     */
+    void addRedirectButton(PrintWriter out, String redirectTo) {
+        out.println("<button class=\"btn-default btn-lg submit\">\n" +
+                "                <a href=\"" + redirectTo + "\"> return</a>\n" +
+                "            </button>\n");
+    }
     /**
      * Adds Navigation bar to Servlet landing page.
      *
