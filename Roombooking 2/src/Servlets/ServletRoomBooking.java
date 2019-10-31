@@ -38,7 +38,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
             HttpSession httpSession = request.getSession();
             String userName = (String) httpSession.getAttribute("userEmail");
 
-
+            //todo: Fikse mulighet for å booke room med start tidspunkt (timestampEnd før Timestamp sTart) som har passert.
             if(action.contains("reserve")) {
 
                 System.out.println("Reserve started");
