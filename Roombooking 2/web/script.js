@@ -68,6 +68,21 @@ $('#ListOfRooms').on('submit', function (evt) {
 });
 
 
+    $('#reserve_Room').on('click', function (evt) {
+        evt.preventDefault();
+        console.log("show all rooms clicked");
+        const roomId = -1;
+        getRoomInfo(roomId);
+        $("#calendar").show();
+        $("#searchResult").show();
+
+    });
+
+
+
+
+
+
 function getRoomInfo(roomId) {
    // if (roomId < 0) {
        // return alert("Room number is not correct! RoomID be higher than 0.");

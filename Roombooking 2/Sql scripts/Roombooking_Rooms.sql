@@ -88,3 +88,4 @@ INSERT INTO user_type (User_type_Name) VALUES ('STUDENT');
 INSERT INTO user_type (User_type_Name) VALUES ('TEACHER');
 INSERT INTO user_type (User_type_Name) VALUES ('ADMIN');
 
+update user set user.User_type_ID = 3 where User_ID = 1;

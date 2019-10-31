@@ -281,7 +281,7 @@ public class DbFunctionality {
             insertNewRoom.setString(3, room.getRoomBuilding());
             insertNewRoom.setString(4, String.valueOf(room.getMaxCapacity()));
 
-        insertNewRoom.setString(5, String.valueOf(room.getRoomType()));
+            insertNewRoom.setString(5, String.valueOf(room.getRoomType()));
             boolean tavle = room.hasTavle();
             if (tavle) {
                 insertNewRoom.setString(5, "JA");
