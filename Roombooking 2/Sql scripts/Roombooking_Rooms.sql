@@ -2,8 +2,6 @@ DROP schema roombooking;
 CREATE DATABASE if not exists roombooking;
 USE roombooking;
 
-
-
 CREATE TABLE if not exists roombooking.rooms
 (
     Room_ID          int(11) UNIQUE AUTO_INCREMENT,
@@ -16,6 +14,14 @@ CREATE TABLE if not exists roombooking.rooms
     CONSTRAINT R_Room_ID_PK PRIMARY KEY (Room_ID)
 );
 
+
+alter table `user`
+    drop column User_Type,
+    add column User_type_ID int,
+    add CONSTRAINT U_User_type_ID_FK
+        FOREIGN KEY (User_type_ID)
+        REFERENCES user_type (User_type_ID);
+
 CREATE TABLE if not exists roombooking.user
 (
     User_ID        int UNIQUE AUTO_INCREMENT,
@@ -25,8 +31,9 @@ CREATE TABLE if not exists roombooking.user
     User_dob       varchar(40) NOT NULL,
     User_password  varchar(255),
     User_salt      varchar(100),
-    User_type      enum('STUDENT', 'TEACHER'),
-    CONSTRAINT U_USER_ID_PK primary key (User_ID)
+    User_type_ID   int,
+    CONSTRAINT U_USER_ID_PK PRIMARY KEY (User_ID)
+    CONSTRAINT U_User_type_ID_FK FOREIGN KEY (User_type) REFERENCES user_type (User_type_ID)
 );
 
 CREATE TABLE if not exists roombooking.`order`
@@ -43,7 +50,7 @@ CREATE TABLE if not exists roombooking.`order`
 /*
  might be redundant table.
  */
-create table Email
+create table if not exists email
 (
     Email_name     varchar(55)  null,
     Email_Password varchar(255) null,
@@ -52,7 +59,7 @@ create table Email
         unique (Email_name)
 );
 
-CREATE TABLE UserReport(
+CREATE TABLE if not exists user_report(
     Report_ID int auto_increment,
     Report_Response char (30),
     User_ID int,
@@ -61,5 +68,25 @@ CREATE TABLE UserReport(
     CONSTRAINT PK_Report PRIMARY KEY (Report_ID),
     CONSTRAINT FK_ReportUser FOREIGN KEY(User_ID) REFERENCES User (User_ID),
     CONSTRAINT FK_ReportRoom FOREIGN KEY(Room_ID) REFERENCES Rooms (Room_ID)
-    );
+);
 
+create table if not exists user_type(
+    User_type_ID int auto_increment,
+    User_type_Name VARCHAR(10),
+    CONSTRAINT UT_PK_User_type_ID PRIMARY KEY (User_type_ID)
+);
+
+create table if not exists user_type_registry(
+    Registry_Number int auto_increment,
+    User_ID int,
+    User_type_ID int,
+    CONSTRAINT UTR_PK_Registry_Number PRIMARY KEY (Registry_Number),
+    CONSTRAINT UTR_FK_User_ID FOREIGN KEY (User_ID) REFERENCES `user`(User_ID),
+    CONSTRAINT UTR_FK_User_type_ID FOREIGN KEY (User_type_ID) REFERENCES user_type(User_type_ID)
+);
+
+INSERT INTO user_type (User_type_Name) VALUES ('STUDENT');
+INSERT INTO user_type (User_type_Name) VALUES ('TEACHER');
+INSERT INTO user_type (User_type_Name) VALUES ('ADMIN');
+
+update user set user.User_type_ID = 3 where User_ID = 1;

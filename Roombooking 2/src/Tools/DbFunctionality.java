@@ -3,6 +3,7 @@ package Tools;
 import Classes.Order;
 import Classes.Rooms.AbstractRoom;
 import Classes.User.AbstractUser;
+import Classes.User.Admin;
 import Classes.User.Student;
 import Classes.User.Teacher;
 import Passwords.PasswordHashAndCheck;
@@ -37,7 +38,7 @@ public class DbFunctionality {
         PreparedStatement insertNewUser = null;
 
         try {
-            String ins = "insert into User (User_firstName, User_lastName, User_email, User_dob, User_password, User_salt, User_Type) values (?,?,?,?,?,?,?)";
+            String ins = "insert into User (User_firstName, User_lastName, User_email, User_dob, User_password, User_salt, User_type_ID) values (?,?,?,?,?,?,?)";
             insertNewUser = conn.prepareStatement(ins);
             insertNewUser.setString(1, user.getFirstName());
             insertNewUser.setString(2, user.getLastName());
@@ -52,7 +53,22 @@ public class DbFunctionality {
             String[] hashParts = hashing.split(":");
             // store the salt in the database
             insertNewUser.setString(6, hashParts[0]);
-            insertNewUser.setString(7, String.valueOf(user.getUserType()));
+            // Set
+            String userType = String.valueOf(user.getUserType());
+            switch (userType) {
+                case "TEACHER":
+                    insertNewUser.setInt(7, 2);
+                    break;
+
+                case "ADMIN":
+                    insertNewUser.setInt(7, 3);
+                    break;
+
+                default:
+                    insertNewUser.setInt(7, 1);
+                    break;
+            }
+            //insertNewUser.setString(7, String.valueOf(user.getUserType()));
             insertNewUser.execute();
 
         } catch (SQLException | NoSuchAlgorithmException | InvalidKeySpecException e) {
@@ -143,12 +159,13 @@ public class DbFunctionality {
             String userName = resultSet.getString("User_email");
             String dob = resultSet.getNString("User_dob");
             String password = resultSet.getString("User_password");
-            String userType = resultSet.getString("User_Type");
-            if (userType == "STUDENT") {
+            int userType = resultSet.getInt("User_Type_ID");
+            if (userType == 1) {
                 return new Student(firstName, lastName, userName, password, dob);
-            } else {
+            } else if (userType == 2) {
                 return new Teacher(firstName, lastName, userName, password, dob);
-            }
+            } else
+                return new Admin(firstName, lastName, userName, password, dob);
 
         } finally {
             assert selectUser != null;
@@ -218,7 +235,7 @@ public class DbFunctionality {
             insertNewRoom.setString(3, room.getRoomBuilding());
             insertNewRoom.setString(4, String.valueOf(room.getMaxCapacity()));
 
-        insertNewRoom.setString(5, String.valueOf(room.getRoomType()));
+            insertNewRoom.setString(5, String.valueOf(room.getRoomType()));
             boolean tavle = room.hasTavle();
             if (tavle) {
                 insertNewRoom.setString(5, "JA");
@@ -336,14 +353,19 @@ public class DbFunctionality {
 
 
     public ResultSet getAllOrdersFromRoom(int roomID, Connection connection) throws SQLException {
-        PreparedStatement selectOrders;
-        String select = "select Order_ID, Timestamp_start, Timestamp_end from `order`\n" +
-                "  inner join rooms\n" +
-                "  on `order`.Room_ID = rooms.Room_ID\n" +
-                "  where `order`.Room_ID = ?";
-        selectOrders = connection.prepareStatement(select);
-        selectOrders.setInt(1, roomID);
-        return selectOrders.executeQuery();
+        PreparedStatement selectOrders = null;
+        try {
+            String select = "select Order_ID, Timestamp_start, Timestamp_end from `order`\n" +
+                    "  inner join rooms\n" +
+                    "  on `order`.Room_ID = rooms.Room_ID\n" +
+                    "  where `order`.Room_ID = ?";
+            selectOrders = connection.prepareStatement(select);
+            selectOrders.setInt(1, roomID);
+            return selectOrders.executeQuery();
+        } finally {
+            assert selectOrders != null;
+            selectOrders.close();
+        }
     }
 
     //closes connection

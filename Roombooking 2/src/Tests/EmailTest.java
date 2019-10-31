@@ -45,7 +45,7 @@ public class EmailTest {
      * asserts whether recipient email is equal to test email.
      */
     @Test
-    public void testSendEmail() {
+    public void testSendEmail() throws Exception {
         AbstractUser testUser = new Student("Ola", "Nordmann", testUserEmail, "1234", "1900-01-01");
         Session session = tlsEmail.NoReplyEmail(testUser.getUserName());
         EmailUtil emailUtil =  new EmailUtil();

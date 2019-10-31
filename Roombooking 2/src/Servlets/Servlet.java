@@ -3,6 +3,7 @@ package Servlets;
 import Classes.Email.EmailUtil;
 import Classes.Email.TLSEmail;
 import Classes.User.AbstractUser;
+import Classes.User.Admin;
 import Classes.User.Student;
 import Classes.User.Teacher;
 import Classes.Email.EmailTemplates;
@@ -54,16 +55,19 @@ public class Servlet extends AbstractPostServlet {
                 Connection connection = dbtool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
                 //generates a new user with the information from the form register
-                // AbstractUser newUser = new Student(firstName, lastName, email, password, dob);
+                /* Create a new user, and assign a role depending on the userType
+                TODO: UserType in database, and userTypeRegistry*/
                 AbstractUser newUser;
                 if (userType.contains("STUDENT")) {
                     newUser = new Student(firstName, lastName, email, password, dob);
-                } else {
+                } else if(userType.contains("TEACHER")){
                     newUser = new Teacher(firstName, lastName, email, password, dob);
+                } else {
+                    newUser = new Admin(firstName, lastName, email, password, dob);
                 }
 
-                //sends the new users data and adds it to the database
-                //checks for already registered user.
+                /* First checks if you try to register an already existing user, then
+                sends the new users data and adds it to the database */
                 if (dbFunctionality.checkUser(newUser.getUserName(), newUser.getPassword(), connection)) {
                     out.println("You have already registered with that email");
 
@@ -103,14 +107,14 @@ public class Servlet extends AbstractPostServlet {
                 }
 
             } else {
-                //if the user is not registered.
+                //if the user registration doesn't succeed.
                 out.print("something went wrong");
             }
             // Prints Javascript connection to Bootstrap.js and other dependencies. See AbstractServlet
             addBootStrapFunctionality(out);
             out.println("</body>");
             out.println("</html>");
-        } catch (NoSuchAlgorithmException | SQLException | InvalidKeySpecException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

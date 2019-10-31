@@ -42,6 +42,12 @@ public class ServletSearch extends HttpServlet {
             }
         } finally {
             out.close();
+            try {
+                assert connection != null;
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
