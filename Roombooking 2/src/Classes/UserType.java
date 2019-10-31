@@ -1,3 +1,4 @@
+
 package Classes;
 
 public enum UserType {

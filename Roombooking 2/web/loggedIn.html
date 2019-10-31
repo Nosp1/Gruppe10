@@ -25,49 +25,30 @@
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-                <li><a href="#">Link</a></li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">Dropdown <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">Separated link</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">One more separated link</a></li>
-                    </ul>
-                </li>
-            </ul>
-            <form class="navbar-form navbar-left">
+            <form class="navbar-form navbar-left" id="navbar-search-form">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search">
+                    <input type="text" class="form-control" id="navbar-search-input" placeholder="Search">
                 </div>
-                <button type="submit" class="btn btn-default">Submit</button>
+                <button type="button" id="navbar-search-button" class="btn btn-default">Submit</button>
             </form>
             <ul class="nav navbar-nav navbar-right">
                 <li>
                     <a href="./profile.html">User <span class="glyphicon glyphicon-user"
-                                                                aria-hidden="true"></span>
-                </a>
+                                                        aria-hidden="true"></span>
+                    </a>
                 </li>
 
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">Dropdown <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">Separated link</a></li>
-                    </ul>
+                <li>
+                    <div id="logout">
+                        <form action="./Servlets.ServletLogOut" method="post">
+                            <div>
+                                <input class="submit btn-default btn-lg" type="submit" name="action" value="Log out"/>
+                            </div>
+                        </form>
+                    </div>
                 </li>
             </ul>
-        </div><!-- /.navbar-collapse -->
+        </div>
     </div><!-- /.container-fluid -->
 </nav>
 <div class="container">
@@ -80,8 +61,9 @@
         </button>
         <!-- Go to profile collapse button -->
         <form action="./Servlets.ServletRoomOptions" method="post">
-        <button type="submit" name="action" class="btn btn-success btn-lg" role="button" value="gotoprofile">Go to profile
-        </button>
+            <button type="submit" name="action" class="btn btn-success btn-lg" role="button" value="gotoprofile">Go to
+                profile
+            </button>
         </form>
 
         <!-- Add a room collapse button -->
@@ -93,19 +75,26 @@
                 aria-controls="#collapseDeleteRoom">Delete a room
         </button>
         <!-- Reserve a room collapse button -->
-        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseReserveRoom" role="button"
-                aria-controls="#collapseReserveRoom">Reserve a room
+        <button class="btn btn-success btn-lg" id="reserve_Room" data-toggle="collapse" href="#collapseReserveRoom" role="button"
+             onclick="$('#reserve_Room')"   aria-controls="#collapseReserveRoom">Reserve a room
         </button>
+        <!-- Delete a room collapse button -->
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseCancelRoom" role="button"
-        aria-controls="#collapseCancelRoom">Cancel a booking</button>
+                aria-controls="#collapseCancelRoom">Cancel a booking
+        </button>
+
+        <!-- Update a booking collapse button -->
+        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseUpdateBooking" role="button"
+                aria-controls="#collapseUpdateBooking">Update a booking
+        </button>
     </div>
 </div>
 <!-- Submit button for Browse -->
 <div class="collapse container" id="collapseBrowse">
-    <form action="./Servlets.ServletRoomOptions" method="post">
+    <form action="./Servlets.ServletRoomOptions" id="ListOfRooms" method="post">
         <h1>Click beneath to show all rooms</h1>
         <div>
-            <input class="submit btn-default btn-lg" type="submit" name="action" value="Show all rooms">
+            <input class="submit btn-default btn-lg" type="submit" name="action" value="Show all rooms"/>
         </div>
     </form>
 </div>
@@ -113,10 +102,10 @@
 <div class="collapse container" id="collapseAddRoom">
     <form action="./Servlets.ServletRoomOptions" method="post">
         <h1>Add a room</h1>
-        <div>
+        <!--div>
             <label for="Add_roomID">Room ID</label>
             <input type="number" id="Add_roomID" name="Add_roomID">
-        </div>
+        </div-->
         <div>
             <label for="Add_roomName">Room Name</label>
             <input type="text" id="Add_roomName" name="Add_roomName">
@@ -130,7 +119,25 @@
             <input type="number" id="maxCapacity" name="maxCapacity">
         </div>
         <div>
-            <input class="submit btn-default btn-lg" type="submit" name="action" value="Add_room">
+            <div>
+                <select name="typeRooms" size="3">
+                    <option disabled>Type of room</option>
+                    <option value="Grouproom">Grouproom</option>
+                    <option value="Classroom">Classroom</option>
+                    <option value="Auditorium">Auditorium</option>
+                </select>
+            </div>
+
+            <label for="hasTavle">Finnes det tavle</label>
+            <input type="checkbox" name="hasTavle" id="hasTavle" value="Tavle">
+        </div>
+        <div>
+            <label for="hasProjektor">Finnes det projektor</label>
+            <input type="checkbox" name="hasProjektor" id="hasProjektor" value="Projektor">
+        </div>
+        <div>
+            <input class="submit btn-default btn-lg" type="submit" name="action" value="Add room">
+
         </div>
     </form>
 </div>
@@ -152,23 +159,28 @@
 <div class="collapse container" id="collapseReserveRoom">
     <form action="./Servlets.ServletRoomBooking" method="post">
         <h1>Reserve a room</h1>
-        <div>
-            <label for="Reserve_Room_ID">Room ID</label>
+        <div id="reserveroomid">
+            <label for="Reserve_Room_ID" id="label_roomid"> Room ID</label>
             <input type="text" id="Reserve_Room_ID" name="Reserve_Room_ID">
         </div>
 
-        <div>
-            <label for="Reserve_Timestamp_start_date" for="Reserve_Timestamp_start_time">Booking start</label>
-            <input type="date" id="Reserve_Timestamp_start_date" name="Reserve_Timestamp_start_date" onfocusout="updateEndDate()"/>
+        <div id="reserve_start">
+            <label for="Reserve_Timestamp_start_date" for="Reserve_Timestamp_start_time" id="label_start">Booking
+                start</label>
+
+            <input type="date" id="Reserve_Timestamp_start_date" name="Reserve_Timestamp_start_date"
+                   onfocusout="updateEndDate()"/>
             <span class="validateReserveTime">
-                <input type="time" id="Reserve_Timestamp_start_time" class="ReserveTime" name="Reserve_Timestamp_start_time"
+                <input type="time" id="Reserve_Timestamp_start_time" class="ReserveTime"
+                       name="Reserve_Timestamp_start_time"
                        min="08:00" max="22:00" onfocusout="checkInputStart(event)"/>
             </span>
         </div>
 
-        <div>
-            <label for="Reserve_Timestamp_end_date" for="Reserve_Timestamp_end_time">Booking end</label>
-            <input type="date" id="Reserve_Timestamp_end_date" name="Reserve_Timestamp_end_date" tabindex="-1" readonly="readonly"/>
+        <div id="reserve_end">
+            <label for="Reserve_Timestamp_end_date" for="Reserve_Timestamp_end_time" id="label_end">Booking end</label>
+            <input type="date" id="Reserve_Timestamp_end_date" name="Reserve_Timestamp_end_date" tabindex="-1"
+                   readonly="readonly"/>
             <span class="validateReserveTime">
                 <input type="time" id="Reserve_Timestamp_end_time" class="ReserveTime" name="Reserve_Timestamp_end_time"
                        min="08:00" max="22:00" onfocusout="checkInputEnd(event)"/>
@@ -195,12 +207,63 @@
             <label for="Cancel_Order_ID">Order ID</label>
             <input type="text" id="Cancel_Order_ID" name="Cancel_Order_ID">
         </div>
+
         <div>
             <input class="submit btn-default btn-lg" type="submit" name="action" value="cancel">
         </div>
-
     </form>
 </div>
+
+<!-- Form for Updating a booking -->
+<div class="collapse container" id="collapseUpdateBooking">
+    <form action="./Servlets.ServletRoomBooking" method="post">
+        <h1>Update a order</h1>
+        <div>
+            <label for="Update_orderID">Order ID</label>
+            <input type="text" id="Update_orderID" name="Update_orderID">
+        </div>
+
+                <div>
+                    <label for="Update_Timestamp_start_date" for="Update_Timestamp_start_time">Update the booking start</label>
+                    <input type="date" id="Update_Timestamp_start_date" name="Update_Timestamp_start_date"
+                           onfocusout="update_updateEndDate()"/>
+                    <span class="validateUpdateTime">
+                <input type="time" id="Update_Timestamp_start_time" class="UpdateTime" name="Update_Timestamp_start_time"
+                       min="08:00" max="22:00" onfocusout="update_checkInputStart(event)"/>
+            </span>
+        </div>
+
+                <div>
+                    <label for="Update_Timestamp_end_date" for="Update_Timestamp_end_time">Update the booking end</label>
+                    <input type="date" id="Update_Timestamp_end_date" name="Update_Timestamp_end_date" onfocusout="update_updateEndDate()"
+                           readonly="readonly"/>
+                    <span class="validateUpdateTime">
+                <input type="time" id="Update_Timestamp_end_time" class="UpdateTime" name="Update_Timestamp_end_time"
+                       min="08:00" max="22:00" onfocusout="update_checkInputEnd(event)"/>
+            </span>
+        </div>
+
+                <div>
+                    <input class="submit btn-default btn-lg" type="submit" name="action" value="Update room">
+                </div>
+
+                <div class="timeLimitMessage" style="display: none;">
+                    <p> The time must be between 08:00 and 21:59 </p>
+                </div>
+            </form>
+        </div>
+    </form>
+</div>
+
+<div id="searchResult" hidden>
+    <div style="color: black">Room is available:</div>
+</div>
+<div id="calendar" hidden>
+    <button style="color: black;">Previous day</button>
+    <input type="date">
+    <button style="color: black;">Next day</button>
+</div>
+
 
 <script
         src="https://code.jquery.com/jquery-3.4.1.js"
@@ -208,6 +271,8 @@
         crossorigin="anonymous"></script>
 <script src="bootstrap.js"></script>
 <script src="date-time-reserve.js"></script>
+<script src="date-time-update.js"></script>
+<script src="script.js"></script>
 
 </body>
 </html>
