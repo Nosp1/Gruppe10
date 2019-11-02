@@ -193,12 +193,12 @@ public class DbFunctionality {
             String password = resultSet.getString("User_password");
             int userTypeID = resultSet.getInt("User_type_ID");
 
-            if (userTypeID == 1) {
-                return new Student(firstName, lastName, userName, password, dob);
+            if (userTypeID == 3) {
+                return new Admin(firstName, lastName, userName, password, dob);
             } else if(userTypeID == 2) {
                 return new Teacher(firstName, lastName, userName, password, dob);
             } else {
-                return new Admin(firstName, lastName, userName, password, dob);
+                return new Student(firstName, lastName, userName, password, dob);
             }
 
         } finally {

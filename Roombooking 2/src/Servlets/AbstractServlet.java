@@ -1,7 +1,10 @@
 package Servlets;
 
-import javax.servlet.http.HttpServlet;
+import Classes.UserType;
+
+import javax.servlet.http.*;
 import java.io.PrintWriter;
+import java.util.Enumeration;
 
 /**
  * Handles necessary hmtl configurations used in Servlet childs for easier outprints.
@@ -189,5 +192,64 @@ public abstract class AbstractServlet extends HttpServlet {
                 "        </div><!-- /.navbar-collapse -->\n" +
                 "    </div><!-- /.container-fluid -->\n" +
                 "</nav>");
+    }
+
+
+    void invalidateOldSession(HttpServletRequest request) {
+        HttpSession oldSession = request.getSession(false);
+        if(oldSession != null) {
+            oldSession.invalidate();
+        }
+    }
+
+    HttpSession generateNewSession(HttpServletRequest request, int minutes) {
+        HttpSession newSession = request.getSession(true);
+        //TODO: remember to add * 60 later
+        newSession.setMaxInactiveInterval(minutes);
+        return newSession;
+    }
+
+    void debugSession(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Enumeration attributeNames = session.getAttributeNames();
+        while (attributeNames.hasMoreElements()) {
+            String name = (String) attributeNames.nextElement();
+            String value = (String) session.getAttribute(name);
+            System.out.println(name + "=" + value + " " + session.getId());
+        }
+    }
+
+    /**
+     * Generates a cookie that will persist for maxAge seconds, even if you close the browser window.
+     * @param userName
+     * @param userType
+     * @param response
+     * @param minutes
+     * @return
+     */
+    Cookie generatePersistentUserTypeCookie(String userName, UserType userType, HttpServletResponse response, int minutes) {
+        Cookie userTypeCookie = new Cookie("user_type_persistent", userName + ":" + userType.toString());
+        //TODO: Add *60 to minutes
+        userTypeCookie.setMaxAge(minutes*60);
+        // Makes the cookie visible to all directories on the server
+        userTypeCookie.setPath("/");
+
+        return userTypeCookie;
+    }
+
+    /**
+     * Generates a cookie that will be deleted when the Web browser exits.
+     * @param userName
+     * @param userType
+     * @param response
+     * @return
+     */
+    Cookie generateUserTypeCookie(String userName, UserType userType, HttpServletResponse response) {
+        Cookie userTypeCookie = new Cookie("user_type", userName + ":" + userType.toString());
+        userTypeCookie.setMaxAge(-1);
+        // Makes the cookie visible to all directories on the server
+        userTypeCookie.setPath("/");
+
+        return userTypeCookie;
     }
 }

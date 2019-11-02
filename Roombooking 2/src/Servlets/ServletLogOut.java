@@ -21,7 +21,10 @@ public class ServletLogOut extends AbstractPostServlet {
             Cookie[] cookies = request.getCookies();
             for(Cookie c : cookies) {
                 if(c.getName().contains("user_type")) {
+                    // Set the max age of the Cookie to clear it
                     c.setMaxAge(0);
+                    // "Adding" the cookie back to the response, to override the old one
+                    response.addCookie(c);
                 }
             }
 
