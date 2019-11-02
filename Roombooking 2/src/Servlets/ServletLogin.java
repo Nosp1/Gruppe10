@@ -65,15 +65,6 @@ public class ServletLogin extends AbstractServlet {
                     //redirects the user to the loggedIn.html
                     ServletContext servletContext = getServletContext();
                     HttpSession newSession = generateNewSession(request, 20);
-                    /* TODO: Sende til ulike sider ut ifra bruker-type (student, administrator o.l.)
-                    f.eks:  sjekk UserType i database utifra brukernavn
-                            if(user.userType.equals("admin") {
-                                servletContext.getRequestDispatcher("/loggedInAdmin.html").forward(request, response);
-                            } else {
-                                servletContext.getRequestDispatcher("/loggedInDefault.html").forward(request, response);
-                            }
-                     NB: Ikke gjøre det mulig å komme til admin-siden ved kun URL eller med parameter
-                     */
                     newSession.setAttribute("userEmail", userName);
                     /* Generate 2 cookies, both containing userType information. The first one will persist for
                     for x amount of minutes (for if you accidentally close the browser), while the other one

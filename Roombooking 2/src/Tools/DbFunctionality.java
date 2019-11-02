@@ -348,8 +348,6 @@ public class DbFunctionality {
         PreparedStatement insertNewOrder = null;
         System.out.println("addOrder started");
         try {
-
-
             String ins = "insert into `order` (User_ID, Room_ID, Timestamp_start, Timestamp_end) VALUES (?,?,?,?)";
             insertNewOrder = connection.prepareStatement(ins);
             insertNewOrder.setInt(1, order.getUserID());
@@ -417,6 +415,7 @@ public class DbFunctionality {
     //closes connection
     public ResultSet getOrdersFromRoom(int roomID, String date, Connection connection) throws SQLException, ParseException {
         // TODO: date burde kunne ta inn et timestamp, og strings formatert som "yyyy-mm-dd hh:ss" og "yyyy-mm-dd"
+        System.out.println("getOrdersFromRoom started");
         System.out.println("Room_ID recieved: " + roomID);
         System.out.println("Date as String recieved: " + date);
         PreparedStatement selectOrders = null;
@@ -487,16 +486,18 @@ public class DbFunctionality {
     }
 
     public int getOrderID(Connection connection) throws SQLException {
+        System.out.println("getOrderID started");
         PreparedStatement selectOrderID;
         String select = "select Order_ID from `order` order by Order_ID desc limit 1";
         selectOrderID = connection.prepareStatement(select);
         ResultSet resultSet = selectOrderID.executeQuery();
 
         while (resultSet.next()) {
-            System.out.println("orderID from method: " + (resultSet.getInt("Order_ID") + 1));
+            System.out.println("orderID returned: " + (resultSet.getInt("Order_ID") + 1));
             return resultSet.getInt("Order_ID") + 1;
         }
 
+        System.out.println("No orders. orderID returned: 1");
         return 1;
     }
 

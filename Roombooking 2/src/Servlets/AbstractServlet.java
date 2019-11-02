@@ -59,10 +59,29 @@ public abstract class AbstractServlet extends HttpServlet {
      * @param redirectTo The html page you want to redirect to
      */
     void addRedirectButton(PrintWriter out, String redirectTo) {
-        out.println("<button class=\"btn-default btn-lg submit\">\n" +
+        out.println("<div><button class=\"btn-default btn-lg submit\">\n" +
                 "                <a href=\"" + redirectTo + "\"> return</a>\n" +
-                "            </button>\n");
+                "            </button></div>\n");
     }
+
+    /**
+     * Adds a redirection button back to the "home" page based on the user type
+     * @param out
+     * @param userType
+     */
+    void addRedirectOnUserType(PrintWriter out, UserType userType) {
+        switch(userType) {
+
+            case ADMIN:
+                addRedirectButton(out, "loggedInAdmin.html");
+                break;
+
+            default:
+                addRedirectButton(out, "loggedIn.html");
+                break;
+        }
+    }
+
     /**
      * Adds Navigation bar to Servlet landing page.
      *
@@ -204,8 +223,7 @@ public abstract class AbstractServlet extends HttpServlet {
 
     HttpSession generateNewSession(HttpServletRequest request, int minutes) {
         HttpSession newSession = request.getSession(true);
-        //TODO: remember to add * 60 later
-        newSession.setMaxInactiveInterval(minutes);
+        newSession.setMaxInactiveInterval(minutes*60);
         return newSession;
     }
 
@@ -229,7 +247,6 @@ public abstract class AbstractServlet extends HttpServlet {
      */
     Cookie generatePersistentUserTypeCookie(String userName, UserType userType, HttpServletResponse response, int minutes) {
         Cookie userTypeCookie = new Cookie("user_type_persistent", userName + ":" + userType.toString());
-        //TODO: Add *60 to minutes
         userTypeCookie.setMaxAge(minutes*60);
         // Makes the cookie visible to all directories on the server
         userTypeCookie.setPath("/");
