@@ -5,6 +5,7 @@ import Classes.Email.EmailUtil;
 import Classes.Email.TLSEmail;
 import Classes.Order;
 import Classes.User.AbstractUser;
+import Classes.UserType;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 import org.apache.commons.dbutils.DbUtils;
@@ -16,8 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.*;
-import java.text.ParseException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Timestamp;
 
 /**
  * ServletRoomBooking.java is used for handling actions related to room-booking reservations.
@@ -38,9 +40,8 @@ public class ServletRoomBooking extends AbstractPostServlet {
             HttpSession httpSession = request.getSession();
             String userName = (String) httpSession.getAttribute("userEmail");
 
-
+            //todo: Fikse mulighet for å booke room med start tidspunkt (timestampEnd før Timestamp sTart) som har passert.
             if(action.contains("reserve")) {
-
                 System.out.println("Reserve started");
                 // Nødvendige klasser for database samhandling og funksjonalitet
                 DbTool dbTool = new DbTool();
@@ -54,20 +55,33 @@ public class ServletRoomBooking extends AbstractPostServlet {
                 String timestampStartDate = request.getParameter("Reserve_Timestamp_start_date");
                 String timestampStartTime = request.getParameter("Reserve_Timestamp_start_time");
                 String timestampStart = timestampStartDate + " " + timestampStartTime;
-                System.out.println(timestampStart);
 
                 String timestampEndDate = request.getParameter("Reserve_Timestamp_end_date");
                 String timestampEndTime = request.getParameter("Reserve_Timestamp_end_time");
                 String timestampEnd = timestampEndDate + " " + timestampEndTime;
-                System.out.println(timestampEnd);
 
+                // Sjekker om tidspunktene er de samme
                 if (timestampStart.equals(timestampEnd)) {
-                    // Ikke reserver, returner feilmelding til brukeren
-                    String sameTimeErrorMessage = "Sorry, the start and end-time is the same, and a booking can't be made.";
+                    // Hvis de er det returneres det en feilmelding om dette til brukeren.
+                    String sameTimeErrorMessage = "Sorry, your booking can't be made. Start- and end time cannot be the same.";
                     System.out.println(sameTimeErrorMessage);
                     out.println(sameTimeErrorMessage);
+                    // Deretter legger vi til en knapp som tar brukeren tilbake til sin hjemmeside.
+                    AbstractUser user = dbFunctionality.getUser(userName, connection);
+                    addRedirectOnUserType(out, user.getUserType());
                     return;
                 }
+                // Sjekker om slutt-tidspunkt er før start-tidspunkt
+                if(timestampEnd.compareTo(timestampStart) < 0) {
+                    String endBeforeStartErrorMessage = "Sorry, your booking can't be made. Start time must be before end time.";
+                    System.out.println(endBeforeStartErrorMessage);
+                    out.println(endBeforeStartErrorMessage);
+
+                    AbstractUser user = dbFunctionality.getUser(userName, connection);
+                    addRedirectOnUserType(out, user.getUserType());
+                    return;
+                }
+
                 // new order to reserve
                 Order order = new Order(timestampStart, timestampEnd);
 
@@ -75,22 +89,22 @@ public class ServletRoomBooking extends AbstractPostServlet {
                 TLSEmail tlsEmail = new TLSEmail();
 
                 ResultSet orders = dbFunctionality.getOrdersFromRoom(roomID, timestampStart.substring(0, 10), connection);
-                System.out.println("Resultset recieved");
                 // Lag og sett en boolean til true,
                 boolean available = true;
                 int iterations = 0;
                 // og sjekk order opp mot alle andre reservasjoner.
                 while (orders.next()) {
                     System.out.println("iterations: " + ++iterations);
-                    Timestamp t1 = orders.getTimestamp("Timestamp_start");
-                    Timestamp t2 = orders.getTimestamp("Timestamp_end");
-                    Order other = new Order(t1, t2);
+                    Timestamp start = orders.getTimestamp("Timestamp_start");
+                    Timestamp end = orders.getTimestamp("Timestamp_end");
+                    Order other = new Order(start, end);
                     // Hvis order overlapper med noen settes available til false, og vi avslutter while-løkka
                     if (order.intersects(other)) {
                         available = false;
                         break;
                     }
                 }
+                UserType userType;
                 // Hvis det er ledig etter hele while-løkka,
                 if (available) {
                     // henter vi orderID, lager Order objektet på nytt og legger det til databasen.
@@ -100,6 +114,8 @@ public class ServletRoomBooking extends AbstractPostServlet {
                     int userId = dbFunctionality.getUserId(userName, connection);
                     order = new Order(orderID, userId, roomID, timestampStart, timestampEnd);
                     dbFunctionality.addOrder(order, connection);
+                    out.println("<p>You have successfully booked" + roomID);
+                    addRedirectOnUserType(out, user.getUserType());
 
                     // Etter reservasjonen er lagt til i databasen sender vi en kvittering på epost.
                     Session session = tlsEmail.NoReplyEmail(user.getUserName());
@@ -107,18 +123,18 @@ public class ServletRoomBooking extends AbstractPostServlet {
                     String receipt = EmailTemplates.getBookingReceipt();
                     String body = EmailTemplates.bookingConfirmation(user.getFirstName().substring(0, 1).toUpperCase() + user.getFirstName().substring(1), order);
                     confirmationEmail.sendEmail(session, user.getUserName(), receipt, body);
-                    out.println("<p>You have successfully booked" + roomID);
-                    addHomeLoggedInButton(out);
                 } else {
                     // Hvis ikke returneres en error til brukeren
-                    String notAvailableErrorMessage = "Sorry, that time and room is already taken.";
+                    String notAvailableErrorMessage = "Sorry, there was an error during your booking. " +
+                            "That room and time is already reserved.";
                     // TODO: Returner en error til brukeren om rommet er opptatt ved tidspunktet valgt
                     System.out.println(notAvailableErrorMessage);
                     out.println(notAvailableErrorMessage);
+                    AbstractUser user = dbFunctionality.getUser(userName, connection);
+                    addRedirectOnUserType(out, user.getUserType());
                 }
 
             } else if (action.contains("update")) {
-
                 // ID på hvilken order du vil endre hentes fra request.
                 String formOrderID = request.getParameter("Update_orderID");
                 int orderID = Integer.parseInt(formOrderID);
