@@ -274,7 +274,7 @@ public class DbFunctionality {
     public void addRoom(AbstractRoom room, Connection connection) throws SQLException {
         PreparedStatement insertNewRoom = null;
         try {
-            String ins = "insert into Rooms (Room_ID, Room_name, Room_building, Room_maxCapacity, Tavle, Prosjektor) values (?,?,?,?,?,?)";
+            String ins = "insert into Rooms (Room_ID, Room_name, Room_building, Room_maxCapacity, Tavle, Projektor) values (?,?,?,?,?,?)";
             insertNewRoom = connection.prepareStatement(ins);
             insertNewRoom.setInt(1, room.getRoomID());
             insertNewRoom.setString(2, room.getRoomName());
