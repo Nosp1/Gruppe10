@@ -1,8 +1,11 @@
 package Servlets;
 
+/**
+ * @Author Henriette Andersen, Hanne Sjursen
+ */
 
-import Classes.User.AbstractUser;
-import Classes.User.Student;
+
+import Reports.Report;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 import org.apache.commons.dbutils.DbUtils;
@@ -15,22 +18,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.text.ParseException;
 
-/**
- * Handles My Reservations from profile.html and parses String parameters to {@code DbFunctionality} to check for
- * {@code String} is existing in Database.
- *
- * @author hanne, henriette, hedda
- * @see Servlets.AbstractServlet
- * @see javax.servlet.http.HttpServlet
- * @see javax.servlet.GenericServlet
- * @see DbFunctionality
- * @see DbTool
- */
-
-@WebServlet(name = "Servlets.ServletReservations", urlPatterns = {"/Servlets.ServletReservations"})
-public class ServletReservations extends AbstractServlet {
+@WebServlet(name = "Servlets.ServletReport", urlPatterns = {"/Servlets.ServletReport"})
+public class ServletReport extends AbstractPostServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         response.setContentType("text/html;charset=UTF-8");
@@ -39,41 +29,43 @@ public class ServletReservations extends AbstractServlet {
 
             //prints start of html tags.
             printLoggedInNav(out);
-            out.println("Here are the reservations:");
+            out.println("<h2 class=\"report_processing\">Your report is under process../>");
             //gets the username -> email in this case.
             HttpSession session = request.getSession();
             String userName = (String) session.getAttribute("userEmail");
             String action = request.getParameter("action").toLowerCase();
 
-            if (action.contains("myreservations")) {
+            if (action.contains("report")) {
                 DbTool dbTool = new DbTool();
                 //Establishes connection to database
                 connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
                 int userID = dbFunctionality.getUserId(userName, connection);
-                AbstractUser user = new Student(userID, dbFunctionality.getOrderListByUserID(userID, connection));
-                user.showOrders(out);
+                String roomIDString = request.getParameter("Report_Room_ID");
+                int roomID = Integer.parseInt(roomIDString);
+                String responseString = request.getParameter("Report_TextArea");
+                if (responseString.isEmpty()) {
+                    responseString = "No value.";
+                }
+                int reportID = 1;
+
+                Report newReport = new Report(responseString, userID, roomID);
+                dbFunctionality.insertReport(newReport, connection);
             } else {
-                //adds a return button if the login fails.
+                //adds a return button if the Report fails.
 
                 addHomeButton(out);
             }
-
-            //prints script to establish connection between bootstrap and html
-            addBootStrapFunctionality(out);
-            out.print("</body>");
-            out.print("</html>");
-            //prints errors: if the database fails, if the password is wrong.
-        } catch (SQLException | IOException | ParseException e) {
+        } catch (IOException | SQLException e) {
             e.printStackTrace();
-        } finally {
+        }
+        finally {
             DbUtils.closeQuietly(connection);
             try {
-                assert connection != null;
                 if (connection.isClosed()) {
                     System.out.println("connection closed");
                 } else {
-                    System.out.println(connection + "is not closed");
+                    System.out.println("connection is not closed");
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -81,3 +73,5 @@ public class ServletReservations extends AbstractServlet {
         }
     }
 }
+
+

@@ -3,8 +3,6 @@ package Classes.User;
 import Classes.Order;
 import Classes.UserType;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
@@ -15,7 +13,6 @@ public abstract class AbstractUser {
     /*
     fields
      */
-
     protected String firstName;
     protected String lastName;
     protected String userName;
@@ -28,7 +25,6 @@ public abstract class AbstractUser {
     /*
     Constructor
      */
-
     public AbstractUser(String firstName, String lastName, String userName, String dob, String password, UserType userType) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -41,7 +37,6 @@ public abstract class AbstractUser {
     }
 
     public AbstractUser(int userID, ArrayList<Order> orderList) {
-
         this.userName = userName;
         this.orders = orderList;
     }

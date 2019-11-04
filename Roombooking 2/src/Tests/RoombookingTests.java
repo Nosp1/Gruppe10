@@ -52,11 +52,15 @@ public class RoombookingTests {
         testConnection = dbTool.dbLogIn();
     }
     @Test
-    public void testUser() {
+    public void testUser() throws SQLException {
         System.out.println("testAddUser");
         AbstractUser testUser = new Student("Ola", "Nordmann", testUserEmail, "1234", "1900-01-01");
         System.out.println(testUser.toString());
-        dbFunctionality.addUser(testUser, testConnection);
+        try {
+            dbFunctionality.addUser(testUser, testConnection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         String statement = "SELECT * FROM User WHERE User_email = ?";
         try {
             PreparedStatement preparedStatement = testConnection.prepareStatement(statement);
