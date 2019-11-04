@@ -98,6 +98,8 @@ public class ServletRoomBooking extends AbstractPostServlet {
                     int userId = dbFunctionality.getUserId(userName, connection);
                     order = new Order(orderID, userId, roomID, timestampStart, timestampEnd);
                     dbFunctionality.addOrder(order, connection);
+                    out.println("<p>You have successfully booked" + roomID);
+                    addHomeLoggedInButton(out);
 
                     // Etter reservasjonen er lagt til i databasen sender vi en kvittering på epost.
                     Session session = tlsEmail.NoReplyEmail(user.getUserName());
@@ -105,8 +107,6 @@ public class ServletRoomBooking extends AbstractPostServlet {
                     String receipt = EmailTemplates.getBookingReceipt();
                     String body = EmailTemplates.bookingConfirmation(user.getFirstName().substring(0, 1).toUpperCase() + user.getFirstName().substring(1), order);
                     confirmationEmail.sendEmail(session, user.getUserName(), receipt, body);
-                    out.println("<p>You have successfully booked" + roomID);
-                    addHomeLoggedInButton(out);
                 } else {
                     // Hvis ikke returneres en error til brukeren
                     String notAvailableErrorMessage = "Sorry, that time and room is already taken.";
