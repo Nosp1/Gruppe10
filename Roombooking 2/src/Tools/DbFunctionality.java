@@ -34,9 +34,10 @@ public class DbFunctionality {
     //connection closes
     public void addUser(AbstractUser user, Connection conn) throws SQLException {
         PreparedStatement insertNewUser = null;
+        PreparedStatement insertNewUserRegistry = null;
 
         try {
-            String ins = "insert into User (User_firstName, User_lastName, User_email, User_dob, User_password, User_salt, User_type_ID) values (?,?,?,?,?,?,?)";
+            String ins = "insert into `user` (User_firstName, User_lastName, User_email, User_dob, User_password, User_salt, User_Type_ID) values (?,?,?,?,?,?,?);";
             insertNewUser = conn.prepareStatement(ins);
             insertNewUser.setString(1, user.getFirstName());
             insertNewUser.setString(2, user.getLastName());
@@ -51,23 +52,31 @@ public class DbFunctionality {
             String[] hashParts = hashing.split(":");
             // store the salt in the database
             insertNewUser.setString(6, hashParts[0]);
-            // Set
+            // Set User_type_ID and add to the prepared statement
             String userType = String.valueOf(user.getUserType());
-            switch (userType) {
+            String insUserRegistry = "insert into user_type_registry (User_ID, User_type_ID) values (?,?);";
+            insertNewUserRegistry = conn.prepareStatement(insUserRegistry);
+            int userID = getNewUserID(conn);
+            setUserType(userID, userType, insertNewUser, insertNewUserRegistry);
+            /*switch(userType) {
                 case "TEACHER":
                     insertNewUser.setInt(7, 2);
+                    insertNewUserRegistry.setInt(userID, 2);
                     break;
 
                 case "ADMIN":
                     insertNewUser.setInt(7, 3);
+                    insertNewUserRegistry.setInt(userID, 3);
                     break;
 
                 default:
                     insertNewUser.setInt(7, 1);
+                    insertNewUserRegistry.setInt(userID, 1);
                     break;
-            }
+            }*/
             //insertNewUser.setString(7, String.valueOf(user.getUserType()));
             insertNewUser.execute();
+            insertNewUserRegistry.execute();
 
         } catch (SQLException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
@@ -76,6 +85,29 @@ public class DbFunctionality {
             assert insertNewUser != null;
             insertNewUser.close();
             conn.close();
+        }
+    }
+
+    private void setUserType(int userID, String userType, PreparedStatement insertNewUser, PreparedStatement insertNewUserRegistry) throws SQLException {
+        switch(userType) {
+            case "TEACHER":
+                insertNewUser.setInt(7, 2);
+                insertNewUserRegistry.setInt(1, userID);
+                insertNewUserRegistry.setInt(2, 2);
+                break;
+
+            case "ADMIN":
+                insertNewUser.setInt(7, 3);
+                insertNewUserRegistry.setInt(1, userID);
+                insertNewUserRegistry.setInt(2, 3);
+                break;
+
+            default:
+                // Otherwise STUDENT
+                insertNewUser.setInt(7, 1);
+                insertNewUserRegistry.setInt(1, userID);
+                insertNewUserRegistry.setInt(2, 1);
+                break;
         }
     }
 
@@ -157,13 +189,15 @@ public class DbFunctionality {
             String userName = resultSet.getString("User_email");
             String dob = resultSet.getNString("User_dob");
             String password = resultSet.getString("User_password");
-            int userType = resultSet.getInt("User_Type_ID");
-            if (userType == 1) {
-                return new Student(firstName, lastName, userName, password, dob);
-            } else if (userType == 2) {
-                return new Teacher(firstName, lastName, userName, password, dob);
-            } else
+            int userTypeID = resultSet.getInt("User_type_ID");
+
+            if (userTypeID == 3) {
                 return new Admin(firstName, lastName, userName, password, dob);
+            } else if(userTypeID == 2) {
+                return new Teacher(firstName, lastName, userName, password, dob);
+            } else {
+                return new Student(firstName, lastName, userName, password, dob);
+            }
 
         } finally {
             assert selectUser != null;
@@ -185,7 +219,7 @@ public class DbFunctionality {
         PreparedStatement getUser = null;
         ResultSet resultSet = null;
         try {
-            String query = "Select User_ID from user where User_Email = (?)";
+            String query = "Select User_ID from `user` where User_Email = (?)";
             getUser = connection.prepareStatement(query);
             getUser.setString(1, userEmail);
             resultSet = getUser.executeQuery();
@@ -198,6 +232,18 @@ public class DbFunctionality {
             assert resultSet != null;
             resultSet.close();
         }
+    }
+
+    public int getNewUserID(Connection connection) throws SQLException {
+        String select = "select MAX(User_ID) as User_ID from `user`;";
+        Statement stmt = connection.createStatement();
+        ResultSet result = stmt.executeQuery(select);
+
+        while(result.next()) {
+            return result.getInt("User_ID") + 1;
+        }
+
+        return -1;
     }
 
     /**
@@ -299,8 +345,6 @@ public class DbFunctionality {
         PreparedStatement insertNewOrder = null;
         System.out.println("addOrder started");
         try {
-
-
             String ins = "insert into `order` (User_ID, Room_ID, Timestamp_start, Timestamp_end) VALUES (?,?,?,?)";
             insertNewOrder = connection.prepareStatement(ins);
             insertNewOrder.setInt(1, order.getUserID());
@@ -367,6 +411,9 @@ public class DbFunctionality {
 
     //closes connection
     public ResultSet getOrdersFromRoom(int roomID, String date, Connection connection) throws SQLException, ParseException {
+
+        // TODO: date burde kunne ta inn et timestamp, og strings formatert som "yyyy-mm-dd hh:ss" og "yyyy-mm-dd"
+        System.out.println("getOrdersFromRoom started");
         System.out.println("Room_ID recieved: " + roomID);
         System.out.println("Date as String recieved: " + date);
         PreparedStatement selectOrders = null;
@@ -436,16 +483,18 @@ public class DbFunctionality {
     }
 
     public int getOrderID(Connection connection) throws SQLException {
+        System.out.println("getOrderID started");
         PreparedStatement selectOrderID;
         String select = "select Order_ID from `order` order by Order_ID desc limit 1";
         selectOrderID = connection.prepareStatement(select);
         ResultSet resultSet = selectOrderID.executeQuery();
 
         while (resultSet.next()) {
-            System.out.println("orderID from method: " + (resultSet.getInt("Order_ID") + 1));
+            System.out.println("orderID returned: " + (resultSet.getInt("Order_ID") + 1));
             return resultSet.getInt("Order_ID") + 1;
         }
 
+        System.out.println("No orders. orderID returned: 1");
         return 1;
     }
 
