@@ -1,12 +1,13 @@
 package Servlets;
 
+import Classes.Email.EmailTemplates;
 import Classes.Email.EmailUtil;
 import Classes.Email.TLSEmail;
 import Classes.User.AbstractUser;
 import Classes.User.Admin;
 import Classes.User.Student;
 import Classes.User.Teacher;
-import Classes.Email.EmailTemplates;
+import Classes.UserType;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 
@@ -18,8 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -54,6 +53,7 @@ public class Servlet extends AbstractPostServlet {
                 //establish connection to database
                 Connection connection = dbtool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
+
                 //generates a new user with the information from the form register
                 /* Create a new user, and assign a role depending on the userType
                 TODO: UserType in database, and userTypeRegistry*/
@@ -82,6 +82,21 @@ public class Servlet extends AbstractPostServlet {
 
                     dbFunctionality.addUser(newUser, connection);
                     out.println("<p> You have successfully registered</p>");
+                    // Creates a redirect button and creates 2 cookies depending on the userType, sending you to different pages
+                    //TODO: kanskje til SWITCH seinere, om det blir flere userTypes?
+                    if(userType.contains("ADMIN")) {
+                        addRedirectButton(out, "loggedInAdmin.html");
+                        response.addCookie(generateUserTypeCookie(email, UserType.ADMIN, response));
+                        response.addCookie(generatePersistentUserTypeCookie(email, UserType.ADMIN, response, 60));
+                    } else if(userType.contains("TEACHER")) {
+                        addRedirectButton(out, "loggedIn.html");
+                        response.addCookie(generateUserTypeCookie(email, UserType.TEACHER, response));
+                        response.addCookie(generatePersistentUserTypeCookie(email, UserType.TEACHER, response, 60));
+                    } else {
+                        addRedirectButton(out, "loggedIn.html");
+                        response.addCookie(generateUserTypeCookie(email, UserType.STUDENT, response));
+                        response.addCookie(generatePersistentUserTypeCookie(email, UserType.STUDENT, response, 60));
+                    }
                     //Generates and sends a welcome email to the newly registered user
                     //todo refactor into method?
                     TLSEmail tlsEmail = new TLSEmail();
@@ -96,8 +111,7 @@ public class Servlet extends AbstractPostServlet {
                     String body = EmailTemplates.welcomeMessageBody(capName);
                     //sends email
                     newEmail.sendEmail(session, newUser.getUserName(), welcome, body);
-                    //prints HomeButton & closes connection to sql.
-                    addHomeButton(out);
+                    // closes connection to sql.
                     try {
                         connection.close();
                     } catch (SQLException e) {
