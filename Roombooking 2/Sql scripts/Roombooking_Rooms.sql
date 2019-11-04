@@ -1,3 +1,4 @@
+DROP schema roombooking;
 CREATE DATABASE if not exists roombooking;
 USE roombooking;
 
@@ -14,12 +15,12 @@ CREATE TABLE if not exists roombooking.rooms
 );
 
 
-alter table `user`
-    drop column User_Type,
-    add column User_type_ID int,
-    add CONSTRAINT U_User_type_ID_FK
-        FOREIGN KEY (User_type_ID)
-        REFERENCES user_type (User_type_ID);
+
+create table if not exists user_type(
+    User_type_ID int auto_increment,
+    User_type_Name VARCHAR(10),
+    CONSTRAINT UT_PK_User_type_ID PRIMARY KEY (User_type_ID)
+);
 
 CREATE TABLE if not exists roombooking.user
 (
@@ -31,8 +32,8 @@ CREATE TABLE if not exists roombooking.user
     User_password  varchar(255),
     User_salt      varchar(100),
     User_type_ID   int,
-    CONSTRAINT U_USER_ID_PK PRIMARY KEY (User_ID)
-    CONSTRAINT U_User_type_ID_FK FOREIGN KEY (User_type) REFERENCES user_type (User_type_ID)
+    CONSTRAINT U_USER_ID_PK PRIMARY KEY (User_ID),
+    CONSTRAINT U_User_type_ID_FK FOREIGN KEY (User_type_ID) REFERENCES user_type (User_type_ID)
 );
 
 CREATE TABLE if not exists roombooking.`order`
@@ -69,12 +70,6 @@ CREATE TABLE if not exists user_report(
     CONSTRAINT FK_ReportRoom FOREIGN KEY(Room_ID) REFERENCES Rooms (Room_ID)
 );
 
-create table if not exists user_type(
-    User_type_ID int auto_increment,
-    User_type_Name VARCHAR(10),
-    CONSTRAINT UT_PK_User_type_ID PRIMARY KEY (User_type_ID)
-);
-
 create table if not exists user_type_registry(
     Registry_Number int auto_increment,
     User_ID int,
@@ -88,4 +83,3 @@ INSERT INTO user_type (User_type_Name) VALUES ('STUDENT');
 INSERT INTO user_type (User_type_Name) VALUES ('TEACHER');
 INSERT INTO user_type (User_type_Name) VALUES ('ADMIN');
 
-update user set user.User_type_ID = 3 where User_ID = 1;

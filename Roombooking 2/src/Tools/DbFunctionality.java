@@ -21,8 +21,6 @@ import java.util.ArrayList;
  * handles the queries to and from the database.
  *
  * @author trym, brisdalen, sæthra & alena
- * TODO: checkUser: closed. Adduser:closed
- * TODO: getUser: Open. getUserID open.
  */
 public class DbFunctionality {
     Statement statement;
@@ -226,7 +224,6 @@ public class DbFunctionality {
             getUser.setString(1, userEmail);
             resultSet = getUser.executeQuery();
             resultSet.next();
-            //todo funker dette?
             int result = Integer.parseInt(resultSet.getString(1));
             return result;
         } finally {
@@ -414,6 +411,7 @@ public class DbFunctionality {
 
     //closes connection
     public ResultSet getOrdersFromRoom(int roomID, String date, Connection connection) throws SQLException, ParseException {
+
         // TODO: date burde kunne ta inn et timestamp, og strings formatert som "yyyy-mm-dd hh:ss" og "yyyy-mm-dd"
         System.out.println("getOrdersFromRoom started");
         System.out.println("Room_ID recieved: " + roomID);
@@ -455,7 +453,6 @@ public class DbFunctionality {
         } finally {
             assert deleteOrder != null;
             deleteOrder.close();
-
         }
     }
 

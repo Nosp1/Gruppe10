@@ -52,64 +52,58 @@
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
-<div class="container" id="ProfileContainer">
-    <div class="jumbotron" id="ProfileJumbotron">
-        <h1 id="Profile" class="special-text">My Profile</h1>
+<h3>Personal info</h3>
 
-        <!-- Browse Rooms collapse button -->
-        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseEdit" role="button"
-                aria-expanded="false"
-                aria-controls="#collapseEdit">Edit Profile Details
-        </button>
-
-        <!-- Book grouproom collapse button -->
-        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseBook" role="button"
-                aria-controls="#collapseBookRoom">Book Grouproom
-        </button>
-
-        <!-- My reservations collapse button -->
-        <form action="./Servlets.ServletReservations" method="post">
-            <button class="btn btn-success btn-lg" href="#collapseShow" role="button" name="action"
-                    value="myreservations">My reservations
-            </button>
-        </form>
-
-        <!-- Report missing objects and false collapse button -->
-        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseReport"
-                role="button"
-                aria-expanded="false"
-                aria-controls="#collapseReport">Report missing objects / false
-        </button>
-
+<form action="./Servlets.ServletEditProfile" class="form-horizontal" role="form">
+    <div class="form-group">
+        <label class="col-lg-3 control-label">First name:</label>
+        <div class="col-lg-8">
+            <input class="form-control" type="text" placeholder="name" name="FirstName">
+        </div>
     </div>
-</div>
 
-
-<!-- Submit button for Edit user details -->
-<div class="collapse container" id="collapseEdit">
-    <form action="./Servlets.ServletEditProfile" method="post">
-        <h1>Edit Profile Details</h1>
-
-        <div>
-            <input class="submit btn-default btn-lg" type="submit" name="action" value="Edit my details">
+    <div class="form-group">
+        <label class="col-lg-3 control-label">Last name:</label>
+        <div class="col-lg-8">
+            <input class="form-control"  placeholder="Last name" type="text" name="LastName">
         </div>
-    </form>
-</div>
+    </div>
 
-<!-- Submit button for Book Grouproom -->
-<div class="collapse container" id="collapseBook">
-    <form action="./Servlets.ServletRoomOptions" method="post">
-        <h1>Book grouproom</h1>
-        <div>
-            <input class="submit btn-default btn-lg" type="submit" name="action" value="Show all rooms">
+
+
+    <div class="form-group">
+        <label class="col-lg-3 control-label">Email:</label>
+        <div class="col-lg-8">
+            <input class="form-control" type="text" placeholder="Your Email here" name="email">
         </div>
-    </form>
-</div>
+    </div>
 
-<!-- Submit button for My Reservations -->
-<div class="collapse container" id="collapseShow">
 
-</div>
+    <div class="form-group">
+        <label class="col-lg-3 control-label">Password:</label>
+        <div class="col-lg-8">
+            <input class="form-control" type="password" name="oldPassword" placeholder="Old password" autocomplete>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-lg-3 control-label">Confirm password:</label>
+        <div class="col-lg-8">
+            <input class="form-control" type="password" placeholder="Confirm password" name="confirmPassword" autofocus>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-3 control-label"></label>
+        <div class="col-md-8">
+            <input type="button" class="btn btn-primary" value="Save Changes">
+            <span></span>
+            <input type="reset" class="btn btn-default" value="Cancel">
+        </div>
+    </div>
+</form>
+
+
 <div id="searchResult" hidden>
     <div style="color: black">Room is available:</div>
     <div></div>
@@ -119,29 +113,6 @@
     <input type="date">
     <button style="color: black;">Next day</button>
 </div>
-
-<!-- Submit button for Report missing objects / false  -->
-
-<div class="collapse container" id="collapseReport">
-  <form action="./Servlets.ServletReport" method="post">
-        <h1>Report missing objects / false </h1>
-      <div>
-          <div>
-              <label for="Report_Room_ID">Room ID</label>
-          </div>
-          <input type="text" id="Report_Room_ID" name="Report_Room_ID">
-          <div>
-              <textarea rows="4" cols="50" name="Report_TextArea">
-                -- SKRIV INN TEKST HER --
-              </textarea>
-          </div>
-      </div>
-            <div>
-                <input class="submit btn-default btn-lg" type="submit" name="action" value="Report">
-            </div>
-    </form>
-</div>
-
 <script
         src="https://code.jquery.com/jquery-3.4.1.js"
         integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
