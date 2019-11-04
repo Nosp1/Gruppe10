@@ -1,6 +1,5 @@
 package Servlets;
 
-import Classes.Order;
 import Classes.Rooms.AbstractRoom;
 import Classes.Rooms.Auditorium;
 import Classes.Rooms.Grouproom;
@@ -82,8 +81,7 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 // TODO: Bruker kun grupperom typen for nå
                 //Adds the room to the database
                 dbFunctionality.addRoom(room, connection);
-                //TODO: Kanskje legge til if statement som
-                // dispatcher deg tilbake til loggedin istedenfor knapp? for mer flytt og mindre klikks
+                //TODO: Kanskje legge til if statement som dispatcher deg tilbake til loggedin istedenfor knapp? for mer flytt og mindre klikks
                 //prints return button.
                 out.println("Room " + roomName + " " + "has been successfully added");
                 addHomeLoggedInButton(out);
@@ -150,18 +148,7 @@ public class ServletRoomOptions extends AbstractPostServlet {
         }
         finally {
             DbUtils.closeQuietly(connection);
-            try {
-                assert connection != null;
-                if (connection.isClosed()) {
-                    System.out.println("connection closed");
-                } else {
-                    System.out.println(connection + "is not closed");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
+            closeConnection(connection);
         }
-
     }
 }

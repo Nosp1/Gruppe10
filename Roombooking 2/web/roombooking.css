@@ -16,6 +16,11 @@ form {
     display: inline-block;
     color: white;
 }
+
+table {
+    display: inline-block;
+    color: white;
+}
 input {
     color: black;
 }
@@ -211,11 +216,4 @@ textarea {
 #collapseExample input {
     width: 100%;
     clear: both;
-}
-
-
-
-    border-radius: 1em;
-    padding-top: 0.8em;
-    margin: auto auto 1em;
 }

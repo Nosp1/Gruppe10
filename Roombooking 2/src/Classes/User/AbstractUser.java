@@ -49,6 +49,7 @@ public abstract class AbstractUser {
     }
 
     public void showOrders(PrintWriter out) {
+        // TODO: Endre til å vise rom navn, kanskje lage en display() i Order?
         //Viser orders
         for (Order o : orders) {
             out.println(
@@ -56,7 +57,7 @@ public abstract class AbstractUser {
                             "<form>\n" +
                             "<table>\n" +
                             "        <tr>\n" +
-                            "            <td> \n " + " RoomID " + " " + o.getRoomID() + "</td>" + " " + " \n" +
+                            "            <td> \n " + " Room: " + " " + o.getRoomID() + "</td>" + " " + " \n" +
                             "            <td> \n " + " " + " From " + " " + o.getTimestampStart() + "  " + "</td>\n" +
                                         "<td> \n" + " " + " To " + " " + o.getTimestampEnd() + " " + "</td>\n" +
                             "        </tr>\n" +
