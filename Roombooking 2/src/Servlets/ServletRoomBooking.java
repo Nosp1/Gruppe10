@@ -37,8 +37,6 @@ public class ServletRoomBooking extends AbstractPostServlet {
             String action = request.getParameter("action").toLowerCase();
             HttpSession httpSession = request.getSession();
             String userName = (String) httpSession.getAttribute("userEmail");
-
-            //todo: Fikse mulighet for å booke room med start tidspunkt (timestampEnd før Timestamp sTart) som har passert.
             if(action.contains("reserve")) {
 
                 System.out.println("Reserve started");
@@ -112,7 +110,6 @@ public class ServletRoomBooking extends AbstractPostServlet {
                 } else {
                     // Hvis ikke returneres en error til brukeren
                     String notAvailableErrorMessage = "Sorry, that time and room is already taken.";
-                    // TODO: Returner en error til brukeren om rommet er opptatt ved tidspunktet valgt
                     System.out.println(notAvailableErrorMessage);
                     out.println(notAvailableErrorMessage);
                 }
@@ -140,13 +137,56 @@ public class ServletRoomBooking extends AbstractPostServlet {
                 DbFunctionality dbFunctionality = new DbFunctionality();
 
                 // Lager en ny ordre og gir den variabelnavn order
-                Order order = new Order(orderID, timestampStart, timestampEnd);
+                Order originalOrder = dbFunctionality.getOrder(orderID, connection);
+                int roomID = originalOrder.getRoomID();
+
+                Order order = new Order(timestampStart,timestampEnd);
 
 
-                //Bruker metoden i dbfunctionality til å update ordren.
-                dbFunctionality.updateOrderInformation(order, connection);
-                out.println("Order successfully updated!");
-                addBootStrapFunctionality(out);
+                ResultSet orders = dbFunctionality.getOrdersFromRoom(roomID, timestampStart.substring(0, 10), connection);
+                System.out.println("Resultset recieved");
+
+                Timestamp startTimeOO = originalOrder.getTimestampStart();
+                Timestamp endTimeOO = originalOrder.getTimestampEnd();
+
+
+
+                // Lag og sett en boolean til true,
+                boolean available = true;
+                int iterations = 0;
+                // og sjekk order opp mot alle andre reservasjoner.
+                while (orders.next()) {
+                    System.out.println("iterations: " + ++iterations);
+                    Timestamp t1 = orders.getTimestamp("Timestamp_start");
+                    Timestamp t2 = orders.getTimestamp("Timestamp_end");
+                    Order other = new Order(t1, t2);
+
+                    // Hvis order overlapper med noen settes available til false, og vi avslutter while-løkka
+                    if (order.intersects(other) &&  !startTimeOO.equals(t1))  {
+                        available = false;
+                        break;
+                    }
+
+                }
+                // Hvis det er ledig etter hele while-løkka,
+                if (available) {
+                    order = new Order(orderID, timestampStart, timestampEnd);
+                    dbFunctionality.updateOrderInformation(order, connection);
+                    String availableMessage = "Order successfully updated!";
+                    System.out.println(availableMessage);
+                    out.println(availableMessage);
+                    addHomeLoggedInButton(out);
+                    addBootStrapFunctionality(out);
+                    connection.close();
+                } else {
+                    String notAvailableErrorMessage = "Sorry, that time and room is already taken.";
+                    // Hvis ikke returneres en error til brukeren
+                    System.out.println(notAvailableErrorMessage);
+                    out.println(notAvailableErrorMessage);
+                    addHomeLoggedInButton(out);
+                    addBootStrapFunctionality(out);
+                }
+
             }
         } catch (Exception e) {
             e.printStackTrace();

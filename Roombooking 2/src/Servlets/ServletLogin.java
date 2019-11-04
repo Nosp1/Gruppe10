@@ -60,7 +60,7 @@ public class ServletLogin extends AbstractServlet {
                     ServletContext servletContext = getServletContext();
                     HttpSession session = request.getSession();
                     session.setAttribute("userEmail", userName);
-                    /* TODO: Sende til ulike sider ut ifra bruker-type (student, administrator o.l.)
+                    /*
                     f.eks:  sjekk UserType i database utifra brukernavn
                             if(user.userType.equals("admin") {
                                 servletContext.getRequestDispatcher("/loggedInAdmin.html").forward(request, response);
