@@ -21,6 +21,9 @@ public class DbTool {
             connection = dataSource.getConnection();
 
             context.close();
+            if (connection != null) {
+                return connection;
+            }
 
             return connection;
         } catch (NamingException | SQLException e) {
