@@ -147,6 +147,11 @@ public class ServletRoomBooking extends AbstractPostServlet {
                 ResultSet orders = dbFunctionality.getOrdersFromRoom(roomID, timestampStart.substring(0, 10), connection);
                 System.out.println("Resultset recieved");
 
+                Timestamp startTimeOO = originalOrder.getTimestampStart();
+                Timestamp endTimeOO = originalOrder.getTimestampEnd();
+
+
+
                 // Lag og sett en boolean til true,
                 boolean available = true;
                 int iterations = 0;
@@ -156,11 +161,13 @@ public class ServletRoomBooking extends AbstractPostServlet {
                     Timestamp t1 = orders.getTimestamp("Timestamp_start");
                     Timestamp t2 = orders.getTimestamp("Timestamp_end");
                     Order other = new Order(t1, t2);
+
                     // Hvis order overlapper med noen settes available til false, og vi avslutter while-løkka
-                    if (order.intersects(other)) {
+                    if (order.intersects(other) &&  !startTimeOO.equals(t1))  {
                         available = false;
                         break;
                     }
+
                 }
                 // Hvis det er ledig etter hele while-løkka,
                 if (available) {
