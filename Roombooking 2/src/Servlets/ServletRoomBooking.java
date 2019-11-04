@@ -110,7 +110,6 @@ public class ServletRoomBooking extends AbstractPostServlet {
                 } else {
                     // Hvis ikke returneres en error til brukeren
                     String notAvailableErrorMessage = "Sorry, that time and room is already taken.";
-                    // TODO: Returner en error til brukeren om rommet er opptatt ved tidspunktet valgt
                     System.out.println(notAvailableErrorMessage);
                     out.println(notAvailableErrorMessage);
                 }
@@ -182,7 +181,6 @@ public class ServletRoomBooking extends AbstractPostServlet {
                 } else {
                     String notAvailableErrorMessage = "Sorry, that time and room is already taken.";
                     // Hvis ikke returneres en error til brukeren
-                    // TODO: Returner en error til brukeren om rommet er opptatt ved tidspunktet valgt
                     System.out.println(notAvailableErrorMessage);
                     out.println(notAvailableErrorMessage);
                     addHomeLoggedInButton(out);
