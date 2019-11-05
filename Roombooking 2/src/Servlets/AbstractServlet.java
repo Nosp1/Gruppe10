@@ -1,7 +1,6 @@
 package Servlets;
-
+import Classes.User.AbstractUser;
 import Classes.UserType;
-
 import javax.servlet.http.*;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -81,6 +80,19 @@ public abstract class AbstractServlet extends HttpServlet {
             default:
                 addRedirectButton(out, "loggedIn.html");
                 break;
+        }
+    }
+
+
+    boolean isAdmin (AbstractUser user, Connection connection) {
+        // Sjekker om brukeren er en administrator, og returnerer feil om de ikke er det
+        // TODO: Funker ikke rett etter registrering av bruker, kun på log in
+        UserType userType = user.getUserType();
+        System.out.println(userType.toString());
+        if (userType.toString().equals("ADMIN")) {
+            return true;
+        } else {
+            return false;
         }
     }
 
