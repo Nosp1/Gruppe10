@@ -44,6 +44,21 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 //establishes connection to database
                 connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
+
+                // SJEKKE BRUKERTYPE
+                /*
+                Bruker trykker på submit
+                Sjekk brukertype, om ADMIN, fortsett som vanlig
+
+                vi har brukernavn, bruke dbFunctionality.getUser for å hente et User objekt.
+                AbstractUser user = dbFunctionality.getUser(userName);
+                UserType userType =
+
+                om ikke ADMIN, error beskjed osv, sendt tilbake til riktig side
+                 */
+
+
+
                 //retrieves the data in the text-box Add RoomID
                 int roomID = dbFunctionality.getRoomID(connection);
                 //retrieves the Room name from the text-box Room Name

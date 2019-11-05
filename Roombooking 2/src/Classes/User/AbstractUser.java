@@ -53,17 +53,37 @@ public abstract class AbstractUser {
         //Viser orders
         for (Order o : orders) {
             out.println(
+                    /*
                     "<div class=\"container\">\n" +
                             "<form>\n" +
                             "<table>\n" +
                             "        <tr>\n" +
-                            "            <td> \n " + " Room: " + " " + o.getRoomID() + "</td>" + " " + " \n" +
+                            "            <td> \n " + " RoomID " + " " + o.getRoomID() + "</td>" + " " + " \n" +
                             "            <td> \n " + " " + " From " + " " + o.getTimestampStart() + "  " + "</td>\n" +
                                         "<td> \n" + " " + " To " + " " + o.getTimestampEnd() + " " + "</td>\n" +
                             "        </tr>\n" +
                             "</table>" +
                             "</div>" +
-                            "</form>");
+                            "</form>"
+                     */
+                    "<div class=\"container\">\n" +
+                            "<form>\n" +
+                            "<table>\n" +
+                            "    <thead>\n" +
+                            "        <tr>\n" +
+                            "            <th colspan=\"2\">Room: " + o.getRoomName() + "</th>\n" +
+                            "        </tr>\n" +
+                            "    </thead>\n" +
+                            "    <tbody>\n" +
+                            "        <tr>\n" +
+                            "            <td>From: " + o.getTimestampStart() + "</td>\n" +
+                                            // &nbsp betyr mellomrom
+                            "            <td>&nbspTo: " + o.getTimestampEnd() + "</td>" +
+                            "        </tr>\n" +
+                            "    </tbody>\n" +
+                            "</table>\n" +
+                            "</form>\n" +
+                            "</div>");
 
         }
     }

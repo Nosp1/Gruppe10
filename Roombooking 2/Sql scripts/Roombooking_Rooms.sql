@@ -31,7 +31,7 @@ CREATE TABLE if not exists roombooking.user
     User_password  varchar(255),
     User_salt      varchar(100),
     User_type_ID   int,
-    CONSTRAINT U_USER_ID_PK PRIMARY KEY (User_ID)
+    CONSTRAINT U_USER_ID_PK PRIMARY KEY (User_ID),
     CONSTRAINT U_User_type_ID_FK FOREIGN KEY (User_type) REFERENCES user_type (User_type_ID)
 );
 
