@@ -1,8 +1,6 @@
 package Servlets;
-
 import Classes.User.AbstractUser;
 import Classes.UserType;
-
 import javax.servlet.http.*;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -83,6 +81,7 @@ public abstract class AbstractServlet extends HttpServlet {
                 break;
         }
     }
+
 
     boolean isAdmin (AbstractUser user, Connection connection) {
         // Sjekker om brukeren er en administrator, og returnerer feil om de ikke er det

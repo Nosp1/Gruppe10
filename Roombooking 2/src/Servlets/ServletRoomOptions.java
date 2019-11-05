@@ -82,7 +82,7 @@ public class ServletRoomOptions extends AbstractPostServlet {
                     // Opprett et Grouproom objekt fra dataen hentet fra HTML formen
                     // AbstractRoom room = new Grouproom(roomID, roomName, roomBuilding, maxCapacity, hasTavle, hasProjektor);
                     AbstractRoom room;
-                    if (roomType == "GROUPROOM") {
+                    if (roomType.equals("GROUPROOM")) {
                         room = new Grouproom(roomID, roomName, roomBuilding, maxCapacity, hasTavle, hasProjektor);
                     } else {
                         room = new Auditorium(roomID, roomName, roomBuilding, maxCapacity, hasTavle, hasProjektor);
