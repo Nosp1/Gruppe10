@@ -55,8 +55,8 @@ public class Servlet extends AbstractPostServlet {
                 DbFunctionality dbFunctionality = new DbFunctionality();
 
                 //generates a new user with the information from the form register
-                /* Create a new user, and assign a role depending on the userType
-                TODO: UserType in database, and userTypeRegistry*/
+                // Create a new user, and assign a role depending on the userType
+
                 AbstractUser newUser;
                 if (userType.contains("STUDENT")) {
                     newUser = new Student(firstName, lastName, email, password, dob);
