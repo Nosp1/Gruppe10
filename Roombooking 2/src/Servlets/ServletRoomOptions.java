@@ -4,6 +4,8 @@ import Classes.Order;
 import Classes.Rooms.AbstractRoom;
 import Classes.Rooms.Auditorium;
 import Classes.Rooms.Grouproom;
+import Classes.User.AbstractUser;
+import Classes.UserType;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 import org.apache.commons.dbutils.DbUtils;
@@ -45,61 +47,76 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 //establishes connection to database
                 connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
-                //retrieves the data in the text-box Add RoomID
-                int roomID = dbFunctionality.getRoomID(connection);
-                //retrieves the Room name from the text-box Room Name
-                String roomName = request.getParameter("Add_roomName");
-                //retrieves the Room building from the text-box Room Building
-                String roomBuilding = request.getParameter("Add_roomBuilding");
-                //retrieves the room capacity from the text-box Room Capacity
-                int maxCapacity = Integer.parseInt(request.getParameter("maxCapacity"));
-                System.out.println("maxCapacity: " + maxCapacity);
-                String roomType = request.getParameter("typeRooms").toUpperCase();
-                boolean hasTavle = false;
-                boolean hasProjektor = false;
+                // Sjekker om brukeren er en administrator, og returnerer feil om de ikke er det
+                AbstractUser user = dbFunctionality.getUser(userName, connection);
+                if (!isAdmin(user, connection)) {
+                    out.println("<h2> Error: you do not have access to admin.</h2>");
+                    addRedirectOnUserType(out, user.getUserType());
+                } else {
+                    //retrieves the data in the text-box Add RoomID
+                    int roomID = dbFunctionality.getRoomID(connection);
+                    //retrieves the Room name from the text-box Room Name
+                    String roomName = request.getParameter("Add_roomName");
+                    //retrieves the Room building from the text-box Room Building
+                    String roomBuilding = request.getParameter("Add_roomBuilding");
+                    //retrieves the room capacity from the text-box Room Capacity
+                    int maxCapacity = Integer.parseInt(request.getParameter("maxCapacity"));
+                    System.out.println("maxCapacity: " + maxCapacity);
+                    String roomType = request.getParameter("typeRooms").toUpperCase();
+                    boolean hasTavle = false;
+                    boolean hasProjektor = false;
                 /*retrieves the checkbox values for "hasTavle" and "hasProsjektor", not sent
                 with the request if they are unchecked, so set them to true if they are not null */
-                String[] values = request.getParameterValues("hasTavle");
-                if (values != null) {
-                    hasTavle = true;
-                }
-                System.out.println("hasTavle: " + hasTavle);
+                    String[] values = request.getParameterValues("hasTavle");
+                    if (values != null) {
+                        hasTavle = true;
+                    }
+                    System.out.println("hasTavle: " + hasTavle);
 
-                values = request.getParameterValues("hasProjektor");
-                if (values != null) {
-                    hasProjektor = true;
-                }
-                System.out.println("hasProjektor: " + hasProjektor);
+                    values = request.getParameterValues("hasProjektor");
+                    if (values != null) {
+                        hasProjektor = true;
+                    }
+                    System.out.println("hasProjektor: " + hasProjektor);
 
-                // Opprett et Grouproom objekt fra dataen hentet fra HTML formen
-                // AbstractRoom room = new Grouproom(roomID, roomName, roomBuilding, maxCapacity, hasTavle, hasProjektor);
-                AbstractRoom room;
-                if (roomType.equals("GROUPROOM")) {
-                    room = new Grouproom(roomID, roomName, roomBuilding, maxCapacity, hasTavle, hasProjektor);
-                } else {
-                    room = new Auditorium(roomID, roomName, roomBuilding, maxCapacity, hasTavle, hasProjektor);
+                    // Opprett et Grouproom objekt fra dataen hentet fra HTML formen
+                    // AbstractRoom room = new Grouproom(roomID, roomName, roomBuilding, maxCapacity, hasTavle, hasProjektor);
+                    AbstractRoom room;
+                    if (roomType.equals("GROUPROOM")) {
+                        room = new Grouproom(roomID, roomName, roomBuilding, maxCapacity, hasTavle, hasProjektor);
+                    } else {
+                        room = new Auditorium(roomID, roomName, roomBuilding, maxCapacity, hasTavle, hasProjektor);
+                    }
+                    // TODO: Bruker kun grupperom typen for nå
+                    //Adds the room to the database
+                    dbFunctionality.addRoom(room, connection);
+                    //TODO: Kanskje legge til if statement som
+                    // dispatcher deg tilbake til loggedin istedenfor knapp? for mer flytt og mindre klikks
+                    //prints return button.
+                    out.println("Room " + roomName + " " + "has been successfully added");
+                    addRedirectOnUserType(out, user.getUserType());
                 }
-                // TODO: Bruker kun grupperom typen for nå
-                //Adds the room to the database
-                dbFunctionality.addRoom(room, connection);
-                //TODO: Kanskje legge til if statement som
-                // dispatcher deg tilbake til loggedin istedenfor knapp? for mer flytt og mindre klikks
-                //prints return button.
-                out.println("Room " + roomName + " " + "has been successfully added");
-                addHomeLoggedInButton(out);
             } else if (action.contains("delete room")) {
                 DbTool dbTool = new DbTool();
                 connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
-                //todo add boolean statement to confirm deletion.
-                //todo Cannot delete room because orders with the room exists.
-                int roomID = Integer.parseInt(request.getParameter("Delete_roomID"));
-                dbFunctionality.deleteRoom(roomID, connection);
-                out.println( "Room " + roomID + "has been successfully deleted");
-                addHomeLoggedInButton(out);
+                // Sjekker om brukeren er en administrator, og returnerer feil om de ikke er det
+                AbstractUser user = dbFunctionality.getUser(userName, connection);
+                if (!isAdmin(user, connection)) {
+                    out.println("<h2> Error: you do not have access to admin.</h2>");
+                    addRedirectOnUserType(out, user.getUserType());
+                } else {
+                    //todo add boolean statement to confirm deletion.
+                    //todo Cannot delete room because orders with the room exists.
 
-                addBootStrapFunctionality(out);
-                loadJSScripts(out);
+                    int roomID = Integer.parseInt(request.getParameter("Delete_roomID"));
+                    dbFunctionality.deleteRoom(roomID, connection);
+                    out.println("Room " + roomID + "has been successfully deleted");
+                    addRedirectOnUserType(out, user.getUserType());
+
+                    addBootStrapFunctionality(out);
+                    loadJSScripts(out);
+                }
             } else if (action.contains("cancel")) {
                 //todo add documentation
                 int orderID = Integer.parseInt(request.getParameter("Cancel_Order_ID"));
@@ -107,11 +124,12 @@ public class ServletRoomOptions extends AbstractPostServlet {
                 connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
 
+                AbstractUser user = dbFunctionality.getUser(userName, connection);
+
                 if (dbFunctionality.deleteOrder(orderID, connection)) {
                     out.println("Order canceled ");
-                    addHomeLoggedInButton(out);
-                }
-                else {
+                    addRedirectOnUserType(out, user.getUserType());
+                } else {
                     out.println("That's not a valid order");
 
                 }
@@ -147,8 +165,7 @@ public class ServletRoomOptions extends AbstractPostServlet {
             out.print("</html>");
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             DbUtils.closeQuietly(connection);
             try {
                 assert connection != null;
