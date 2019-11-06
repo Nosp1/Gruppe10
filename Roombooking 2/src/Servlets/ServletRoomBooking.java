@@ -46,8 +46,10 @@ public class ServletRoomBooking extends AbstractPostServlet {
                 // Hent roomID, Timestamp_start og _end for å sjekke reservasjonen
                 String formRoomID = request.getParameter("Reserve_Room_ID");
                 int roomID = Integer.parseInt(formRoomID);
+                String[] dateTimeStartArray = request.getParameterValues("start-datetimes");
+                String[] dateTimeEndArray = request.getParameterValues("end-datetimes");
 
-                String timestampStartDate = request.getParameter("Reserve_Timestamp_start_date");
+                /* String timestampStartDate = request.getParameter("Reserve_Timestamp_start_date");
                 String timestampStartTime = request.getParameter("Reserve_Timestamp_start_time");
                 String timestampStart = timestampStartDate + " " + timestampStartTime;
                 System.out.println(timestampStart);
@@ -55,63 +57,71 @@ public class ServletRoomBooking extends AbstractPostServlet {
                 String timestampEndDate = request.getParameter("Reserve_Timestamp_end_date");
                 String timestampEndTime = request.getParameter("Reserve_Timestamp_end_time");
                 String timestampEnd = timestampEndDate + " " + timestampEndTime;
-                System.out.println(timestampEnd);
+                System.out.println(timestampEnd); */
+                for (int i = 0; i < dateTimeStartArray.length; i++) {
+                    String timestampStart = dateTimeStartArray[i];
+                    String timestampEnd = dateTimeEndArray[i];
 
-                if(timestampStart.equals(timestampEnd)) {
-                    // Ikke reserver, returner feilmelding til brukeren
-                    String sameTimeErrorMessage = "Sorry, the start and end-time is the same, and a booking can't be made.";
-                    System.out.println(sameTimeErrorMessage);
-                    out.println(sameTimeErrorMessage);
-                    return;
-                }
+                    if(timestampStart.equals(timestampEnd)) {
+                        // Ikke reserver, returner feilmelding til brukeren
+                        String sameTimeErrorMessage = "Sorry, the start and end-time is the same, and a booking can't be made.";
+                        System.out.println(sameTimeErrorMessage);
+                        out.println(sameTimeErrorMessage);
+                        return;
+                    }
 
-                Order order = new Order(timestampStart, timestampEnd);
+                    Order order = new Order(timestampStart, timestampEnd);
 
-                //TODO create db method to retrieve epost with userID from db.
-                TLSEmail tlsEmail = new TLSEmail();
+                    //TODO create db method to retrieve epost with userID from db.
+                    TLSEmail tlsEmail = new TLSEmail();
 
-                ResultSet orders = dbFunctionality.getOrdersFromRoom(roomID, timestampStart.substring(0, 10), connection);
-                System.out.println("Resultset recieved");
-                // Lag og sett en boolean til true,
-                boolean available = true;
-                int iterations = 0;
-                // og sjekk order opp mot alle andre reservasjoner.
-                while (orders.next()) {
-                    System.out.println("iterations: " + ++iterations);
-                    Timestamp t1 = orders.getTimestamp("Timestamp_start");
-                    Timestamp t2 = orders.getTimestamp("Timestamp_end");
-                    Order other = new Order(t1, t2);
-                    // Hvis order overlapper med noen settes available til false, og vi avslutter while-løkka
-                    if (order.intersects(other)) {
-                        available = false;
-                        break;
+                    ResultSet orders = dbFunctionality.getOrdersFromRoom(roomID, timestampStart.substring(0, 10), connection);
+                    System.out.println("Resultset recieved");
+                    // Lag og sett en boolean til true,
+                    boolean available = true;
+                    int iterations = 0;
+                    // og sjekk order opp mot alle andre reservasjoner.
+                    while (orders.next()) {
+                        System.out.println("iterations: " + ++iterations);
+                        Timestamp t1 = orders.getTimestamp("Timestamp_start");
+                        Timestamp t2 = orders.getTimestamp("Timestamp_end");
+                        Order other = new Order(t1, t2);
+                        // Hvis order overlapper med noen settes available til false, og vi avslutter while-løkka
+                        if (order.intersects(other)) {
+                            available = false;
+                            break;
+                        }
+                    }
+                    // Hvis det er ledig etter hele while-løkka,
+                    if (available) {
+                        // TODO ADD AUTOMATIC USERID
+                        AbstractUser user = dbFunctionality.getUser(userName, connection);
+                        int userId = dbFunctionality.getUserId(userName, connection);
+                        // henter vi orderID, lager Order objektet på nytt og legger det til databasen.
+                        int orderID;
+                        orderID = dbFunctionality.getOrderID(connection);
+                        order = new Order(orderID, userId, roomID, timestampStart, timestampEnd);
+                        dbFunctionality.addOrder(order, connection);
+                        // Etter reservasjonen er lagt til i databasen sender vi en kvittering på epost.
+                         Session session = tlsEmail.NoReplyEmail(user.getUserName());
+                        EmailUtil confirmationEmail = new EmailUtil();
+                        String receipt = EmailTemplates.getBookingReceipt();
+                        String body = EmailTemplates.bookingConfirmation(user.getFirstName().substring(0, 1).toUpperCase() + user.getFirstName().substring(1),order);
+                        confirmationEmail.sendEmail(session,user.getUserName(),receipt,body);
+                        out.println("<p>You have successfully booked" + roomID);
+                        addHomeLoggedInButton(out);
+                        connection.close();
+                    } else {
+                        String notAvailableErrorMessage = "Sorry, that time and room is already taken.";
+                        // Hvis ikke returneres en error til brukeren
+                        // TODO: Returner en error til brukeren om rommet er opptatt ved tidspunktet valgt
+                        System.out.println(notAvailableErrorMessage);
+                        out.println(notAvailableErrorMessage);
                     }
                 }
-                // Hvis det er ledig etter hele while-løkka,
-                if (available) {
-                    // henter vi orderID, lager Order objektet på nytt og legger det til databasen.
-                    int orderID = dbFunctionality.getOrderID(connection);
-                    // TODO ADD AUTOMATIC USERID
-                    AbstractUser user = dbFunctionality.getUser(userName, connection);
-                    int userId = dbFunctionality.getUserId(userName, connection);
-                    order = new Order(orderID, userId, roomID, timestampStart, timestampEnd);
-                    dbFunctionality.addOrder(order, connection);
-                    // Etter reservasjonen er lagt til i databasen sender vi en kvittering på epost.
-                    Session session = tlsEmail.NoReplyEmail(user.getUserName());
-                    EmailUtil confirmationEmail = new EmailUtil();
-                    String receipt = EmailTemplates.getBookingReceipt();
-                    String body = EmailTemplates.bookingConfirmation(user.getFirstName().substring(0, 1).toUpperCase() + user.getFirstName().substring(1),order);
-                    confirmationEmail.sendEmail(session,user.getUserName(),receipt,body);
-                    out.println("<p>You have successfully booked" + roomID);
-                    addHomeLoggedInButton(out);
-                    connection.close();
-                } else {
-                    String notAvailableErrorMessage = "Sorry, that time and room is already taken.";
-                    // Hvis ikke returneres en error til brukeren
-                    // TODO: Returner en error til brukeren om rommet er opptatt ved tidspunktet valgt
-                    System.out.println(notAvailableErrorMessage);
-                    out.println(notAvailableErrorMessage);
-                }
+                out.println("<p>You have successfully booked" + roomID);
+                addHomeLoggedInButton(out);
+                connection.close();
 
             } else if (action.contains("update")) {
 
