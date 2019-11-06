@@ -10,6 +10,10 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * @author trym
+ */
+
 @WebServlet (name = "Servlets.ServletEditProfile", urlPatterns = {"/Servlets.ServletEditProfile"})
 public class ServletEditProfile extends AbstractServlet {
     @Override

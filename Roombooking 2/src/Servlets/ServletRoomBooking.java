@@ -102,7 +102,6 @@ public class ServletRoomBooking extends AbstractPostServlet {
                         break;
                     }
                 }
-                UserType userType;
                 // Hvis det er ledig etter hele while-løkka,
                 if (available) {
                     // henter vi orderID, lager Order objektet på nytt og legger det til databasen.

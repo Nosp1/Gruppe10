@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+/**
+ * @author trym, hedda
+ */
 @WebServlet(name = "Servlets.ServletLogOut", urlPatterns = {"/Servlets.ServletLogOut"})
 public class ServletLogOut extends AbstractPostServlet {
     @Override
