@@ -25,7 +25,7 @@ $('#navbar-search-button').on('click', function() {
 $('#navbar-search-button').on('click', function () {
     console.log("navbar search button clicked")
     // preventDefault stopper redirect
-    //evt.preventDefault();
+    evt.preventDefault();
     // Hent roomID fra text-feltet i navbaren
     const roomId = $('#navbar-search-input').val();
     // Varsle brukeren om roomID er mindre enn 0
@@ -59,8 +59,9 @@ $("#calendar button:nth-of-type(2)").on('click', function () {
 $('#ListOfRooms').on('submit', function (evt) {
     console.log("Show all rooms clicked");
     // hvis denne preventDefault ikke er kommentert fungerer ikke printRooms knappen
-    //evt.preventDefault();
-    getRoomInfo(-1);
+    evt.preventDefault();
+    const roomId = -1;
+    getRoomInfo(roomId);
     $("#calendar").show();
     $("#searchResult").show();
 });
@@ -137,10 +138,25 @@ function getDatePeriodRange(date, time, k)  {
     return result;
 }
 
+    $('#reserve_Room').on('click', function (evt) {
+        evt.preventDefault();
+        console.log("show all rooms clicked");
+        const roomId = -1;
+        getRoomInfo(roomId);
+        $("#calendar").show();
+        $("#searchResult").show();
+
+    });
+
+
+
+
+
+
 function getRoomInfo(roomId) {
-    if (roomId < 0) {
-        return alert("Room number is not correct! RoomID be higher than 0.");
-    }
+   // if (roomId < 0) {
+       // return alert("Room number is not correct! RoomID be higher than 0.");
+   // }
     const date = $('#calendar input[type="date"]').val();
     /* Konstruer en query for bruk av HTTP GET
        Vil f.eks bli 'roomID=1&date=2019-10-26

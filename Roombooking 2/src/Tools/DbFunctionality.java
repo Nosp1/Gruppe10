@@ -3,6 +3,7 @@ package Tools;
 import Classes.Order;
 import Classes.Rooms.AbstractRoom;
 import Classes.User.AbstractUser;
+import Classes.User.Admin;
 import Classes.User.Student;
 import Classes.User.Teacher;
 import Passwords.PasswordHashAndCheck;
@@ -20,8 +21,6 @@ import java.util.ArrayList;
  * handles the queries to and from the database.
  *
  * @author trym, brisdalen, sæthra & alena
- * TODO: checkUser: closed. Adduser:closed
- * TODO: getUser: Open. getUserID open.
  */
 public class DbFunctionality {
     Statement statement;
@@ -35,9 +34,10 @@ public class DbFunctionality {
     //connection closes
     public void addUser(AbstractUser user, Connection conn) throws SQLException {
         PreparedStatement insertNewUser = null;
+        PreparedStatement insertNewUserRegistry = null;
 
         try {
-            String ins = "insert into User (User_firstName, User_lastName, User_email, User_dob, User_password, User_salt, User_Type) values (?,?,?,?,?,?,?)";
+            String ins = "insert into `user` (User_firstName, User_lastName, User_email, User_dob, User_password, User_salt, User_Type_ID) values (?,?,?,?,?,?,?);";
             insertNewUser = conn.prepareStatement(ins);
             insertNewUser.setString(1, user.getFirstName());
             insertNewUser.setString(2, user.getLastName());
@@ -52,8 +52,14 @@ public class DbFunctionality {
             String[] hashParts = hashing.split(":");
             // store the salt in the database
             insertNewUser.setString(6, hashParts[0]);
-            insertNewUser.setString(7, String.valueOf(user.getUserType()));
+            // Set User_type_ID and add to the prepared statement
+            String userType = String.valueOf(user.getUserType());
+            String insUserRegistry = "insert into user_type_registry (User_ID, User_type_ID) values (?,?);";
+            insertNewUserRegistry = conn.prepareStatement(insUserRegistry);
+            int userID = getNewUserID(conn);
+            setUserType(userID, userType, insertNewUser, insertNewUserRegistry);
             insertNewUser.execute();
+            insertNewUserRegistry.execute();
 
         } catch (SQLException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
@@ -62,6 +68,29 @@ public class DbFunctionality {
             assert insertNewUser != null;
             insertNewUser.close();
             conn.close();
+        }
+    }
+
+    private void setUserType(int userID, String userType, PreparedStatement insertNewUser, PreparedStatement insertNewUserRegistry) throws SQLException {
+        switch(userType) {
+            case "TEACHER":
+                insertNewUser.setInt(7, 2);
+                insertNewUserRegistry.setInt(1, userID);
+                insertNewUserRegistry.setInt(2, 2);
+                break;
+
+            case "ADMIN":
+                insertNewUser.setInt(7, 3);
+                insertNewUserRegistry.setInt(1, userID);
+                insertNewUserRegistry.setInt(2, 3);
+                break;
+
+            default:
+                // Otherwise STUDENT
+                insertNewUser.setInt(7, 1);
+                insertNewUserRegistry.setInt(1, userID);
+                insertNewUserRegistry.setInt(2, 1);
+                break;
         }
     }
 
@@ -143,11 +172,14 @@ public class DbFunctionality {
             String userName = resultSet.getString("User_email");
             String dob = resultSet.getNString("User_dob");
             String password = resultSet.getString("User_password");
-            String userType = resultSet.getString("User_Type");
-            if (userType == "STUDENT") {
-                return new Student(firstName, lastName, userName, password, dob);
-            } else {
+            int userTypeID = resultSet.getInt("User_type_ID");
+
+            if (userTypeID == 3) {
+                return new Admin(firstName, lastName, userName, password, dob);
+            } else if(userTypeID == 2) {
                 return new Teacher(firstName, lastName, userName, password, dob);
+            } else {
+                return new Student(firstName, lastName, userName, password, dob);
             }
 
         } finally {
@@ -170,12 +202,11 @@ public class DbFunctionality {
         PreparedStatement getUser = null;
         ResultSet resultSet = null;
         try {
-            String query = "Select User_ID from user where User_Email = (?)";
+            String query = "Select User_ID from `user` where User_Email = (?)";
             getUser = connection.prepareStatement(query);
             getUser.setString(1, userEmail);
             resultSet = getUser.executeQuery();
             resultSet.next();
-            //todo funker dette?
             int result = Integer.parseInt(resultSet.getString(1));
             return result;
         } finally {
@@ -184,6 +215,18 @@ public class DbFunctionality {
             assert resultSet != null;
             resultSet.close();
         }
+    }
+
+    public int getNewUserID(Connection connection) throws SQLException {
+        String select = "select MAX(User_ID) as User_ID from `user`;";
+        Statement stmt = connection.createStatement();
+        ResultSet result = stmt.executeQuery(select);
+
+        while(result.next()) {
+            return result.getInt("User_ID") + 1;
+        }
+
+        return -1;
     }
 
     /**
@@ -211,14 +254,14 @@ public class DbFunctionality {
     public void addRoom(AbstractRoom room, Connection connection) throws SQLException {
         PreparedStatement insertNewRoom = null;
         try {
-            String ins = "insert into Rooms (Room_ID, Room_name, Room_building, Room_maxCapacity, Tavle, Prosjektor) values (?,?,?,?,?,?)";
+            String ins = "insert into Rooms (Room_ID, Room_name, Room_building, Room_maxCapacity, Tavle, Projektor) values (?,?,?,?,?,?)";
             insertNewRoom = connection.prepareStatement(ins);
             insertNewRoom.setInt(1, room.getRoomID());
             insertNewRoom.setString(2, room.getRoomName());
             insertNewRoom.setString(3, room.getRoomBuilding());
             insertNewRoom.setString(4, String.valueOf(room.getMaxCapacity()));
 
-        insertNewRoom.setString(5, String.valueOf(room.getRoomType()));
+            insertNewRoom.setString(5, String.valueOf(room.getRoomType()));
             boolean tavle = room.hasTavle();
             if (tavle) {
                 insertNewRoom.setString(5, "JA");
@@ -285,8 +328,6 @@ public class DbFunctionality {
         PreparedStatement insertNewOrder = null;
         System.out.println("addOrder started");
         try {
-
-
             String ins = "insert into `order` (User_ID, Room_ID, Timestamp_start, Timestamp_end) VALUES (?,?,?,?)";
             insertNewOrder = connection.prepareStatement(ins);
             insertNewOrder.setInt(1, order.getUserID());
@@ -336,19 +377,26 @@ public class DbFunctionality {
 
 
     public ResultSet getAllOrdersFromRoom(int roomID, Connection connection) throws SQLException {
-        PreparedStatement selectOrders;
-        String select = "select Order_ID, Timestamp_start, Timestamp_end from `order`\n" +
-                "  inner join rooms\n" +
-                "  on `order`.Room_ID = rooms.Room_ID\n" +
-                "  where `order`.Room_ID = ?";
-        selectOrders = connection.prepareStatement(select);
-        selectOrders.setInt(1, roomID);
-        return selectOrders.executeQuery();
+        PreparedStatement selectOrders = null;
+        try {
+            String select = "select Order_ID, Timestamp_start, Timestamp_end from `order`\n" +
+                    "  inner join rooms\n" +
+                    "  on `order`.Room_ID = rooms.Room_ID\n" +
+                    "  where `order`.Room_ID = ?";
+            selectOrders = connection.prepareStatement(select);
+            selectOrders.setInt(1, roomID);
+            return selectOrders.executeQuery();
+        } finally {
+            assert selectOrders != null;
+            selectOrders.close();
+        }
     }
 
     //closes connection
     public ResultSet getOrdersFromRoom(int roomID, String date, Connection connection) throws SQLException, ParseException {
+
         // TODO: date burde kunne ta inn et timestamp, og strings formatert som "yyyy-mm-dd hh:ss" og "yyyy-mm-dd"
+        System.out.println("getOrdersFromRoom started");
         System.out.println("Room_ID recieved: " + roomID);
         System.out.println("Date as String recieved: " + date);
         PreparedStatement selectOrders = null;
@@ -388,7 +436,6 @@ public class DbFunctionality {
         } finally {
             assert deleteOrder != null;
             deleteOrder.close();
-
         }
     }
 
@@ -419,16 +466,18 @@ public class DbFunctionality {
     }
 
     public int getOrderID(Connection connection) throws SQLException {
+        System.out.println("getOrderID started");
         PreparedStatement selectOrderID;
         String select = "select Order_ID from `order` order by Order_ID desc limit 1";
         selectOrderID = connection.prepareStatement(select);
         ResultSet resultSet = selectOrderID.executeQuery();
 
         while (resultSet.next()) {
-            System.out.println("orderID from method: " + (resultSet.getInt("Order_ID") + 1));
+            System.out.println("orderID returned: " + (resultSet.getInt("Order_ID") + 1));
             return resultSet.getInt("Order_ID") + 1;
         }
 
+        System.out.println("No orders. orderID returned: 1");
         return 1;
     }
 

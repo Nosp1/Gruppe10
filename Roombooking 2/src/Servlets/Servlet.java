@@ -1,11 +1,13 @@
 package Servlets;
 
+import Classes.Email.EmailTemplates;
 import Classes.Email.EmailUtil;
 import Classes.Email.TLSEmail;
 import Classes.User.AbstractUser;
+import Classes.User.Admin;
 import Classes.User.Student;
 import Classes.User.Teacher;
-import Classes.Email.EmailTemplates;
+import Classes.UserType;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 
@@ -17,8 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -53,17 +53,21 @@ public class Servlet extends AbstractPostServlet {
                 //establish connection to database
                 Connection connection = dbtool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
+
                 //generates a new user with the information from the form register
-                // AbstractUser newUser = new Student(firstName, lastName, email, password, dob);
+                // Create a new user, and assign a role depending on the userType
+
                 AbstractUser newUser;
                 if (userType.contains("STUDENT")) {
                     newUser = new Student(firstName, lastName, email, password, dob);
-                } else {
+                } else if(userType.contains("TEACHER")){
                     newUser = new Teacher(firstName, lastName, email, password, dob);
+                } else {
+                    newUser = new Admin(firstName, lastName, email, password, dob);
                 }
 
-                //sends the new users data and adds it to the database
-                //checks for already registered user.
+                /* First checks if you try to register an already existing user, then
+                sends the new users data and adds it to the database */
                 if (dbFunctionality.checkUser(newUser.getUserName(), newUser.getPassword(), connection)) {
                     out.println("You have already registered with that email");
 
@@ -78,6 +82,21 @@ public class Servlet extends AbstractPostServlet {
 
                     dbFunctionality.addUser(newUser, connection);
                     out.println("<p> You have successfully registered</p>");
+                    // Creates a redirect button and creates 2 cookies depending on the userType, sending you to different pages
+                    //TODO: kanskje til SWITCH seinere, om det blir flere userTypes?
+                    if(userType.contains("ADMIN")) {
+                        addRedirectButton(out, "loggedInAdmin.html");
+                        response.addCookie(generateUserTypeCookie(email, UserType.ADMIN, response));
+                        response.addCookie(generatePersistentUserTypeCookie(email, UserType.ADMIN, response, 60));
+                    } else if(userType.contains("TEACHER")) {
+                        addRedirectButton(out, "loggedIn.html");
+                        response.addCookie(generateUserTypeCookie(email, UserType.TEACHER, response));
+                        response.addCookie(generatePersistentUserTypeCookie(email, UserType.TEACHER, response, 60));
+                    } else {
+                        addRedirectButton(out, "loggedIn.html");
+                        response.addCookie(generateUserTypeCookie(email, UserType.STUDENT, response));
+                        response.addCookie(generatePersistentUserTypeCookie(email, UserType.STUDENT, response, 60));
+                    }
                     //Generates and sends a welcome email to the newly registered user
                     //todo refactor into method?
                     TLSEmail tlsEmail = new TLSEmail();
@@ -92,8 +111,7 @@ public class Servlet extends AbstractPostServlet {
                     String body = EmailTemplates.welcomeMessageBody(capName);
                     //sends email
                     newEmail.sendEmail(session, newUser.getUserName(), welcome, body);
-                    //prints HomeButton & closes connection to sql.
-                    addHomeButton(out);
+                    // closes connection to sql.
                     try {
                         connection.close();
                     } catch (SQLException e) {
@@ -103,14 +121,14 @@ public class Servlet extends AbstractPostServlet {
                 }
 
             } else {
-                //if the user is not registered.
+                //if the user registration doesn't succeed.
                 out.print("something went wrong");
             }
             // Prints Javascript connection to Bootstrap.js and other dependencies. See AbstractServlet
             addBootStrapFunctionality(out);
             out.println("</body>");
             out.println("</html>");
-        } catch (NoSuchAlgorithmException | SQLException | InvalidKeySpecException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -38,15 +38,15 @@ public class Order {
      */
     public Order(int id, int userID, int roomID, String timestampStart, String timestampEnd) throws ParseException {
         this.id = id;
-        System.out.println(id);
+        //System.out.println(id);
         this.userID = userID;
-        System.out.println(userID);
+        //System.out.println(userID);
         this.roomID = roomID;
-        System.out.println(roomID);
+        //System.out.println(roomID);
         this.timestampStart = getTimestampFromString(timestampStart);
-        System.out.println(this.timestampStart.toString());
+        //System.out.println(this.timestampStart.toString());
         this.timestampEnd = getTimestampFromString(timestampEnd);
-        System.out.println(this.timestampEnd.toString());
+        //System.out.println(this.timestampEnd.toString());
     }
 
     /**
@@ -73,6 +73,11 @@ public class Order {
 
     }
 
+    /**
+     *
+     * @param other The other Order object to check intersection with
+     * @return true if this Order object intersects with "other"
+     */
     public boolean intersects(Order other) {
         /* compareTo returnerer mindre enn 0 hvis tidspunktet er før other,
          * 0 hvis tidspunktene er like, og større enn 0 hvis tidspunktet

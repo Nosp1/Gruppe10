@@ -8,6 +8,7 @@
 
 </head>
 <body>
+<script src="redirect-non-admin.js"></script>
 <!-- The Navigation bar for the webpage. -->
 <nav class="navbar navbar-default">
     <div class="container-fluid">
@@ -66,9 +67,21 @@
             </button>
         </form>
 
+        <!-- Add a room collapse button -->
+        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseAddRoom" role="button"
+                aria-controls="#collapseAddRoom">Add a room
+        </button>
+        <!-- Delete a room collapse button -->
+        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseDeleteRoom" role="button"
+                aria-controls="#collapseDeleteRoom">Delete a room
+        </button>
         <!-- Reserve a room collapse button -->
-        <button class="btn btn-success btn-lg" id="reserve_Room" data-toggle="collapse" href="#collapseReserveRoom" role="button"
-             onclick="$('#reserve_Room')"   aria-controls="#collapseReserveRoom">Reserve a room
+        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseReserveRoom" role="button"
+                aria-controls="#collapseReserveRoom">Reserve a room
+        </button>
+        <!-- Delete a room collapse button -->
+        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseCancelRoom" role="button"
+                aria-controls="#collapseCancelRoom">Cancel a booking
         </button>
 
         <!-- Update a booking collapse button -->
@@ -83,6 +96,62 @@
         <h1>Click beneath to show all rooms</h1>
         <div>
             <input class="submit btn-default btn-lg" type="submit" name="action" value="Show all rooms"/>
+        </div>
+    </form>
+</div>
+<!-- Form for Add a room TODO: Ikke legg til roomID selv? burde autoinkrementere-->
+<div class="collapse container" id="collapseAddRoom">
+    <form action="./Servlets.ServletRoomOptions" method="post">
+        <h1>Add a room</h1>
+        <!--div>
+            <label for="Add_roomID">Room ID</label>
+            <input type="number" id="Add_roomID" name="Add_roomID">
+        </div-->
+        <div>
+            <label for="Add_roomName">Room Name</label>
+            <input type="text" id="Add_roomName" name="Add_roomName">
+        </div>
+        <div>
+            <label for="Add_roomBuilding">Building</label>
+            <input type="text" id="Add_roomBuilding" name="Add_roomBuilding">
+        </div>
+        <div>
+            <label for="maxCapacity">Max capacity</label>
+            <input type="number" id="maxCapacity" name="maxCapacity">
+        </div>
+        <div>
+            <div>
+                <select name="typeRooms" size="3">
+                    <option disabled>Type of room</option>
+                    <option value="Grouproom">Grouproom</option>
+                    <option value="Classroom">Classroom</option>
+                    <option value="Auditorium">Auditorium</option>
+                </select>
+            </div>
+
+            <label for="hasTavle">Finnes det tavle</label>
+            <input type="checkbox" name="hasTavle" id="hasTavle" value="Tavle">
+        </div>
+        <div>
+            <label for="hasProjektor">Finnes det projektor</label>
+            <input type="checkbox" name="hasProjektor" id="hasProjektor" value="Projektor">
+        </div>
+        <div>
+            <input class="submit btn-default btn-lg" type="submit" name="action" value="Add room">
+
+        </div>
+    </form>
+</div>
+<!-- Form for Delete a room -->
+<div class="collapse container" id="collapseDeleteRoom">
+    <form action="./Servlets.ServletRoomOptions" method="post">
+        <h1>Delete a room</h1>
+        <div>
+            <label for="Delete_roomID">Room ID</label>
+            <input type="text" id="Delete_roomID" name="Delete_roomID">
+        </div>
+        <div>
+            <input class="submit btn-default btn-lg" type="submit" name="action" value="Delete room">
         </div>
     </form>
 </div>
@@ -117,20 +186,6 @@
                 <input type="time" id="Reserve_Timestamp_end_time" class="ReserveTime" name="Reserve_Timestamp_end_time"
                        min="08:00" max="22:00" onfocusout="checkInputEnd(event)"/>
             </span>
-        </div>
-
-        <select name="period">
-            <option selected value="0">Only one time</option>
-            <option value="1">Each week</option>
-            <option value="2">Each second week</option>
-            <option value="3">Each third week</option>
-            <option value="4">Each month</option>
-        </select>
-
-        <div class="book-start-datetimes" style="display: none;">
-        </div>
-
-        <div class="book-end-datetimes" style="display: none;">
         </div>
 
         <div>
@@ -169,36 +224,36 @@
             <input type="text" id="Update_orderID" name="Update_orderID">
         </div>
 
-                <div>
-                    <label for="Update_Timestamp_start_date" for="Update_Timestamp_start_time">Update the booking start</label>
-                    <input type="date" id="Update_Timestamp_start_date" name="Update_Timestamp_start_date"
-                           onfocusout="update_updateEndDate()"/>
-                    <span class="validateUpdateTime">
+        <div>
+            <label for="Update_Timestamp_start_date" for="Update_Timestamp_start_time">Update the booking start</label>
+            <input type="date" id="Update_Timestamp_start_date" name="Update_Timestamp_start_date"
+                   onfocusout="update_updateEndDate()"/>
+            <span class="validateUpdateTime">
                 <input type="time" id="Update_Timestamp_start_time" class="UpdateTime" name="Update_Timestamp_start_time"
                        min="08:00" max="22:00" onfocusout="update_checkInputStart(event)"/>
             </span>
         </div>
 
-                <div>
-                    <label for="Update_Timestamp_end_date" for="Update_Timestamp_end_time">Update the booking end</label>
-                    <input type="date" id="Update_Timestamp_end_date" name="Update_Timestamp_end_date" onfocusout="update_updateEndDate()"
-                           readonly="readonly"/>
-                    <span class="validateUpdateTime">
+        <div>
+            <label for="Update_Timestamp_end_date" for="Update_Timestamp_end_time">Update the booking end</label>
+            <input type="date" id="Update_Timestamp_end_date" name="Update_Timestamp_end_date" onfocusout="update_updateEndDate()"
+                   readonly="readonly"/>
+            <span class="validateUpdateTime">
                 <input type="time" id="Update_Timestamp_end_time" class="UpdateTime" name="Update_Timestamp_end_time"
                        min="08:00" max="22:00" onfocusout="update_checkInputEnd(event)"/>
             </span>
         </div>
 
-                <div>
-                    <input class="submit btn-default btn-lg" type="submit" name="action" value="Update room">
-                </div>
+        <div>
+            <input class="submit btn-default btn-lg" type="submit" name="action" value="Update room">
+        </div>
 
-                <div class="timeLimitMessage" style="display: none;">
-                    <p> The time must be between 08:00 and 21:59 </p>
-                </div>
-            </form>
+        <div class="timeLimitMessage" style="display: none;">
+            <p> The time must be between 08:00 and 21:59 </p>
         </div>
     </form>
+</div>
+</form>
 </div>
 
 <div id="searchResult" hidden>

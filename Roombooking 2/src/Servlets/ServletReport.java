@@ -1,8 +1,6 @@
 package Servlets;
 
-/**
- * @Author Henriette Andersen, Hanne Sjursen
- */
+
 
 
 import Reports.Report;
@@ -19,6 +17,9 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * @author Henriette Andersen, Hanne Sjursen
+ */
 @WebServlet(name = "Servlets.ServletReport", urlPatterns = {"/Servlets.ServletReport"})
 public class ServletReport extends AbstractPostServlet {
     @Override

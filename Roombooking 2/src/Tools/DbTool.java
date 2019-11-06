@@ -12,7 +12,7 @@ import java.sql.*;
  * @author brisdalen
  */
 public class DbTool {
-    Connection connection;
+    private Connection connection;
 
     public Connection dbLogIn(PrintWriter out) {
         try {
@@ -21,6 +21,9 @@ public class DbTool {
             connection = dataSource.getConnection();
 
             context.close();
+            if (connection != null) {
+                return connection;
+            }
 
             return connection;
         } catch (NamingException | SQLException e) {
