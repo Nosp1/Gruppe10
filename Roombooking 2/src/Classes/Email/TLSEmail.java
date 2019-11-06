@@ -38,7 +38,7 @@ public class TLSEmail {
 
     /**
      * @param fromEmail is the senders Email id
-     * @param password  is the senders Email Password
+     * @param password  is the senders Email password
      * @param toEmail   is the recipient email
      */
     private Session SendSecureEmail(String fromEmail, String password, String toEmail) {
