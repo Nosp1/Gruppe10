@@ -49,15 +49,20 @@ public class ServletRoomBooking extends AbstractPostServlet {
                 // Hent roomID, Timestamp_start og _end for å sjekke reservasjonen
                 String formRoomID = request.getParameter("Reserve_Room_ID");
                 int roomID = Integer.parseInt(formRoomID);
+                String[] dateTimeStartArray = request.getParameterValues("start-datetimes");
+                String[] dateTimeEndArray = request.getParameterValues("end-datetimes");
 
-                String timestampStartDate = request.getParameter("Reserve_Timestamp_start_date");
+                /* String timestampStartDate = request.getParameter("Reserve_Timestamp_start_date");
                 String timestampStartTime = request.getParameter("Reserve_Timestamp_start_time");
                 String timestampStart = timestampStartDate + " " + timestampStartTime;
 
                 String timestampEndDate = request.getParameter("Reserve_Timestamp_end_date");
                 String timestampEndTime = request.getParameter("Reserve_Timestamp_end_time");
                 String timestampEnd = timestampEndDate + " " + timestampEndTime;
-
+                System.out.println(timestampEnd); */
+                for (int i = 0; i < dateTimeStartArray.length; i++) {
+                    String timestampStart = dateTimeStartArray[i];
+                    String timestampEnd = dateTimeEndArray[i];
                 // Sjekker om tidspunktene er de samme
                 if (timestampStart.equals(timestampEnd)) {
                     // Hvis de er det returneres det en feilmelding om dette til brukeren.
@@ -131,7 +136,6 @@ public class ServletRoomBooking extends AbstractPostServlet {
                     AbstractUser user = dbFunctionality.getUser(userName, connection);
                     addRedirectOnUserType(out, user.getUserType());
                 }
-
             } else if (action.contains("update")) {
                 // ID på hvilken order du vil endre hentes fra request.
                 String formOrderID = request.getParameter("Update_orderID");
