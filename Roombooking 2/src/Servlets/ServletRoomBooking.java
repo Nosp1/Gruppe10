@@ -122,7 +122,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
                         out.println("<p>You have successfully booked" + roomID);
                         addRedirectOnUserType(out, user.getUserType());
                         y++;
-
+                        //todo fix email
                         if (y > 1) {
                             System.out.println("ignoreing email to many bookings");
                         } else {
