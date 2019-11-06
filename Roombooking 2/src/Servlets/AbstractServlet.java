@@ -1,7 +1,10 @@
 package Servlets;
-
-import javax.servlet.http.HttpServlet;
+import Classes.User.AbstractUser;
+import Classes.UserType;
+import javax.servlet.http.*;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.util.Enumeration;
 
 /**
  * Handles necessary hmtl configurations used in Servlet childs for easier outprints.
@@ -49,6 +52,49 @@ public abstract class AbstractServlet extends HttpServlet {
                 "                <a href=\"loggedIn.html\"> return</a>\n" +
                 "            </button>\n");
     }
+
+    /**
+     *
+     * @param out The response body to write to
+     * @param redirectTo The html page you want to redirect to
+     */
+    void addRedirectButton(PrintWriter out, String redirectTo) {
+        out.println("<div><button class=\"btn-default btn-lg submit\">\n" +
+                "                <a href=\"" + redirectTo + "\"> return</a>\n" +
+                "            </button></div>\n");
+    }
+
+    /**
+     * Adds a redirection button back to the "home" page based on the user type
+     * @param out
+     * @param userType
+     */
+    void addRedirectOnUserType(PrintWriter out, UserType userType) {
+        switch(userType) {
+
+            case ADMIN:
+                addRedirectButton(out, "loggedInAdmin.html");
+                break;
+
+            default:
+                addRedirectButton(out, "loggedIn.html");
+                break;
+        }
+    }
+
+
+    boolean isAdmin (AbstractUser user, Connection connection) {
+        // Sjekker om brukeren er en administrator, og returnerer feil om de ikke er det
+        // TODO: Funker ikke rett etter registrering av bruker, kun på log in
+        UserType userType = user.getUserType();
+        System.out.println(userType.toString());
+        if (userType.toString().equals("ADMIN")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Adds Navigation bar to Servlet landing page.
      *
@@ -178,5 +224,62 @@ public abstract class AbstractServlet extends HttpServlet {
                 "        </div><!-- /.navbar-collapse -->\n" +
                 "    </div><!-- /.container-fluid -->\n" +
                 "</nav>");
+    }
+
+
+    void invalidateOldSession(HttpServletRequest request) {
+        HttpSession oldSession = request.getSession(false);
+        if(oldSession != null) {
+            oldSession.invalidate();
+        }
+    }
+
+    HttpSession generateNewSession(HttpServletRequest request, int minutes) {
+        HttpSession newSession = request.getSession(true);
+        newSession.setMaxInactiveInterval(minutes*60);
+        return newSession;
+    }
+
+    void debugSession(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Enumeration attributeNames = session.getAttributeNames();
+        while (attributeNames.hasMoreElements()) {
+            String name = (String) attributeNames.nextElement();
+            String value = (String) session.getAttribute(name);
+            System.out.println(name + "=" + value + " " + session.getId());
+        }
+    }
+
+    /**
+     * Generates a cookie that will persist for maxAge seconds, even if you close the browser window.
+     * @param userName
+     * @param userType
+     * @param response
+     * @param minutes
+     * @return
+     */
+    Cookie generatePersistentUserTypeCookie(String userName, UserType userType, HttpServletResponse response, int minutes) {
+        Cookie userTypeCookie = new Cookie("user_type_persistent", userName + ":" + userType.toString());
+        userTypeCookie.setMaxAge(minutes*60);
+        // Makes the cookie visible to all directories on the server
+        userTypeCookie.setPath("/");
+
+        return userTypeCookie;
+    }
+
+    /**
+     * Generates a cookie that will be deleted when the Web browser exits.
+     * @param userName
+     * @param userType
+     * @param response
+     * @return
+     */
+    Cookie generateUserTypeCookie(String userName, UserType userType, HttpServletResponse response) {
+        Cookie userTypeCookie = new Cookie("user_type", userName + ":" + userType.toString());
+        userTypeCookie.setMaxAge(-1);
+        // Makes the cookie visible to all directories on the server
+        userTypeCookie.setPath("/");
+
+        return userTypeCookie;
     }
 }

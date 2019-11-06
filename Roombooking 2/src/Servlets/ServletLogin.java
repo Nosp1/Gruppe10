@@ -1,5 +1,7 @@
 package Servlets;
 
+import Classes.User.AbstractUser;
+import Classes.UserType;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 
@@ -54,23 +56,35 @@ public class ServletLogin extends AbstractServlet {
                 if (dbFunctionality.checkUser(lowercaseUsername, password, connection)) {
                     // If successful login TODO: make it pop-up
                     System.out.println("success!");
-                    out.print("Welcome " + lowercaseUsername + "!");
+                    invalidateOldSession(request);
+
+                    AbstractUser user = dbFunctionality.getUser(lowercaseUsername, connection);
+
+                    out.print("Welcome " + user.getFirstName() + "!");
                     out.print("<br>");
                     //redirects the user to the loggedIn.html
                     ServletContext servletContext = getServletContext();
-                    HttpSession session = request.getSession();
-                    session.setAttribute("userEmail", userName);
-                    /*
-                    f.eks:  sjekk UserType i database utifra brukernavn
-                            if(user.userType.equals("admin") {
-                                servletContext.getRequestDispatcher("/loggedInAdmin.html").forward(request, response);
-                            } else {
-                                servletContext.getRequestDispatcher("/loggedInDefault.html").forward(request, response);
-                            }
-                     NB: Ikke gjøre det mulig å komme til admin-siden ved kun URL eller med parameter
-                     */
-                    session.setAttribute("userEmail", userName);
-                    servletContext.getRequestDispatcher("/loggedIn.html").forward(request, response);
+                    HttpSession newSession = generateNewSession(request, 20);
+                    newSession.setAttribute("userEmail", userName);
+                    /* Generate 2 cookies, both containing userType information. The first one will persist for
+                    for x amount of minutes (for if you accidentally close the browser), while the other one
+                    is deleted on browser close. Logging out will clear both of them. */
+                    UserType userType = user.getUserType();
+                    response.addCookie(generateUserTypeCookie(userName, userType, response));
+                    response.addCookie(generatePersistentUserTypeCookie(userName, userType, response, 60));
+
+                    switch(userType) {
+
+                        case ADMIN:
+                            servletContext.getRequestDispatcher("/loggedInAdmin.html").forward(request, response);
+                            break;
+
+                        default:
+                            servletContext.getRequestDispatcher("/loggedIn.html").forward(request, response);
+                            break;
+                    }
+
+                    debugSession(request);
                     //if the login fails
                     try {
                         System.out.println("attempting to close");
