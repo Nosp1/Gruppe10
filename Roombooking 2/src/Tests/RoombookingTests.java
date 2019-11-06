@@ -9,7 +9,8 @@ import Tools.DbFunctionality;
 import Tools.DbTool;
 import org.junit.Before;
 import org.junit.Ignore;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
+
 
 
 import java.security.NoSuchAlgorithmException;
@@ -17,9 +18,10 @@ import java.security.spec.InvalidKeySpecException;
 import java.sql.*;
 import java.text.ParseException;
 
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 
 /**
@@ -50,11 +52,15 @@ public class RoombookingTests {
         testConnection = dbTool.dbLogIn();
     }
     @Test
-    public void testUser() {
+    public void testUser() throws SQLException {
         System.out.println("testAddUser");
         AbstractUser testUser = new Student("Ola", "Nordmann", testUserEmail, "1234", "1900-01-01");
         System.out.println(testUser.toString());
-        dbFunctionality.addUser(testUser, testConnection);
+        try {
+            dbFunctionality.addUser(testUser, testConnection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         String statement = "SELECT * FROM User WHERE User_email = ?";
         try {
             PreparedStatement preparedStatement = testConnection.prepareStatement(statement);

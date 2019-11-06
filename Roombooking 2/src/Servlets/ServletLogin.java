@@ -1,12 +1,13 @@
 package Servlets;
 
+import Classes.User.AbstractUser;
+import Classes.UserType;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -55,23 +56,65 @@ public class ServletLogin extends AbstractServlet {
                 if (dbFunctionality.checkUser(lowercaseUsername, password, connection)) {
                     // If successful login TODO: make it pop-up
                     System.out.println("success!");
-                    out.print("Welcome " + lowercaseUsername + "!");
+                    invalidateOldSession(request);
+
+                    AbstractUser user = dbFunctionality.getUser(lowercaseUsername, connection);
+
+                    out.print("Welcome " + user.getFirstName() + "!");
                     out.print("<br>");
                     //redirects the user to the loggedIn.html
                     ServletContext servletContext = getServletContext();
-                    HttpSession session = request.getSession();
-                    session.setAttribute("userEmail",userName);
-                    servletContext.getRequestDispatcher("/loggedIn.html").forward(request, response);
+                    HttpSession newSession = generateNewSession(request, 20);
+                    newSession.setAttribute("userEmail", userName);
+                    /* Generate 2 cookies, both containing userType information. The first one will persist for
+                    for x amount of minutes (for if you accidentally close the browser), while the other one
+                    is deleted on browser close. Logging out will clear both of them. */
+                    UserType userType = user.getUserType();
+                    response.addCookie(generateUserTypeCookie(userName, userType, response));
+                    response.addCookie(generatePersistentUserTypeCookie(userName, userType, response, 60));
+
+                    switch(userType) {
+
+                        case ADMIN:
+                            servletContext.getRequestDispatcher("/loggedInAdmin.html").forward(request, response);
+                            break;
+
+                        default:
+                            servletContext.getRequestDispatcher("/loggedIn.html").forward(request, response);
+                            break;
+                    }
+
+                    debugSession(request);
                     //if the login fails
+                    try {
+                        System.out.println("attempting to close");
+                        connection.close();
+                        if (!connection.isClosed()) {
+                            System.out.println("connection is not closed ");
+                        } else {
+                            System.out.println("connection is closed");
+                        }
+                        out.close();
+
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        System.out.println("connection failed" + e);
+                    }
                 } else {
                     // If not TODO: Add out.print error message for wrong password vs email
+                    if (connection.isClosed()) {
+                        System.out.println("connection closed");
+                    } else {
+                        connection.close();
+                        System.out.println("connection not closed");
+                    }
                     System.out.println("fail");
                     out.println("Sorry, we do not recognize \"" + lowercaseUsername + "\".");
                     out.print("<br>");
+
                 }
                 //adds a return button if the login fails.
                 addHomeButton(out);
-
             }
             //prints script to establish connection between bootstrap and html
             addBootStrapFunctionality(out);
@@ -82,6 +125,4 @@ public class ServletLogin extends AbstractServlet {
             e.printStackTrace();
         }
     }
-
-
 }

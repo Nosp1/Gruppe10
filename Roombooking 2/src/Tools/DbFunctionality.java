@@ -1,11 +1,14 @@
 package Tools;
 
-import Classes.Email.TLSEmail;
 import Classes.Order;
 import Classes.Rooms.AbstractRoom;
 import Classes.User.AbstractUser;
+import Classes.User.Admin;
 import Classes.User.Student;
+import Classes.User.Teacher;
 import Passwords.PasswordHashAndCheck;
+import Reports.Report;
+import org.apache.commons.dbutils.DbUtils;
 
 import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
@@ -17,8 +20,7 @@ import java.util.ArrayList;
 /**
  * handles the queries to and from the database.
  *
- * @author trym, brisdalen, alena
- * @author trym, brisdalen, sæthra
+ * @author trym, brisdalen, sæthra & alena
  */
 public class DbFunctionality {
     Statement statement;
@@ -29,52 +31,13 @@ public class DbFunctionality {
         passwordHashAndCheck = new PasswordHashAndCheck();
     }
 
-    /**
-     * Temp method for adding Admin Email for sending out booking confirmation to registered users.
-     */
-    public void addAdminEmail(String email, String password, Connection connection) {
-        PreparedStatement insertEmail;
-        try {
-            String ins = "insert into Email (Email_name, Email_Password, Email_Salt) values (?,?,?)";
-            insertEmail = connection.prepareStatement(ins);
-            insertEmail.setString(1, email);
-            String hashing = passwordHashAndCheck.stringToSaltedHash(password);
-            insertEmail.setString(2, hashing);
-            String[] hashParts = hashing.split(":");
-            insertEmail.setString(3, hashParts[0]);
-            insertEmail.execute();
-        } catch (SQLException | NoSuchAlgorithmException | InvalidKeySpecException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public boolean deleteAdminEmail(String adminUser, Connection connection) throws SQLException {
-        PreparedStatement deleteAdminUser;
-        String delete = "delete from  Email where Email_name = ?";
-        deleteAdminUser = connection.prepareStatement(delete);
-        deleteAdminUser.setString(1, adminUser);
-        int result = deleteAdminUser.executeUpdate();
-        return result == 1;
-
-    }
-
-    public TLSEmail getAdminEmail(String requestEmail, Connection connection) throws SQLException, InvalidKeySpecException, NoSuchAlgorithmException {
-        PreparedStatement getEmail;
-        String select = "delete from `Email` where Email_name = ?";
-        getEmail = connection.prepareStatement(select);
-        getEmail.setString(1, requestEmail);
-        ResultSet resultSet = getEmail.executeQuery();
-        resultSet.next();
-        String email = resultSet.getString("Email_name");
-        //String password = passwordHashAndCheck.(resultSet.getString("Email_Password"),resultSet.getString("Email_Salt"));
-        return null;
-    }
-
-    public void addUser(AbstractUser user, Connection conn) {
-        PreparedStatement insertNewUser;
+    //connection closes
+    public void addUser(AbstractUser user, Connection conn) throws SQLException {
+        PreparedStatement insertNewUser = null;
+        PreparedStatement insertNewUserRegistry = null;
 
         try {
-            String ins = "insert into User (User_firstName, User_lastName, User_email, User_dob, User_password, User_salt) values (?,?,?,?,?,?)";
+            String ins = "insert into `user` (User_firstName, User_lastName, User_email, User_dob, User_password, User_salt, User_Type_ID) values (?,?,?,?,?,?,?);";
             insertNewUser = conn.prepareStatement(ins);
             insertNewUser.setString(1, user.getFirstName());
             insertNewUser.setString(2, user.getLastName());
@@ -87,16 +50,53 @@ public class DbFunctionality {
             insertNewUser.setString(5, hashing);
             // split by ":" because method returns <salts>:<hashed password>
             String[] hashParts = hashing.split(":");
-            // store the salt in the databse
+            // store the salt in the database
             insertNewUser.setString(6, hashParts[0]);
+            // Set User_type_ID and add to the prepared statement
+            String userType = String.valueOf(user.getUserType());
+            String insUserRegistry = "insert into user_type_registry (User_ID, User_type_ID) values (?,?);";
+            insertNewUserRegistry = conn.prepareStatement(insUserRegistry);
+            int userID = getNewUserID(conn);
+            setUserType(userID, userType, insertNewUser, insertNewUserRegistry);
             insertNewUser.execute();
+            insertNewUserRegistry.execute();
 
         } catch (SQLException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
+        } finally {
+            //closes the query and connection
+            assert insertNewUser != null;
+            insertNewUser.close();
+            conn.close();
+        }
+    }
+
+    private void setUserType(int userID, String userType, PreparedStatement insertNewUser, PreparedStatement insertNewUserRegistry) throws SQLException {
+        switch(userType) {
+            case "TEACHER":
+                insertNewUser.setInt(7, 2);
+                insertNewUserRegistry.setInt(1, userID);
+                insertNewUserRegistry.setInt(2, 2);
+                break;
+
+            case "ADMIN":
+                insertNewUser.setInt(7, 3);
+                insertNewUserRegistry.setInt(1, userID);
+                insertNewUserRegistry.setInt(2, 3);
+                break;
+
+            default:
+                // Otherwise STUDENT
+                insertNewUser.setInt(7, 1);
+                insertNewUserRegistry.setInt(1, userID);
+                insertNewUserRegistry.setInt(2, 1);
+                break;
         }
     }
 
     /**
+     * Connection closes in Servlet not here because of connection object being used by multiple queries.
+     *
      * @param username   The user's attempted login email
      * @param password   The user's attempted password
      * @param connection The Connection object to a given database
@@ -106,22 +106,51 @@ public class DbFunctionality {
      * @throws NoSuchAlgorithmException
      */
     public boolean checkUser(String username, String password, Connection connection) throws SQLException, InvalidKeySpecException, NoSuchAlgorithmException {
-        PreparedStatement stmt;
-        String query = "select * from user where User_email = ?";
-        stmt = connection.prepareStatement(query);
-        stmt.setString(1, username);
-        // Check if the attempted email matches any emails in the database
-        ResultSet resultSet = stmt.executeQuery();
-        while (resultSet.next()) {
-            if (resultSet.getString("User_email").toLowerCase().matches(username)) {
-                // If the email is found, store the hashed string in the variabled "storedPassword"
-                String storedPassword = resultSet.getString("User_password");
+        PreparedStatement stmt = null;
+        ResultSet resultSet = null;
+        try {
+            String query = "select * from user where User_email = ?";
+            stmt = connection.prepareStatement(query);
+            stmt.setString(1, username);
+            // Check if the attempted email matches any emails in the database
+            resultSet = stmt.executeQuery();
+            while (resultSet.next()) {
+                if (resultSet.getString("User_email").toLowerCase().matches(username)) {
+                    // If the email is found, store the hashed string in the variabled "storedPassword"
+                    String storedPassword = resultSet.getString("User_password");
                 /* Return true or false if the input password matches the stored password
                    after hashing. */
-                return passwordHashAndCheck.validatePassword(password, storedPassword);
-            } else {
-                // No user with that email found
-                return false;
+                    return passwordHashAndCheck.validatePassword(password, storedPassword);
+                } else {
+                    // No user with that email found
+                    return false;
+                }
+            }
+        } finally {
+            assert resultSet != null;
+            try {
+                resultSet.close();
+                if (resultSet.isClosed()) {
+                    System.out.println("resultset closed");
+                } else {
+                    System.out.println("resultset not closed");
+                }
+                stmt.close();
+                if (stmt.isClosed()) {
+                    System.out.println("statement is closed");
+                } else {
+                    System.out.println("statement is not closed");
+                }
+                DbUtils.closeQuietly(stmt);
+                DbUtils.closeQuietly(resultSet);
+                if (stmt.isClosed()) {
+                    System.out.println("statement is closed");
+
+                } else {
+                    System.out.println("stmt is not closed");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
         // Return false if there is no result set(?)
@@ -129,20 +158,38 @@ public class DbFunctionality {
     }
 
     public AbstractUser getUser(String requestedUserEmail, Connection connection) throws SQLException {
-        PreparedStatement selectUser;
-        //select the User from the User table with the corresponding User_ID
-        String select = "select * from user where User_email = ?";
-        selectUser = connection.prepareStatement(select);
-        selectUser.setString(1, requestedUserEmail);
-        ResultSet resultSet = selectUser.executeQuery();
-        resultSet.next();
-        String firstName = resultSet.getString("User_firstName");
-        String lastName = resultSet.getString("User_lastName");
-        String userName = resultSet.getString("User_email");
-        String dob = resultSet.getNString("User_dob");
-        String password = resultSet.getString("User_password");
+        PreparedStatement selectUser = null;
+        ResultSet resultSet = null;
+        try {
+            //select the User from the User table with the corresponding User_ID
+            String select = "select * from user where User_email = ?";
+            selectUser = connection.prepareStatement(select);
+            selectUser.setString(1, requestedUserEmail);
+            resultSet = selectUser.executeQuery();
+            resultSet.next();
+            String firstName = resultSet.getString("User_firstName");
+            String lastName = resultSet.getString("User_lastName");
+            String userName = resultSet.getString("User_email");
+            String dob = resultSet.getNString("User_dob");
+            String password = resultSet.getString("User_password");
+            int userTypeID = resultSet.getInt("User_type_ID");
 
-        return new Student(firstName, lastName, userName, password, dob);
+            if (userTypeID == 3) {
+                return new Admin(firstName, lastName, userName, password, dob);
+            } else if(userTypeID == 2) {
+                return new Teacher(firstName, lastName, userName, password, dob);
+            } else {
+                return new Student(firstName, lastName, userName, password, dob);
+            }
+
+        } finally {
+            assert selectUser != null;
+            selectUser.closeOnCompletion();
+            assert resultSet != null;
+            resultSet.close();
+
+        }
+
     }
 
     /**
@@ -152,16 +199,34 @@ public class DbFunctionality {
      * @throws SQLException
      */
     public int getUserId(String userEmail, Connection connection) throws SQLException {
-        PreparedStatement getUser;
-        String query = "Select User_ID from user where User_Email = (?)";
-        getUser = connection.prepareStatement(query);
-        getUser.setString(1, userEmail);
-        ResultSet resultSet = getUser.executeQuery();
-        resultSet.next();
-        //todo funker dette?
-        getUser.closeOnCompletion();
-         return Integer.parseInt(resultSet.getString(1));
+        PreparedStatement getUser = null;
+        ResultSet resultSet = null;
+        try {
+            String query = "Select User_ID from `user` where User_Email = (?)";
+            getUser = connection.prepareStatement(query);
+            getUser.setString(1, userEmail);
+            resultSet = getUser.executeQuery();
+            resultSet.next();
+            int result = Integer.parseInt(resultSet.getString(1));
+            return result;
+        } finally {
+            assert getUser != null;
+            getUser.close();
+            assert resultSet != null;
+            resultSet.close();
+        }
+    }
 
+    public int getNewUserID(Connection connection) throws SQLException {
+        String select = "select MAX(User_ID) as User_ID from `user`;";
+        Statement stmt = connection.createStatement();
+        ResultSet result = stmt.executeQuery(select);
+
+        while(result.next()) {
+            return result.getInt("User_ID") + 1;
+        }
+
+        return -1;
     }
 
     /**
@@ -187,47 +252,61 @@ public class DbFunctionality {
      * @param connection The connection to the database.
      */
     public void addRoom(AbstractRoom room, Connection connection) throws SQLException {
-        PreparedStatement insertNewRoom;
+        PreparedStatement insertNewRoom = null;
+        try {
+            String ins = "insert into Rooms (Room_ID, Room_name, Room_building, Room_maxCapacity, Tavle, Projektor) values (?,?,?,?,?,?)";
+            insertNewRoom = connection.prepareStatement(ins);
+            insertNewRoom.setInt(1, room.getRoomID());
+            insertNewRoom.setString(2, room.getRoomName());
+            insertNewRoom.setString(3, room.getRoomBuilding());
+            insertNewRoom.setString(4, String.valueOf(room.getMaxCapacity()));
 
-        String ins = "insert into Rooms (Room_ID, Room_name, Room_building, Room_maxCapacity, Tavle, Prosjektor) values (?,?,?,?,?,?)";
-        insertNewRoom = connection.prepareStatement(ins);
-        insertNewRoom.setInt(1, room.getRoomID());
-        insertNewRoom.setString(2, room.getRoomName());
-        insertNewRoom.setString(3, room.getRoomBuilding());
-        insertNewRoom.setString(4, String.valueOf(room.getMaxCapacity()));
+            insertNewRoom.setString(5, String.valueOf(room.getRoomType()));
+            boolean tavle = room.hasTavle();
+            if (tavle) {
+                insertNewRoom.setString(5, "JA");
+            } else {
+                insertNewRoom.setString(5, "NEI");
+            }
 
-        boolean tavle = room.hasTavle();
-        if(tavle) {
-            insertNewRoom.setString(5, "JA");
-        } else {
-            insertNewRoom.setString(5, "NEI");
+            boolean prosjektor = room.hasProjektor();
+            if (prosjektor) {
+                insertNewRoom.setString(6, "JA");
+            } else {
+                insertNewRoom.setString(6, "NEI");
+            }
+
+            insertNewRoom.execute();
+        } finally {
+            assert insertNewRoom != null;
+            insertNewRoom.closeOnCompletion();
+            connection.close();
         }
-
-        boolean prosjektor = room.hasProjektor();
-        if(prosjektor) {
-            insertNewRoom.setString(6, "JA");
-        } else {
-            insertNewRoom.setString(6, "NEI");
-        }
-
-        insertNewRoom.execute();
     }
 
     public boolean deleteRoom(int roomID, Connection connection) throws SQLException {
         // Delete orders associated with the room first, so there is no foreign key dependency.
-        PreparedStatement stmt;
-        String deleteOrder = "delete from `order` where Room_ID = ?";
-        stmt = connection.prepareStatement(deleteOrder);
-        stmt.setInt(1, roomID);
-        stmt.executeUpdate();
+        PreparedStatement stmt = null;
+        PreparedStatement deleteRoom = null;
+        try {
+            String deleteOrder = "delete from `order` where Room_ID = ?";
+            stmt = connection.prepareStatement(deleteOrder);
+            stmt.setInt(1, roomID);
+            stmt.executeUpdate();
 
-        PreparedStatement deleteRoom;
-        String delete = "delete from Rooms where Room_ID = ?";
-        deleteRoom = connection.prepareStatement(delete);
-        deleteRoom.setInt(1, roomID);
-        int result = deleteRoom.executeUpdate();
-        // result er 1 hvis noe blir slettet, eller 0 hvis ingenting ble affected
-        return result == 1;
+
+            String delete = "delete from Rooms where Room_ID = ?";
+            deleteRoom = connection.prepareStatement(delete);
+            deleteRoom.setInt(1, roomID);
+            int result = deleteRoom.executeUpdate();
+            // result er 1 hvis noe blir slettet, eller 0 hvis ingenting ble affected
+            return result == 1;
+        } finally {
+            assert stmt != null;
+            stmt.closeOnCompletion();
+            assert deleteRoom != null;
+            deleteRoom.closeOnCompletion();
+        }
     }
 
     public void printRooms(PrintWriter out, Connection connection) throws SQLException {
@@ -240,23 +319,27 @@ public class DbFunctionality {
             out.print("<p>" + resultSet.getString("Room_ID") + " : " + resultSet.getString("Room_name"));
             out.print(" Plasser: " + resultSet.getString("Room_maxCapacity") + "</p>");
             out.print("<p>Tavle: " + resultSet.getString("Tavle"));
-            out.print(" Projektor: " + resultSet.getString("Projektor") + "</p>");
+            out.print(" Projektor: " + resultSet.getString("Prosjektor") + "</p>");
             out.println("</div>");
         }
     }
 
     public void addOrder(Order order, Connection connection) throws SQLException {
-        PreparedStatement insertNewOrder;
+        PreparedStatement insertNewOrder = null;
         System.out.println("addOrder started");
-
-        String ins = "insert into `order` (User_ID, Room_ID, Timestamp_start, Timestamp_end) VALUES (?,?,?,?)";
-        insertNewOrder = connection.prepareStatement(ins);
-        insertNewOrder.setInt(1, order.getUserID());
-        insertNewOrder.setInt(2, order.getRoomID());
-        insertNewOrder.setTimestamp(3, order.getTimestampStart());
-        insertNewOrder.setTimestamp(4, order.getTimestampEnd());
-        insertNewOrder.execute();
-        // TODO ADD RECIEPT METHOD
+        try {
+            String ins = "insert into `order` (User_ID, Room_ID, Timestamp_start, Timestamp_end) VALUES (?,?,?,?)";
+            insertNewOrder = connection.prepareStatement(ins);
+            insertNewOrder.setInt(1, order.getUserID());
+            insertNewOrder.setInt(2, order.getRoomID());
+            insertNewOrder.setTimestamp(3, order.getTimestampStart());
+            insertNewOrder.setTimestamp(4, order.getTimestampEnd());
+            insertNewOrder.execute();
+            // TODO ADD RECIEPT METHOD
+        } finally {
+            assert insertNewOrder != null;
+            insertNewOrder.closeOnCompletion();
+        }
     }
 
     /**
@@ -294,30 +377,45 @@ public class DbFunctionality {
 
 
     public ResultSet getAllOrdersFromRoom(int roomID, Connection connection) throws SQLException {
-        PreparedStatement selectOrders;
-        String select = "select Order_ID, Timestamp_start, Timestamp_end from `order`\n" +
-                "  inner join rooms\n" +
-                "  on `order`.Room_ID = rooms.Room_ID\n" +
-                "  where `order`.Room_ID = ?";
-        selectOrders = connection.prepareStatement(select);
-        selectOrders.setInt(1, roomID);
-        return selectOrders.executeQuery();
+        PreparedStatement selectOrders = null;
+        try {
+            String select = "select Order_ID, Timestamp_start, Timestamp_end from `order`\n" +
+                    "  inner join rooms\n" +
+                    "  on `order`.Room_ID = rooms.Room_ID\n" +
+                    "  where `order`.Room_ID = ?";
+            selectOrders = connection.prepareStatement(select);
+            selectOrders.setInt(1, roomID);
+            return selectOrders.executeQuery();
+        } finally {
+            assert selectOrders != null;
+            selectOrders.close();
+        }
     }
 
+    //closes connection
     public ResultSet getOrdersFromRoom(int roomID, String date, Connection connection) throws SQLException, ParseException {
+
         // TODO: date burde kunne ta inn et timestamp, og strings formatert som "yyyy-mm-dd hh:ss" og "yyyy-mm-dd"
+        System.out.println("getOrdersFromRoom started");
         System.out.println("Room_ID recieved: " + roomID);
         System.out.println("Date as String recieved: " + date);
-        PreparedStatement selectOrders;
-        String select = "select Order_ID, Timestamp_start, Timestamp_end from `order`\n" +
-                "  inner join rooms\n" +
-                "  on `order`.Room_ID = rooms.Room_ID\n" +
-                "  where DATE(`order`.Timestamp_start) like ?\n" +
-                "  and `order`.Room_ID = ?";
-        selectOrders = connection.prepareStatement(select);
-        selectOrders.setString(1, date);
-        selectOrders.setInt(2, roomID);
-        return selectOrders.executeQuery();
+        PreparedStatement selectOrders = null;
+        try {
+            String select = "select Order_ID, Timestamp_start, Timestamp_end from `order`\n" +
+                    "  inner join rooms\n" +
+                    "  on `order`.Room_ID = rooms.Room_ID\n" +
+                    "  where DATE(`order`.Timestamp_start) like ?\n" +
+                    "  and `order`.Room_ID = ?";
+            selectOrders = connection.prepareStatement(select);
+            selectOrders.setString(1, date);
+            selectOrders.setInt(2, roomID);
+            return selectOrders.executeQuery();
+        } finally {
+            assert selectOrders != null;
+            selectOrders.closeOnCompletion();
+
+        }
+
     }
 
 
@@ -328,39 +426,58 @@ public class DbFunctionality {
      * @throws SQLException
      */
     public boolean deleteOrder(int orderID, Connection connection) throws SQLException {
-        PreparedStatement deleteOrder;
-        String delete = "delete from `Order` where Order_ID = ?";
-        deleteOrder = connection.prepareStatement(delete);
-        deleteOrder.setInt(1, orderID);
-        int result = deleteOrder.executeUpdate();
-        return result == 1;
+        PreparedStatement deleteOrder = null;
+        try {
+            String delete = "delete from `Order` where Order_ID = ?";
+            deleteOrder = connection.prepareStatement(delete);
+            deleteOrder.setInt(1, orderID);
+            int result = deleteOrder.executeUpdate();
+            return result == 1;
+        } finally {
+            assert deleteOrder != null;
+            deleteOrder.close();
+        }
     }
 
+    //TODO closing works for this.
     public int getRoomID(Connection connection) throws SQLException {
-        PreparedStatement selectRoomID;
-        String select = "select Room_ID from rooms order by Room_ID desc limit 1";
-        selectRoomID = connection.prepareStatement(select);
-        ResultSet resultSet = selectRoomID.executeQuery();
+        PreparedStatement selectRoomID = null;
+        ResultSet resultSet = null;
+        try {
+            String select = "select Room_ID from rooms order by Room_ID desc limit 1";
+            selectRoomID = connection.prepareStatement(select);
+            resultSet = selectRoomID.executeQuery();
 
-        while (resultSet.next()) {
-            System.out.println("roomID from method: " + (resultSet.getInt("Room_ID") + 1));
-            return resultSet.getInt("Room_ID") + 1;
+            while (resultSet.next()) {
+                System.out.println("roomID from method: " + (resultSet.getInt("Room_ID") + 1));
+                return resultSet.getInt("Room_ID") + 1;
+
+            }
+        } finally {
+            //closes connection.
+            assert selectRoomID != null;
+            assert resultSet != null;
+            resultSet.close();
+            selectRoomID.closeOnCompletion();
+
         }
 
         return 1;
     }
 
     public int getOrderID(Connection connection) throws SQLException {
+        System.out.println("getOrderID started");
         PreparedStatement selectOrderID;
         String select = "select Order_ID from `order` order by Order_ID desc limit 1";
         selectOrderID = connection.prepareStatement(select);
         ResultSet resultSet = selectOrderID.executeQuery();
 
         while (resultSet.next()) {
-            System.out.println("orderID from method: " + (resultSet.getInt("Order_ID") + 1));
+            System.out.println("orderID returned: " + (resultSet.getInt("Order_ID") + 1));
             return resultSet.getInt("Order_ID") + 1;
         }
 
+        System.out.println("No orders. orderID returned: 1");
         return 1;
     }
 
@@ -383,7 +500,7 @@ public class DbFunctionality {
         return getMostActiveUsers(5, connection);
     }
 
-    public void updateOrderInformation (Order order, Connection connection) throws SQLException {
+    public void updateOrderInformation(Order order, Connection connection) throws SQLException {
         PreparedStatement updateOrderPS;
 
         System.out.println("update order started");
@@ -460,7 +577,7 @@ public class DbFunctionality {
         if (roomId < 0) {
             strSelect = "SELECT * FROM `order` WHERE DATE_FORMAT(Timestamp_start, '%Y-%m-%d') = '" + date + "'";
         } else {
-            strSelect = "SELECT * FROM `order` WHERE DATE_FORMAT(Timestamp_start, '%Y-%m-%d') = '" + date + "' AND Room_ID="+ Integer.toString(roomId);
+            strSelect = "SELECT * FROM `order` WHERE DATE_FORMAT(Timestamp_start, '%Y-%m-%d') = '" + date + "' AND Room_ID=" + Integer.toString(roomId);
         }
         PreparedStatement statement = connection.prepareStatement(strSelect);
         ResultSet resultSet = statement.executeQuery(strSelect);
@@ -496,7 +613,28 @@ public class DbFunctionality {
 
         out.print("]");
     }
+
+    public void insertReport(Report userReport, Connection connection) throws SQLException {
+        String strInsert = "Insert into UserReport( Report_Response, User_ID, Room_ID) Values (?,?,?)";
+        PreparedStatement statement = connection.prepareStatement(strInsert);
+        statement.setString(1, userReport.getReportResponse());
+        statement.setInt(2, userReport.getUserID());
+        statement.setInt(3, userReport.getRoomID());
+
+        statement.execute();
+    }
+
+    public void printReport(PrintWriter out, Connection connection) throws SQLException {
+        String strSelect = "Select*From UserReport";
+        PreparedStatement statement = connection.prepareStatement(strSelect);
+        ResultSet resultSet = statement.executeQuery(strSelect);
+        while (resultSet.next()) {
+            out.print("<div class=\"room-card\" id=\"room-cards\">");
+            out.print("<p>" + resultSet.getString("Report_ID") + " : " + resultSet.getString("Report_Response"));
+            out.print(" Room: " + resultSet.getString("Room_ID") + "</p>");
+            out.println("</div>");
+        }
+    }
+
 }
-
-
 
