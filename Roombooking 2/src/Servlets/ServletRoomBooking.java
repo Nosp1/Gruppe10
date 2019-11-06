@@ -136,7 +136,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
                         }
                     } else {
                         // Hvis ikke returneres en error til brukeren
-                        String notAvailableErrorMessage = "Sorry, there was an error during your booking. " +
+                        String notAvailableErrorMessage = "Sorry, there was an error during your booking. " + order.getRoomID() +  order.getTimestampStart() + order.getTimestampEnd() +
                                 "That room and time is already reserved.";
                         // TODO: Returner en error til brukeren om rommet er opptatt ved tidspunktet valgt
 

@@ -10,9 +10,10 @@ CREATE TABLE if not exists roombooking.rooms
     Room_maxCapacity int(11),
     Room_Type        enum('CLASSROOM', 'GROUPROOM', 'AUDITORIUM'),
     Tavle            VARCHAR(3),
-    Prosjektor       VARCHAR(3),
+    Projektor       VARCHAR(3),
     CONSTRAINT R_Room_ID_PK PRIMARY KEY (Room_ID)
 );
+
 
 
 

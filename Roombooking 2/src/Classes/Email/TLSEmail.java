@@ -23,7 +23,7 @@ public class TLSEmail {
     public TLSEmail() throws Exception {
         fromEmail = "grproom@gmail.com"; //required valid email id
         //stores the password from local file on the password variable for sending emails
-        password = readFileAsString("/Users/trym/go/src/github.com/Nosp1/is-200/Gruppe10/Roombooking 2/src/Classes/Email/password");
+        password = readFileAsString("/Users/alenaporfoeva/is200/roombooking/Roombooking 2/src/Classes/Email/password");
 
     }
     /**
