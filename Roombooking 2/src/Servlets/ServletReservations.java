@@ -21,7 +21,7 @@ import java.text.ParseException;
  * Handles My Reservations from profile.html and parses String parameters to {@code DbFunctionality} to check for
  * {@code String} is existing in Database.
  *
- * @author hanne, henriette, hedda
+ * @author hanne, henriette, hedda, trym
  * @see Servlets.AbstractServlet
  * @see javax.servlet.http.HttpServlet
  * @see javax.servlet.GenericServlet

@@ -59,23 +59,6 @@ public class DbFunctionality {
             insertNewUserRegistry = conn.prepareStatement(insUserRegistry);
             int userID = getNewUserID(conn);
             setUserType(userID, userType, insertNewUser, insertNewUserRegistry);
-            /*switch(userType) {
-                case "TEACHER":
-                    insertNewUser.setInt(7, 2);
-                    insertNewUserRegistry.setInt(userID, 2);
-                    break;
-
-                case "ADMIN":
-                    insertNewUser.setInt(7, 3);
-                    insertNewUserRegistry.setInt(userID, 3);
-                    break;
-
-                default:
-                    insertNewUser.setInt(7, 1);
-                    insertNewUserRegistry.setInt(userID, 1);
-                    break;
-            }*/
-            //insertNewUser.setString(7, String.valueOf(user.getUserType()));
             insertNewUser.execute();
             insertNewUserRegistry.execute();
 

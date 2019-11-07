@@ -82,7 +82,7 @@
         </button>
         <!-- Reserve a room collapse button -->
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseReserveRoom" role="button"
-                aria-controls="#collapseReserveRoom">Reserve a room
+                onclick="$('#reserve_Room')"   aria-controls="#collapseReserveRoom">Reserve a room
         </button>
         <!-- Delete a room collapse button -->
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseCancelRoom" role="button"
@@ -192,7 +192,19 @@
                        min="08:00" max="22:00" onfocusout="checkInputEnd(event)"/>
             </span>
         </div>
+        <select name="period">
+            <option selected value="0">Only one time</option>
+            <option value="1">Each week</option>
+            <option value="2">Each second week</option>
+            <option value="3">Each third week</option>
+            <option value="4">Each month</option>
+        </select>
 
+        <div class="book-start-datetimes" style="display: none;">
+        </div>
+
+        <div class="book-end-datetimes" style="display: none;">
+        </div>
         <div>
             <input class="submit btn-default btn-lg" type="submit" name="action" value="Reserve room">
         </div>

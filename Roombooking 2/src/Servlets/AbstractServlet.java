@@ -10,7 +10,7 @@ import java.util.Enumeration;
 /**
  * Handles necessary hmtl configurations used in Servlet childs for easier outprints.
  * @see javax.servlet.http.HttpServlet
- * @author trym
+ * @author trym, brisdalen
  *
  */
 

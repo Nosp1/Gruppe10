@@ -24,7 +24,9 @@ table {
 input {
     color: black;
 }
-input[readonly="readonly"]
+select{
+    color: black;
+}
 {
     background-color:#D3D3D3;
 }
