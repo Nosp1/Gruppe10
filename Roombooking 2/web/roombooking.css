@@ -215,6 +215,11 @@ textarea {
     border-color: #e6e6e6;
 }
 
+#multiple-reservation-selection {
+    margin: 1em auto 1em;
+    color: black;
+}
+
 #collapseExample input {
     width: 100%;
     clear: both;

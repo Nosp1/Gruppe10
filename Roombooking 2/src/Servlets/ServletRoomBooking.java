@@ -6,7 +6,6 @@ import Classes.Email.TLSEmail;
 import Classes.Order;
 import Classes.Rooms.AbstractRoom;
 import Classes.User.AbstractUser;
-import Classes.UserType;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 import org.apache.commons.dbutils.DbUtils;
@@ -22,7 +21,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.ParseException;
 
 /**
  * ServletRoomBooking.java is used for handling actions related to room-booking reservations.
@@ -53,6 +51,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
                 String formRoomID = request.getParameter("Reserve_Room_ID");
                 int roomID = Integer.parseInt(formRoomID);
                 AbstractRoom room = dbFunctionality.getRoom(roomID, connection);
+
                 String[] dateTimeStartArray = request.getParameterValues("start-datetimes");
                 String[] dateTimeEndArray = request.getParameterValues("end-datetimes");
 
@@ -119,7 +118,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
                         // TODO ADD AUTOMATIC USERID
                         AbstractUser user = dbFunctionality.getUser(userName, connection);
                         int userId = dbFunctionality.getUserId(userName, connection);
-                    order = new Order(orderID, userId, room, timestampStart, timestampEnd);
+                        order = new Order(orderID, userId, room, timestampStart, timestampEnd);
                         dbFunctionality.addOrder(order, connection);
                         out.println("<p>You have successfully booked" + roomID);
                         addRedirectOnUserType(out, user.getUserType());
@@ -139,7 +138,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
                     } else {
                         // Hvis ikke returneres en error til brukeren
                         String notAvailableErrorMessage = "Sorry, there was an error during your booking. " +
-                                "That room and time is already reserved.";
+                                order.getRoomName() + " at that time is already reserved.";
                         // TODO: Returner en error til brukeren om rommet er opptatt ved tidspunktet valgt
 
                         System.out.println(notAvailableErrorMessage);

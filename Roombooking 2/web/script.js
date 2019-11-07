@@ -67,6 +67,78 @@ $('#ListOfRooms').on('submit', function (evt) {
     $("#searchResult").show();
 });
 
+// PASTE CODE JEG SLETTA --------------------------------------------
+$('#collapseReserveRoom > form').on('submit', function(evt) {
+    // evt.preventDefault();
+    $('.book-start-datetimes').html('');
+    $('.book-end-datetimes').html('');
+    console.log('SUBMIT!');
+    const fd = new FormData(evt.target);
+    for (let pair of fd.entries()) {
+        console.log(pair);
+    }
+    const startDate = $('#Reserve_Timestamp_start_date').val();
+    const startTime = $('#Reserve_Timestamp_start_time').val();
+    const endDate = $('#Reserve_Timestamp_end_date').val();
+    const endTime = $('#Reserve_Timestamp_end_time').val();
+    const periodMode = +$(evt.target).find('select[name="period"]').val();
+    const startDateTimes = getDatePeriodRange(startDate, startTime, periodMode);
+    const endDateTimes = getDatePeriodRange(endDate, endTime, periodMode);
+    startDateTimes.forEach(item => {
+        const el = $(`<input type="checkbox" name="start-datetimes" value="${item}" checked>`);
+        $('.book-start-datetimes').append(el);
+    });
+    endDateTimes.forEach(item => {
+        const el = $(`<input type="checkbox" name="end-datetimes" value="${item}" checked>`);
+        $('.book-end-datetimes').append(el);
+    });
+});
+
+function getAmountDaysBeforeSemesterEnd(currentDate) {
+    // const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth() + 1;
+    let endDate;
+    if (currentMonth <= 7) {
+        endDate = new Date(currentYear, 6, 31);
+    } else {
+        endDate = new Date(currentYear, 11, 31);
+    }
+    const utc1 = Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+    const utc2 = Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+    const dayAmount = Math.floor((utc2 - utc1) / (1000 * 60 * 60 * 24));
+    return dayAmount;
+}
+
+function getDatePeriodRange(date, time, k)  {
+    const dateArr = date.split("-").map(item => +item);
+    const timeArr = time.split(":").map(item => +item);
+    const amountDays = getAmountDaysBeforeSemesterEnd(new Date(dateArr[0], dateArr[1] - 1, dateArr[2]));
+
+    const result = [];
+    i = 0;
+    do {
+        const delta = i * 7 * k;
+        const d = new Date(dateArr[0], dateArr[1] - 1, dateArr[2] + delta, timeArr[0], timeArr[1]);
+        let year = d.getFullYear();
+        let month = d.getMonth() + 1;
+        let day = d.getDate();
+        month = month < 10 ? ('0' + month) : month;
+        day = day < 10 ? ('0' + day) : day;
+        let hours = d.getHours();
+        let minutes = d.getMinutes();
+        hours = hours < 10 ? ('0' + hours) : hours;
+        minutes = minutes < 10 ? ('0' + minutes) : minutes;
+        const newDate = year + '-' + month + '-' + day;
+        const newTime = hours + ':' + minutes;
+        result.push(newDate + ' ' + newTime);
+        i++;
+        if (k === 0) {
+            break;
+        }
+    } while (i * 7 * k <= amountDays);
+    return result;
+}
 
 $('#reserve_Room').on('click', function (evt) {
     evt.preventDefault();
@@ -75,8 +147,8 @@ $('#reserve_Room').on('click', function (evt) {
     getRoomInfo(roomId);
     $("#calendar").show();
     $("#searchResult").show();
-
 });
+// PASTE CODE END --------------------------------------------
 
 function Room(roomID, availableTimes = []) {
     this.roomID = roomID;
