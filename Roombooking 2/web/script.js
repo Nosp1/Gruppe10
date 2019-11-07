@@ -38,6 +38,7 @@ $('#navbar-search-button').on('click', function () {
 });
 $('#calendar input[type="date"]').val((new Date()).toISOString().substring(0, 10));
 $('#calendar input[type="date"]').on('change', function (evt) {
+    // console.log(evt.target.value);
 });
 
 $("#calendar button:nth-of-type(1)").on('click', function () {
@@ -55,7 +56,7 @@ $("#calendar button:nth-of-type(2)").on('click', function () {
     $('#calendar input[type="date"]').val(date.toISOString().substring(0, 10));
 });
 
- //Liker ikke at Show all rooms blir påvirket på denne måten
+//Liker ikke at Show all rooms blir påvirket på denne måten
 $('#ListOfRooms').on('submit', function (evt) {
     console.log("Show all rooms clicked");
     // hvis denne preventDefault ikke er kommentert fungerer ikke printRooms knappen
@@ -66,97 +67,34 @@ $('#ListOfRooms').on('submit', function (evt) {
     $("#searchResult").show();
 });
 
-$('#collapseReserveRoom > form').on('submit', function(evt) {
-    // evt.preventDefault();
-    $('.book-start-datetimes').html('');
-    $('.book-end-datetimes').html('');
-    console.log('SUBMIT!');
-    const fd = new FormData(evt.target);
-    for (let pair of fd.entries()) {
-        console.log(pair);
-    }
-    const startDate = $('#Reserve_Timestamp_start_date').val();
-    const startTime = $('#Reserve_Timestamp_start_time').val();
-    const endDate = $('#Reserve_Timestamp_end_date').val();
-    const endTime = $('#Reserve_Timestamp_end_time').val();
-    const periodMode = +$(evt.target).find('select[name="period"]').val();
-    const startDateTimes = getDatePeriodRange(startDate, startTime, periodMode);
-    const endDateTimes = getDatePeriodRange(endDate, endTime, periodMode);
-    startDateTimes.forEach(item => {
-        const el = $(`<input type="checkbox" name="start-datetimes" value="${item}" checked>`);
-        $('.book-start-datetimes').append(el);
-    });
-    endDateTimes.forEach(item => {
-        const el = $(`<input type="checkbox" name="end-datetimes" value="${item}" checked>`);
-        $('.book-end-datetimes').append(el);
-    });
+
+$('#reserve_Room').on('click', function (evt) {
+    evt.preventDefault();
+    console.log("show all rooms clicked");
+    const roomId = -1;
+    getRoomInfo(roomId);
+    $("#calendar").show();
+    $("#searchResult").show();
+
 });
 
-function getAmountDaysBeforeSemesterEnd(currentDate) {
-    // const currentDate = new Date();
-    const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth() + 1;
-    let endDate;
-    if (currentMonth <= 7) {
-        endDate = new Date(currentYear, 6, 31);
-    } else {
-        endDate = new Date(currentYear, 11, 31);
-    }
-    const utc1 = Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
-    const utc2 = Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
-    const dayAmount = Math.floor((utc2 - utc1) / (1000 * 60 * 60 * 24));
-    return dayAmount;
+function Room(roomID, availableTimes = []) {
+    this.roomID = roomID;
+    this.availableTimes = availableTimes;
 }
 
-function getDatePeriodRange(date, time, k)  {
-    const dateArr = date.split("-").map(item => +item);
-    const timeArr = time.split(":").map(item => +item);
-    const amountDays = getAmountDaysBeforeSemesterEnd(new Date(dateArr[0], dateArr[1] - 1, dateArr[2]));
-
-    const result = [];
-    i = 0;
-    do {
-        const delta = i * 7 * k;
-        const d = new Date(dateArr[0], dateArr[1] - 1, dateArr[2] + delta, timeArr[0], timeArr[1]);
-        let year = d.getFullYear();
-        let month = d.getMonth() + 1;
-        let day = d.getDate();
-        month = month < 10 ? ('0' + month) : month;
-        day = day < 10 ? ('0' + day) : day;
-        let hours = d.getHours();
-        let minutes = d.getMinutes();
-        hours = hours < 10 ? ('0' + hours) : hours;
-        minutes = minutes < 10 ? ('0' + minutes) : minutes;
-        const newDate = year + '-' + month + '-' + day;
-        const newTime = hours + ':' + minutes;
-        result.push(newDate + ' ' + newTime);
-        i++;
-        if (k === 0) {
-            break;
-        }
-    } while (i * 7 * k <= amountDays);
-    return result;
+function StartEndPair(pairStartTime, pairEndTime) {
+    this.pairStartTime = pairStartTime;
+    this.pairEndTime = pairEndTime;
 }
 
-    $('#reserve_Room').on('click', function (evt) {
-        evt.preventDefault();
-        console.log("show all rooms clicked");
-        const roomId = -1;
-        getRoomInfo(roomId);
-        $("#calendar").show();
-        $("#searchResult").show();
-
-    });
-
-
-
-
-
+let roomList = [];
 
 function getRoomInfo(roomId) {
-   // if (roomId < 0) {
-       // return alert("Room number is not correct! RoomID be higher than 0.");
-   // }
+    roomList = [];
+    // if (roomId < 0) {
+    // return alert("Room number is not correct! RoomID be higher than 0.");
+    // }
     const date = $('#calendar input[type="date"]').val();
     /* Konstruer en query for bruk av HTTP GET
        Vil f.eks bli 'roomID=1&date=2019-10-26
@@ -180,25 +118,33 @@ function getRoomInfo(roomId) {
         let roomIds = null;
         data.forEach(room => {
             if (Array.isArray(room)) {
-            roomIds = room;
-            return;
-        }
-        if (!rooms[room.roomId]) {
-            rooms[room.roomId] = [room];
-        } else {
-            rooms[room.roomId].push(room);
-        }
-    });
+                roomIds = room;
+                return;
+            }
+            if (!rooms[room.roomId]) {
+                rooms[room.roomId] = [room];
+            } else {
+                rooms[room.roomId].push(room);
+            }
+        });
         if (roomIds) {
             roomIds.forEach(roomId => {
                 if (!rooms[roomId]) {
-                rooms[roomId] = [];
-            }
-        });
+                    rooms[roomId] = [];
+                }
+            });
         }
+        let formattedHTML = $('#searchResult').empty().html();
+
+        formattedHTML += `<div class="room-result-container">`;
         for (let id in rooms) {
+            let newRoom = new Room();
             console.log('id = ', id);
-            $("#searchResult > div:last-child").append($(`<div style="color: black; margin-top: 10px;">Room = ${id}</div>`));
+            newRoom.roomID = id;
+            console.log("newRoom id=", newRoom.roomID);
+            //$("#searchResult > div:last-child").append($(`<div style="color: black; margin-top: 10px;">Room = ${id}</div>`));
+            formattedHTML += `<div class="room-result">`;
+            formattedHTML += `<div style="color: black; margin-top: 10px;">Room = ${id}</div>`;
             const data = rooms[id];
             let leftTimeBorder = "08:00";
             let rightTimeBorder = "22:00";
@@ -227,9 +173,33 @@ function getRoomInfo(roomId) {
             spareIntervals.forEach(function (interval) {
                 const startTime = interval["start"];
                 const endTime = interval["end"];
-                const el = $(`<div>${startTime} - ${endTime}</div>`);
-                $("#searchResult > div:last-child").append(el);
-            })
+                let newPair = new StartEndPair(startTime, endTime);
+                //const el = $(`<div>${startTime} - ${endTime}</div>`);
+                //$("#searchResult > div:last-child").append(el);
+                newRoom.availableTimes.push(newPair);
+                const el = `<div>${startTime} - ${endTime}</div>`;
+                formattedHTML += el;
+                formattedHTML += `<div class="quick-reserve"><a class="btn btn-success btn-lg" role="button"
+                                    onclick="scrollToReserve(${id})">Reserve</a></div>`;
+            });
+            console.log("times= ", newRoom.availableTimes);
+            // Closing div for every room-result in the loop
+            roomList.push(newRoom);
+            formattedHTML += `</div>`;
         }
+        // Closing div for room-result-container
+        console.log(roomList);
+        formattedHTML += `</div>`;
+        $('#searchResult').append(formattedHTML);
     })
+}
+
+function scrollToReserve(roomIDToScrollTo) {
+    console.log("id to scroll to= ", roomIDToScrollTo);
+    let reserve = document.getElementById('collapseReserveRoom');
+    $(reserve).collapse('show');
+    $("#Reserve_Room_ID").val(roomIDToScrollTo);
+    //$("#Reserve_Timestamp_start_time").val(setStartTime);
+    //$("#Reserve_Timestamp_end_time").val(setStartTime).stepUp(120);
+    reserve.scrollIntoView({behavior: "smooth"});
 }
