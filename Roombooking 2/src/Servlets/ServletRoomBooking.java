@@ -89,7 +89,9 @@ public class ServletRoomBooking extends AbstractPostServlet {
                         return;
                     }
                     // new order to reserve
-                    Order order = new Order(timestampStart, timestampEnd);
+                    Order order = new Order(dbFunctionality.getRoom(roomID, connection), timestampStart, timestampEnd);
+
+
                     TLSEmail tlsEmail = new TLSEmail();
                     ResultSet orders = dbFunctionality.getOrdersFromRoom(roomID, timestampStart.substring(0, 10), connection);
                     // Lag og sett en boolean til true,
@@ -132,12 +134,15 @@ public class ServletRoomBooking extends AbstractPostServlet {
                         }
                     } else {
                         // Hvis ikke returneres en error til brukeren
-                        String notAvailableErrorMessage = "Sorry, there was an error during your booking. " +
-                                order.getRoomName() + " at that time is already reserved.";
-                        // TODO: Returner en error til brukeren om rommet er opptatt ved tidspunktet valgt
-
+                        String notAvailableErrorMessage = "Sorry, there was an error during your booking.\n " +
+                                order.getRoomName() + " at " + order.getBookingDate() + " is already reserved from " +
+                                order.getBookingStartTime() + " to " + order.getBookingEndTime();
+                        
                         System.out.println(notAvailableErrorMessage);
-                        out.println(notAvailableErrorMessage);
+                        String[] parts = notAvailableErrorMessage.split("\\n");
+                        for(String s : parts) {
+                            out.println("<p>" + s + "</p>");
+                        }
                         AbstractUser user = dbFunctionality.getUser(userName, connection);
                         addRedirectOnUserType(out, user.getUserType());
                     }

@@ -15,7 +15,7 @@ public class Order {
     private Timestamp timestampEnd;
 
     /**
-     * Constructor used for booking rooms, while checking if something is vacant.
+     * Constructor used for the intersects method
      * The format for the strings are
      * @param stringStart The date and time of the requested booking's beginning as a string.
      * @param stringEnd The date and time of the requested booking's end as a string.
@@ -27,6 +27,18 @@ public class Order {
     public Order(Timestamp timestampStart, Timestamp timestampEnd) {
         this.timestampStart = timestampStart;
         this.timestampEnd = timestampEnd;
+    }
+
+    /**
+     * Constructor used for returning an error if a user tries to book a busy room
+     * @param room
+     * @param stringStart
+     * @param stringEnd
+     * @throws ParseException
+     */
+    public Order(AbstractRoom room, String stringStart, String stringEnd) throws ParseException {
+        this(getTimestampFromString(stringStart), getTimestampFromString(stringEnd));
+        this.room = room;
     }
 
     /**
@@ -140,6 +152,18 @@ public class Order {
 
     public Timestamp getTimestampEnd() {
         return timestampEnd;
+    }
+
+    public String getBookingDate() {
+        return timestampStart.toString().substring(0, 10);
+    }
+
+    public String getBookingStartTime() {
+        return timestampStart.toString().substring(11, 16);
+    }
+
+    public String getBookingEndTime() {
+        return timestampEnd.toString().substring(11, 16);
     }
 
     public void setId(int id) {
