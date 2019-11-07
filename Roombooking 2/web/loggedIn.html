@@ -68,12 +68,17 @@
 
         <!-- Reserve a room collapse button -->
         <button class="btn btn-success btn-lg" id="reserve_Room" data-toggle="collapse" href="#collapseReserveRoom" role="button"
-             onclick="$('#reserve_Room')"   aria-controls="#collapseReserveRoom">Reserve a room
+             onclick="$('#reserve_Room')" aria-controls="#collapseReserveRoom">Reserve a room
         </button>
 
         <!-- Update a booking collapse button -->
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseUpdateBooking" role="button"
                 aria-controls="#collapseUpdateBooking">Update a booking
+        </button>
+
+        <!-- Cancel a booking collapse button -->
+        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseCancelBooking" role="button"
+                aria-controls="#collapseCancelBooking">Cancel a booking
         </button>
     </div>
 </div>
@@ -144,10 +149,10 @@
 
 </div>
 <!-- Form for Cancel a booking -->
-<div class="collapse container" id="collapseCancelRoom">
+<div class="collapse container" id="collapseCancelBooking">
     <form action="./Servlets.ServletRoomOptions" method="post">
         <h1>
-            Cancel booking
+            Cancel a booking
         </h1>
         <div>
             <label for="Cancel_Order_ID">Order ID</label>

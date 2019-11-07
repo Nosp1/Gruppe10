@@ -4,6 +4,7 @@ import Classes.Email.EmailTemplates;
 import Classes.Email.EmailUtil;
 import Classes.Email.TLSEmail;
 import Classes.Order;
+import Classes.Rooms.AbstractRoom;
 import Classes.User.AbstractUser;
 import Classes.UserType;
 import Tools.DbFunctionality;
@@ -51,6 +52,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
                 // Hent roomID, Timestamp_start og _end for å sjekke reservasjonen
                 String formRoomID = request.getParameter("Reserve_Room_ID");
                 int roomID = Integer.parseInt(formRoomID);
+                AbstractRoom room = dbFunctionality.getRoom(roomID, connection);
                 String[] dateTimeStartArray = request.getParameterValues("start-datetimes");
                 String[] dateTimeEndArray = request.getParameterValues("end-datetimes");
 
@@ -117,7 +119,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
                         // TODO ADD AUTOMATIC USERID
                         AbstractUser user = dbFunctionality.getUser(userName, connection);
                         int userId = dbFunctionality.getUserId(userName, connection);
-                        order = new Order(orderID, userId, roomID, timestampStart, timestampEnd);
+                    order = new Order(orderID, userId, room, timestampStart, timestampEnd);
                         dbFunctionality.addOrder(order, connection);
                         out.println("<p>You have successfully booked" + roomID);
                         addRedirectOnUserType(out, user.getUserType());

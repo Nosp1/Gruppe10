@@ -1,6 +1,5 @@
 package Servlets;
 
-import Classes.Order;
 import Classes.Rooms.AbstractRoom;
 import Classes.Rooms.Auditorium;
 import Classes.Rooms.Grouproom;
@@ -167,18 +166,7 @@ public class ServletRoomOptions extends AbstractPostServlet {
             e.printStackTrace();
         } finally {
             DbUtils.closeQuietly(connection);
-            try {
-                assert connection != null;
-                if (connection.isClosed()) {
-                    System.out.println("connection closed");
-                } else {
-                    System.out.println(connection + "is not closed");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
+            closeConnection(connection);
         }
-
     }
 }
