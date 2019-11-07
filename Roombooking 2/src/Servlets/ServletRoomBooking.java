@@ -121,7 +121,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
                         addRedirectOnUserType(out, user.getUserType());
                         y++;
                         //todo fix email
-                        if (y > 1) {
+                        if (y >= 1) {
                             System.out.println("ignoreing email to many bookings");
                         } else {
                             // Etter reservasjonen er lagt til i databasen sender vi en kvittering på epost.
