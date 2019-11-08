@@ -46,7 +46,8 @@ $("#calendar button:nth-of-type(1)").on('click', function () {
     const arr = strDate.split("-").map(item => +item);
     const date = new Date(arr[0], arr[1] - 1, arr[2]);
     $('#calendar input[type="date"]').val(date.toISOString().substring(0, 10));
-    console.log(date, typeof date);
+    //console.log(date, typeof date);
+    showAllRooms();
 });
 
 $("#calendar button:nth-of-type(2)").on('click', function () {
@@ -54,18 +55,22 @@ $("#calendar button:nth-of-type(2)").on('click', function () {
     const arr = strDate.split("-").map(item => +item);
     const date = new Date(arr[0], arr[1] - 1, arr[2] + 2);
     $('#calendar input[type="date"]').val(date.toISOString().substring(0, 10));
+    //console.log(date, typeof date);
+    showAllRooms();
 });
 
-//Liker ikke at Show all rooms blir påvirket på denne måten
 $('#ListOfRooms').on('submit', function (evt) {
-    console.log("Show all rooms clicked");
-    // hvis denne preventDefault ikke er kommentert fungerer ikke printRooms knappen
     evt.preventDefault();
+    showAllRooms();
+});
+
+function showAllRooms() {
+    console.log("Show all rooms clicked");
     const roomId = -1;
     getRoomInfo(roomId);
     $("#calendar").show();
     $("#searchResult").show();
-});
+}
 
 // PASTE CODE JEG SLETTA --------------------------------------------
 $('#collapseReserveRoom > form').on('submit', function(evt) {
@@ -250,9 +255,11 @@ function getRoomInfo(roomId) {
                 //$("#searchResult > div:last-child").append(el);
                 newRoom.availableTimes.push(newPair);
                 const el = `<div>${startTime} - ${endTime}</div>`;
+                console.log("startTime= ", ${startTime});
+                console.log("endTime= ", ${endTime});
                 formattedHTML += el;
                 formattedHTML += `<div class="quick-reserve"><a class="btn btn-success btn-lg" role="button"
-                                    onclick="scrollToReserve(${id})">Reserve</a></div>`;
+                                    onclick="scrollToReserve('${id}', '${startTime}')">Reserve</a></div>`;
             });
             console.log("times= ", newRoom.availableTimes);
             // Closing div for every room-result in the loop
@@ -266,12 +273,22 @@ function getRoomInfo(roomId) {
     })
 }
 
-function scrollToReserve(roomIDToScrollTo) {
+function scrollToReserve(roomIDToScrollTo, startTimeToSet) {
     console.log("id to scroll to= ", roomIDToScrollTo);
     let reserve = document.getElementById('collapseReserveRoom');
     $(reserve).collapse('show');
     $("#Reserve_Room_ID").val(roomIDToScrollTo);
-    //$("#Reserve_Timestamp_start_time").val(setStartTime);
-    //$("#Reserve_Timestamp_end_time").val(setStartTime).stepUp(120);
+    document.getElementById("Reserve_Room_Name").innerText = roomIDToScrollTo;
+    document.getElementById("Reserve_Timestamp_start_time").value = "08:00";
+    //document.getElementById("Reserve_Timestamp_end_time").value = document.getElementById("Reserve_Timestamp_start_time").value;
+    document.getElementById("Reserve_Timestamp_end_time").value = startTimeToSet;
+    // stepUp increments the minutes of a time-field by a set amount, in this case 120 minutes.
+    document.getElementById("Reserve_Timestamp_end_time").stepUp(120);
+
+    let date = document.getElementById("calendar").value;
+    console.log("date= ", date);
+    document.getElementById("Reserve_Timestamp_start_date").value = document.getElementById("calendar").value;
+    document.getElementById("Reserve_Timestamp_end_date").value = document.getElementById("calendar").value;
+
     reserve.scrollIntoView({behavior: "smooth"});
 }

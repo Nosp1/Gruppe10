@@ -140,11 +140,20 @@ textarea {
 }
 #reserveroomid {
     display: flex;
-    margin-bottom: 46px;
+    /*margin-bottom: 46px;*/
 }
 #Reserve_Room_ID {
     flex: 1;
 }
+
+#reserveRoomName {
+
+}
+
+#reserveRoomName h3 {
+    margin-top: 10px;
+}
+
 #label_roomid {
     padding-right: 30px;
 }
@@ -164,6 +173,10 @@ textarea {
 }
 #Reserve_Timestamp_end_date {
     flex: 1;
+}
+
+#Reserve_Timestamp_end_date {
+    background-color: #8e8e8e;
 }
 #label_end {
     padding-right: 11px;
