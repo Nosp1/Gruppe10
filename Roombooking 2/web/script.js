@@ -255,8 +255,8 @@ function getRoomInfo(roomId) {
                 //$("#searchResult > div:last-child").append(el);
                 newRoom.availableTimes.push(newPair);
                 const el = `<div>${startTime} - ${endTime}</div>`;
-                console.log("startTime= ", ${startTime});
-                console.log("endTime= ", ${endTime});
+                console.log("startTime= ", startTime);
+                console.log("endTime= ", endTime);
                 formattedHTML += el;
                 formattedHTML += `<div class="quick-reserve"><a class="btn btn-success btn-lg" role="button"
                                     onclick="scrollToReserve('${id}', '${startTime}')">Reserve</a></div>`;
