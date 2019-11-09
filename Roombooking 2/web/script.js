@@ -1,14 +1,15 @@
 $.ajaxSetup({cache: false});
 
 $(function() {
-    $(document.body).append("<div id=\"searchResult\" hidden>\n" +
-        "    <div style=\"color: black\">Room is available:</div>\n" +
-        "</div>\n" +
-        "<div id=\"calendar\" hidden>\n" +
-        "    <button style=\"color: black;\">Previous day</button>\n" +
-        "    <input type=\"date\">\n" +
-        "    <button style=\"color: black;\">Next day</button>\n" +
-        "</div>");
+    $(document.body)
+        .append(`<div id="searchResult" hidden>
+                    <div style="color: black">Room is available:</div>
+                </div>
+                <div id="calendar" hidden>
+                    <button style="color: black;">Previous day</button>
+                    <input type="date">
+                    <button style="color: black;">Next day</button>
+                </div>`);
 });
 
 $('#navbar-search-button').on('click', function() {
@@ -149,8 +150,8 @@ $('#reserve_Room').on('click', function (evt) {
     evt.preventDefault();
     console.log("show all rooms clicked");
     const roomId = -1;
-    getRoomInfo(roomId);
     $("#calendar").show();
+    getRoomInfo(roomId);
     $("#searchResult").show();
 });
 // PASTE CODE END --------------------------------------------
@@ -279,16 +280,22 @@ function scrollToReserve(roomIDToScrollTo, startTimeToSet) {
     $(reserve).collapse('show');
     $("#Reserve_Room_ID").val(roomIDToScrollTo);
     document.getElementById("Reserve_Room_Name").innerText = roomIDToScrollTo;
-    document.getElementById("Reserve_Timestamp_start_time").value = "08:00";
+    document.getElementById("Reserve_Timestamp_start_time").value = startTimeToSet;
     //document.getElementById("Reserve_Timestamp_end_time").value = document.getElementById("Reserve_Timestamp_start_time").value;
     document.getElementById("Reserve_Timestamp_end_time").value = startTimeToSet;
     // stepUp increments the minutes of a time-field by a set amount, in this case 120 minutes.
     document.getElementById("Reserve_Timestamp_end_time").stepUp(120);
 
-    let date = document.getElementById("calendar").value;
-    console.log("date= ", date);
-    document.getElementById("Reserve_Timestamp_start_date").value = document.getElementById("calendar").value;
-    document.getElementById("Reserve_Timestamp_end_date").value = document.getElementById("calendar").value;
+    let date = getCalendarDate();
+    console.log(date);
+    //console.log("date= ", date);
+    document.getElementById("Reserve_Timestamp_start_date").value = date;
+    //let newDate = new Date(document.getElementById("Reserve_Timestamp_start_date").value);
+    document.getElementById("Reserve_Timestamp_end_date").value = date;
 
     reserve.scrollIntoView({behavior: "smooth"});
+}
+
+function getCalendarDate() {
+    return $("#calendar input[type=date]").val();
 }
