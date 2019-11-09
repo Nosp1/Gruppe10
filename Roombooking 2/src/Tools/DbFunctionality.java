@@ -642,13 +642,17 @@ public class DbFunctionality {
         PreparedStatement statement = connection.prepareStatement(strSelect);
         ResultSet resultSet = statement.executeQuery(strSelect);
         ArrayList<String> roomNames = new ArrayList<>();
-        out.print("[");
+        // Opening JSON bracket
+        String json = "[";
+        //out.print("[");
         int i = 0;
         while (resultSet.next()) {
             if (i > 0) {
-                out.print(",");
+                //out.print(",");
+                json = json + ",";
             }
-            out.print("{\"roomId\":" + resultSet.getInt("Room_ID") + ",\"start\": \"" + resultSet.getTimestamp("Timestamp_start") + "\", \"end\": \"" + resultSet.getTimestamp("Timestamp_end") + "\"}");
+            //out.print("{\"roomId\":" + resultSet.getInt("Room_ID") + ",\"start\": \"" + resultSet.getTimestamp("Timestamp_start") + "\", \"end\": \"" + resultSet.getTimestamp("Timestamp_end") + "\"}");
+            json = json + "{\"roomId\":" + resultSet.getInt("Room_ID") + ",\"start\": \"" + resultSet.getTimestamp("Timestamp_start") + "\", \"end\": \"" + resultSet.getTimestamp("Timestamp_end") + "\"}";
             i++;
         }
         if (roomId < 0) {
@@ -663,30 +667,38 @@ public class DbFunctionality {
                 }
                 j++;
                 roomNumbers = roomNumbers + String.valueOf(resultSet.getInt("Room_ID"));
-                //roomNames.add(resultSet.getString("Room_name"));
+                roomNames.add(resultSet.getString("Room_name"));
             }
             if (i == 0) {
-                out.print("[" + roomNumbers + "]");
+                //out.print("[" + roomNumbers + "]");
+                json = json + "[" + roomNumbers + "]";
             } else {
-                out.print(",[" + roomNumbers + "]");
-
+                //out.print(",[" + roomNumbers + "]");
+                json = json + ",[" + roomNumbers + "]";
             }
         }
         // Create a list of room names in the JSON object
-        /*
-        out.print(",[");
+
+        //out.print(",[");
+        json = json + ",[";
         int limit = roomNames.size();
         for(int k = 0; k < limit; k++) {
             if(k != limit-1) {
-                out.print("\"" + roomNames.get(k) + "\",");
+                //out.print("\"" + roomNames.get(k) + "\",");
+                json = json + "\"" + roomNames.get(k) + "\",";
             } else {
-                out.print("\"" + roomNames.get(k) + "\"");
+                //out.print("\"" + roomNames.get(k) + "\"");
+                json = json + "\"" + roomNames.get(k) + "\"";
             }
         }
-        out.print("]");
-        */
+        //out.print("]");
+        json = json + "]";
 
-        out.print("]");
+        // Closing JSON bracket
+        //out.print("]");
+        json = json + ("]");
+        System.out.println(json);
+        out.print(json);
     }
 
     public void insertReport(Report userReport, Connection connection) throws SQLException {
