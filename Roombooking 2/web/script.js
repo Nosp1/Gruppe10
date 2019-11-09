@@ -147,8 +147,9 @@ $('#reserve_Room').on('click', function (evt) {
 });
 // PASTE CODE END --------------------------------------------
 
-function Room(roomID, availableTimes = []) {
+function Room(roomID, roomName, availableTimes = []) {
     this.roomID = roomID;
+    this.roomName = roomName;
     this.availableTimes = availableTimes;
 }
 
@@ -185,9 +186,17 @@ function getRoomInfo(roomId) {
             rooms[roomId] = [];
         }
         let roomIds = null;
+        let roomNames = null;
+        let first = true;
         data.forEach(room => {
             if (Array.isArray(room)) {
-                roomIds = room;
+                if(first) {
+                    roomIds = room;
+                    first = false;
+                } else {
+                    roomNames = room;
+                    console.log("roomNames=",roomNames);
+                }
                 return;
             }
             if (!rooms[room.roomId]) {
@@ -206,14 +215,20 @@ function getRoomInfo(roomId) {
         let formattedHTML = $('#searchResult').empty().html();
 
         formattedHTML += `<div class="room-result-container">`;
+        let counter = 0;
+        let mappedRooms = {};
         for (let id in rooms) {
             let newRoom = new Room();
             console.log('id = ', id);
             newRoom.roomID = id;
+            mappedRooms[id] = roomNames[counter];
+            newRoom.roomName = mappedRooms[id];
+            counter++;
             console.log("newRoom id=", newRoom.roomID);
+            console.log("id to name=", mappedRooms[id]);
             //$("#searchResult > div:last-child").append($(`<div style="color: black; margin-top: 10px;">Room = ${id}</div>`));
             formattedHTML += `<div class="room-result">`;
-            formattedHTML += `<div style="color: black; margin-top: 10px;">Room = ${id}</div>`;
+            formattedHTML += `<div style="color: black; margin-top: 10px;">${mappedRooms[id]}</div>`;
             const data = rooms[id];
             let leftTimeBorder = "08:00";
             let rightTimeBorder = "22:00";
@@ -251,7 +266,7 @@ function getRoomInfo(roomId) {
                 console.log("endTime= ", endTime);
                 formattedHTML += el;
                 formattedHTML += `<div class="quick-reserve"><a class="btn btn-success btn-lg" role="button"
-                                    onclick="scrollToReserve('${id}', '${startTime}')">Reserve</a></div>`;
+                                    onclick="scrollToReserve('${id}', '${mappedRooms[id]}', '${startTime}')">Reserve</a></div>`;
             });
             console.log("times= ", newRoom.availableTimes);
             // Closing div for every room-result in the loop
@@ -265,12 +280,12 @@ function getRoomInfo(roomId) {
     })
 }
 
-function scrollToReserve(roomIDToScrollTo, startTimeToSet) {
+function scrollToReserve(roomIDToScrollTo, newRoomName, startTimeToSet) {
     console.log("id to scroll to= ", roomIDToScrollTo);
     let reserve = document.getElementById('collapseReserveRoom');
     $(reserve).collapse('show');
     $("#Reserve_Room_ID").val(roomIDToScrollTo);
-    document.getElementById("Reserve_Room_Name").innerText = roomIDToScrollTo;
+    document.getElementById("Reserve_Room_Name").innerText = newRoomName;
     document.getElementById("Reserve_Timestamp_start_time").value = startTimeToSet;
 
     document.getElementById("Reserve_Timestamp_end_time").value = startTimeToSet;
