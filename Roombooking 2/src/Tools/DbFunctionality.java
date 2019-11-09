@@ -641,6 +641,7 @@ public class DbFunctionality {
         }
         PreparedStatement statement = connection.prepareStatement(strSelect);
         ResultSet resultSet = statement.executeQuery(strSelect);
+        ArrayList<String> roomNames = new ArrayList<>();
         out.print("[");
         int i = 0;
         while (resultSet.next()) {
@@ -662,6 +663,7 @@ public class DbFunctionality {
                 }
                 j++;
                 roomNumbers = roomNumbers + String.valueOf(resultSet.getInt("Room_ID"));
+                //roomNames.add(resultSet.getString("Room_name"));
             }
             if (i == 0) {
                 out.print("[" + roomNumbers + "]");
@@ -670,6 +672,19 @@ public class DbFunctionality {
 
             }
         }
+        // Create a list of room names in the JSON object
+        /*
+        out.print(",[");
+        int limit = roomNames.size();
+        for(int k = 0; k < limit; k++) {
+            if(k != limit-1) {
+                out.print("\"" + roomNames.get(k) + "\",");
+            } else {
+                out.print("\"" + roomNames.get(k) + "\"");
+            }
+        }
+        out.print("]");
+        */
 
         out.print("]");
     }

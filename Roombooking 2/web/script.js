@@ -12,15 +12,6 @@ $(function() {
                 </div>`);
 });
 
-$('#navbar-search-button').on('click', function() {
-    const roomID = $('#navbar-search-input').val();
-    if (roomID < 0) {
-        return alert("Room number is not correct! RoomID be higher than 0.");
-    }
-    getRoomInfo(roomID);
-    $("#calendar").show();
-    $("#searchResult").show();
-});
 
 // Aktiveres når search-rooms knappen blir trykket på
 $('#navbar-search-button').on('click', function () {
@@ -281,16 +272,13 @@ function scrollToReserve(roomIDToScrollTo, startTimeToSet) {
     $("#Reserve_Room_ID").val(roomIDToScrollTo);
     document.getElementById("Reserve_Room_Name").innerText = roomIDToScrollTo;
     document.getElementById("Reserve_Timestamp_start_time").value = startTimeToSet;
-    //document.getElementById("Reserve_Timestamp_end_time").value = document.getElementById("Reserve_Timestamp_start_time").value;
+
     document.getElementById("Reserve_Timestamp_end_time").value = startTimeToSet;
     // stepUp increments the minutes of a time-field by a set amount, in this case 120 minutes.
     document.getElementById("Reserve_Timestamp_end_time").stepUp(120);
 
     let date = getCalendarDate();
-    console.log(date);
-    //console.log("date= ", date);
     document.getElementById("Reserve_Timestamp_start_date").value = date;
-    //let newDate = new Date(document.getElementById("Reserve_Timestamp_start_date").value);
     document.getElementById("Reserve_Timestamp_end_date").value = date;
 
     reserve.scrollIntoView({behavior: "smooth"});
