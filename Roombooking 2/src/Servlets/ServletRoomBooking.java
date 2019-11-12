@@ -4,8 +4,8 @@ import Classes.Email.EmailTemplates;
 import Classes.Email.EmailUtil;
 import Classes.Email.TLSEmail;
 import Classes.Order;
+import Classes.Rooms.AbstractRoom;
 import Classes.User.AbstractUser;
-import Classes.UserType;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 import org.apache.commons.dbutils.DbUtils;
@@ -21,7 +21,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.ParseException;
 
 /**
  * ServletRoomBooking.java is used for handling actions related to room-booking reservations.
@@ -51,6 +50,8 @@ public class ServletRoomBooking extends AbstractPostServlet {
                 // Hent roomID, Timestamp_start og _end for å sjekke reservasjonen
                 String formRoomID = request.getParameter("Reserve_Room_ID");
                 int roomID = Integer.parseInt(formRoomID);
+                AbstractRoom room = dbFunctionality.getRoom(roomID, connection);
+
                 String[] dateTimeStartArray = request.getParameterValues("start-datetimes");
                 String[] dateTimeEndArray = request.getParameterValues("end-datetimes");
 
@@ -62,6 +63,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
                 String timestampEndTime = request.getParameter("Reserve_Timestamp_end_time");
                 String timestampEnd = timestampEndDate + " " + timestampEndTime;
                 System.out.println(timestampEnd); */
+                int y = 0;
                 for (int i = 0; i < dateTimeStartArray.length; i++) {
                     String timestampStart = dateTimeStartArray[i];
                     String timestampEnd = dateTimeEndArray[i];
@@ -86,13 +88,11 @@ public class ServletRoomBooking extends AbstractPostServlet {
                         addRedirectOnUserType(out, user.getUserType());
                         return;
                     }
-
                     // new order to reserve
-                    Order order = new Order(timestampStart, timestampEnd);
+                    Order order = new Order(dbFunctionality.getRoom(roomID, connection), timestampStart, timestampEnd);
 
 
                     TLSEmail tlsEmail = new TLSEmail();
-
                     ResultSet orders = dbFunctionality.getOrdersFromRoom(roomID, timestampStart.substring(0, 10), connection);
                     // Lag og sett en boolean til true,
                     boolean available = true;
@@ -111,19 +111,18 @@ public class ServletRoomBooking extends AbstractPostServlet {
                     }
                     // Hvis det er ledig etter hele while-løkka,
                     if (available) {
-                        int y = 0;
                         // henter vi orderID, lager Order objektet på nytt og legger det til databasen.
                         int orderID = dbFunctionality.getOrderID(connection);
                         // TODO ADD AUTOMATIC USERID
                         AbstractUser user = dbFunctionality.getUser(userName, connection);
                         int userId = dbFunctionality.getUserId(userName, connection);
-                        order = new Order(orderID, userId, roomID, timestampStart, timestampEnd);
+                        order = new Order(orderID, userId, room, timestampStart, timestampEnd);
                         dbFunctionality.addOrder(order, connection);
                         out.println("<p>You have successfully booked" + roomID);
                         addRedirectOnUserType(out, user.getUserType());
                         y++;
                         //todo fix email
-                        if (y > 1) {
+                        if (y >= 1) {
                             System.out.println("ignoreing email to many bookings");
                         } else {
                             // Etter reservasjonen er lagt til i databasen sender vi en kvittering på epost.
@@ -132,16 +131,18 @@ public class ServletRoomBooking extends AbstractPostServlet {
                             String receipt = EmailTemplates.getBookingReceipt();
                             String body = EmailTemplates.bookingConfirmation(user.getFirstName().substring(0, 1).toUpperCase() + user.getFirstName().substring(1), order);
                             confirmationEmail.sendEmail(session, user.getUserName(), receipt, body);
-
                         }
                     } else {
                         // Hvis ikke returneres en error til brukeren
-                        String notAvailableErrorMessage = "Sorry, there was an error during your booking. " + order.getRoomID() +  order.getTimestampStart() + order.getTimestampEnd() +
-                                "That room and time is already reserved.";
-                        // TODO: Returner en error til brukeren om rommet er opptatt ved tidspunktet valgt
-
+                        String notAvailableErrorMessage = "Sorry, there was an error during your booking.\n " +
+                                order.getRoomName() + " at " + order.getBookingDate() + " is already reserved from " +
+                                order.getBookingStartTime() + " to " + order.getBookingEndTime();
+                        
                         System.out.println(notAvailableErrorMessage);
-                        out.println(notAvailableErrorMessage);
+                        String[] parts = notAvailableErrorMessage.split("\\n");
+                        for(String s : parts) {
+                            out.println("<p>" + s + "</p>");
+                        }
                         AbstractUser user = dbFunctionality.getUser(userName, connection);
                         addRedirectOnUserType(out, user.getUserType());
                     }

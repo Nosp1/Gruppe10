@@ -1,5 +1,6 @@
 package Classes;
 
+import Classes.Rooms.AbstractRoom;
 import Tools.TimeUtility;
 
 import java.sql.Timestamp;
@@ -8,13 +9,13 @@ import java.text.ParseException;
 public class Order {
 
     private int id;
-    private int roomID;
+    private AbstractRoom room;
     private int userID;
     private Timestamp timestampStart;
     private Timestamp timestampEnd;
 
     /**
-     * Constructor used for booking rooms, while checking if something is vacant.
+     * Constructor used for the intersects method
      * The format for the strings are
      * @param stringStart The date and time of the requested booking's beginning as a string.
      * @param stringEnd The date and time of the requested booking's end as a string.
@@ -29,19 +30,31 @@ public class Order {
     }
 
     /**
+     * Constructor used for returning an error if a user tries to book a busy room
+     * @param room
+     * @param stringStart
+     * @param stringEnd
+     * @throws ParseException
+     */
+    public Order(AbstractRoom room, String stringStart, String stringEnd) throws ParseException {
+        this(getTimestampFromString(stringStart), getTimestampFromString(stringEnd));
+        this.room = room;
+    }
+
+    /**
      * Constructor used for inserting an Order into the database, after availability has been checked.
      * @param id The id for an order.
      * @param userID The user that places the order.
-     * @param roomID The room which a user wants to book.
+     * @param room The room which a user wants to book.
      * @param timestampStart The date and time of the requested booking's beginning.
      * @param timestampEnd The date and time of the requested booking's end.
      */
-    public Order(int id, int userID, int roomID, String timestampStart, String timestampEnd) throws ParseException {
+    public Order(int id, int userID, AbstractRoom room, String timestampStart, String timestampEnd) throws ParseException {
         this.id = id;
         //System.out.println(id);
         this.userID = userID;
         //System.out.println(userID);
-        this.roomID = roomID;
+        this.room = room;
         //System.out.println(roomID);
         this.timestampStart = getTimestampFromString(timestampStart);
         //System.out.println(this.timestampStart.toString());
@@ -53,14 +66,14 @@ public class Order {
      * Constructor used for inserting an Order into the database, after availability has been checked.
      * @param id The id for an order.
      * @param userID The user that places the order.
-     * @param roomID The room which a user wants to book.
+     * @param room The room which a user wants to book.
      * @param timestampStart The date and time of the requested booking's beginning.
      * @param timestampEnd The date and time of the requested booking's end.
      */
-    public Order(int id, int userID, int roomID, Timestamp timestampStart, Timestamp timestampEnd) throws ParseException {
+    public Order(int id, int userID, AbstractRoom room, Timestamp timestampStart, Timestamp timestampEnd) throws ParseException {
         this.id = id;
         this.userID = userID;
-        this.roomID = roomID;
+        this.room = room;
         this.timestampStart = timestampStart;
         this.timestampEnd = timestampEnd;
     }
@@ -111,7 +124,7 @@ public class Order {
     public String toString() {
         return "Order_ID: " + String.valueOf(id) + "\n" +
                 "User_ID: " + String.valueOf(userID) + "\n" +
-                "Room_ID: " + String.valueOf(roomID) + "\n" +
+                "Room_ID: " + String.valueOf(room.getRoomID()) + "\n" +
                 "Timestamp_start: " + timestampStart.toString() + "\n" +
                 "Timestamp_end: " + timestampEnd.toString();
 
@@ -126,7 +139,11 @@ public class Order {
     }
 
     public int getRoomID() {
-        return roomID;
+        return room.getRoomID();
+    }
+
+    public String getRoomName() {
+        return room.getRoomName();
     }
 
     public Timestamp getTimestampStart() {
@@ -137,12 +154,24 @@ public class Order {
         return timestampEnd;
     }
 
+    public String getBookingDate() {
+        return timestampStart.toString().substring(0, 10);
+    }
+
+    public String getBookingStartTime() {
+        return timestampStart.toString().substring(11, 16);
+    }
+
+    public String getBookingEndTime() {
+        return timestampEnd.toString().substring(11, 16);
+    }
+
     public void setId(int id) {
         this.id = id;
     }
 
     public void setRoomID(int roomID) {
-        this.roomID = roomID;
+        this.room.setRoomID(roomID);
     }
 
     public void setUserID(int userID) {

@@ -2,6 +2,7 @@ package Tools;
 
 import Classes.Order;
 import Classes.Rooms.AbstractRoom;
+import Classes.Rooms.Grouproom;
 import Classes.User.AbstractUser;
 import Classes.User.Admin;
 import Classes.User.Student;
@@ -162,7 +163,7 @@ public class DbFunctionality {
         ResultSet resultSet = null;
         try {
             //select the User from the User table with the corresponding User_ID
-            String select = "select * from user where User_email = ?";
+            String select = "select * from `user` where User_email = ?";
             selectUser = connection.prepareStatement(select);
             selectUser.setString(1, requestedUserEmail);
             resultSet = selectUser.executeQuery();
@@ -174,10 +175,13 @@ public class DbFunctionality {
             String password = resultSet.getString("User_password");
             int userTypeID = resultSet.getInt("User_type_ID");
 
+            //3 = admin
             if (userTypeID == 3) {
                 return new Admin(firstName, lastName, userName, password, dob);
+            //2 = teacher
             } else if(userTypeID == 2) {
                 return new Teacher(firstName, lastName, userName, password, dob);
+            // Ellers student
             } else {
                 return new Student(firstName, lastName, userName, password, dob);
             }
@@ -324,6 +328,57 @@ public class DbFunctionality {
         }
     }
 
+    public AbstractRoom getRoom(int requestedRoomID, Connection connection) throws SQLException {
+        System.out.println("getRoom started. requestedRoomID: " + requestedRoomID);
+        PreparedStatement selectOrder;
+        // Select the Order from the Order table with the corresponding Order_ID
+        String select = "select * from rooms where Room_ID = ?";
+        selectOrder = connection.prepareStatement(select);
+        selectOrder.setInt(1, requestedRoomID);
+        // and store it in a ResultSet.
+        ResultSet resultSet = selectOrder.executeQuery();
+
+        // The resultSet's pointer starts at "nothing", so move it to the next (first, and only) element.
+        resultSet.first();
+        // Get and store the data in local variables,
+        int roomID = resultSet.getInt("Room_ID");
+        //System.out.println("getOrder orderID: " + orderID);
+        String roomName = resultSet.getString("Room_name");
+        //System.out.println("getOrder userID: " + userID);
+        String roomBuilding = resultSet.getString("Room_building");
+        //System.out.println("getOrder roomID: " + roomID);
+        int roomMaxCapacity = resultSet.getInt("Room_maxCapacity");
+
+        String tavle = resultSet.getString("Tavle");
+        String projektor = resultSet.getString("Projektor");
+
+        boolean hasTavle;
+        switch(tavle) {
+
+            case "JA":
+                hasTavle = true;
+                break;
+
+            default:
+                hasTavle = false;
+                break;
+        }
+
+        boolean hasProjektor;
+        switch(projektor) {
+
+            case "JA":
+                hasProjektor = true;
+                break;
+
+            default:
+                hasProjektor = false;
+                break;
+        }
+
+        return new Grouproom(roomID, roomName, roomBuilding, roomMaxCapacity, hasTavle, hasProjektor);
+    }
+
     public void addOrder(Order order, Connection connection) throws SQLException {
         PreparedStatement insertNewOrder = null;
         System.out.println("addOrder started");
@@ -364,15 +419,17 @@ public class DbFunctionality {
         resultSet.first();
         // Get and store the data in local variables,
         int orderID = resultSet.getInt("Order_ID");
-        System.out.println("getOrder orderID: " + orderID);
+        //System.out.println("getOrder orderID: " + orderID);
         int userID = resultSet.getInt("User_ID");
-        System.out.println("getOrder userID: " + userID);
+        //System.out.println("getOrder userID: " + userID);
         int roomID = resultSet.getInt("Room_ID");
-        System.out.println("getOrder roomID: " + roomID);
+        //System.out.println("getOrder roomID: " + roomID);
         Timestamp timestampStart = resultSet.getTimestamp("Timestamp_start");
         Timestamp timestampEnd = resultSet.getTimestamp("Timestamp_end");
 
-        return new Order(orderID, userID, roomID, timestampStart, timestampEnd);
+        AbstractRoom room = getRoom(roomID, connection);
+
+        return new Order(orderID, userID, room, timestampStart, timestampEnd);
     }
 
 
@@ -551,7 +608,10 @@ public class DbFunctionality {
             int roomID = resultSet.getInt("Room_ID");
             Timestamp timestampStart = resultSet.getTimestamp("Timestamp_start");
             Timestamp timestampEnd = resultSet.getTimestamp("Timestamp_end");
-            Order order = new Order(orderID, userID, roomID, timestampStart, timestampEnd);
+
+            AbstractRoom room = getRoom(roomID, connection);
+
+            Order order = new Order(orderID, userID, room, timestampStart, timestampEnd);
             orders.add(order);
         }
         //returns the list of order objects.
@@ -581,13 +641,18 @@ public class DbFunctionality {
         }
         PreparedStatement statement = connection.prepareStatement(strSelect);
         ResultSet resultSet = statement.executeQuery(strSelect);
-        out.print("[");
+        ArrayList<String> roomNames = new ArrayList<>();
+        // Opening JSON bracket
+        String json = "[";
+        //out.print("[");
         int i = 0;
         while (resultSet.next()) {
             if (i > 0) {
-                out.print(",");
+                //out.print(",");
+                json = json + ",";
             }
-            out.print("{\"roomId\":" + resultSet.getInt("Room_ID") + ",\"start\": \"" + resultSet.getTimestamp("Timestamp_start") + "\", \"end\": \"" + resultSet.getTimestamp("Timestamp_end") + "\"}");
+            //out.print("{\"roomId\":" + resultSet.getInt("Room_ID") + ",\"start\": \"" + resultSet.getTimestamp("Timestamp_start") + "\", \"end\": \"" + resultSet.getTimestamp("Timestamp_end") + "\"}");
+            json = json + "{\"roomId\":" + resultSet.getInt("Room_ID") + ",\"start\": \"" + resultSet.getTimestamp("Timestamp_start") + "\", \"end\": \"" + resultSet.getTimestamp("Timestamp_end") + "\"}";
             i++;
         }
         if (roomId < 0) {
@@ -602,16 +667,38 @@ public class DbFunctionality {
                 }
                 j++;
                 roomNumbers = roomNumbers + String.valueOf(resultSet.getInt("Room_ID"));
+                roomNames.add(resultSet.getString("Room_name"));
             }
             if (i == 0) {
-                out.print("[" + roomNumbers + "]");
+                //out.print("[" + roomNumbers + "]");
+                json = json + "[" + roomNumbers + "]";
             } else {
-                out.print(",[" + roomNumbers + "]");
-
+                //out.print(",[" + roomNumbers + "]");
+                json = json + ",[" + roomNumbers + "]";
             }
         }
+        // Create a list of room names in the JSON object
 
-        out.print("]");
+        //out.print(",[");
+        json = json + ",[";
+        int limit = roomNames.size();
+        for(int k = 0; k < limit; k++) {
+            if(k != limit-1) {
+                //out.print("\"" + roomNames.get(k) + "\",");
+                json = json + "\"" + roomNames.get(k) + "\",";
+            } else {
+                //out.print("\"" + roomNames.get(k) + "\"");
+                json = json + "\"" + roomNames.get(k) + "\"";
+            }
+        }
+        //out.print("]");
+        json = json + "]";
+
+        // Closing JSON bracket
+        //out.print("]");
+        json = json + ("]");
+        System.out.println(json);
+        out.print(json);
     }
 
     public void insertReport(Report userReport, Connection connection) throws SQLException {
