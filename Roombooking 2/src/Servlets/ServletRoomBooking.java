@@ -147,6 +147,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
                     }
                 }
             }
+
             if (action.contains("update")) {
                 // ID på hvilken order du vil endre hentes fra request.
                 String formOrderID = request.getParameter("Update_orderID");
@@ -228,24 +229,24 @@ public class ServletRoomBooking extends AbstractPostServlet {
 
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                DbUtils.closeQuietly(connection);
-                assert connection != null;
-                if (connection.isClosed()) {
-                    System.out.println("connection is closed ");
-                } else {
-                    System.out.println("connection is not closed");
-
-                }
             } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
+                try {
+                    DbUtils.closeQuietly(connection);
+                    assert connection != null;
+                    if (connection.isClosed()) {
+                        System.out.println("connection is closed ");
+                    } else {
+                        System.out.println("connection is not closed");
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
-}
 
 
 
