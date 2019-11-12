@@ -92,7 +92,7 @@
 
         <!-- Update a booking collapse button -->
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseUpdateBooking" role="button"
-                aria-controls="#collapseUpdateBooking">Update a booking
+                onclick="showAllRooms()" aria-controls="#collapseUpdateBooking">Update a booking
         </button>
     </div>
 </div>
@@ -242,7 +242,7 @@
 <!-- Form for Updating a booking -->
 <div class="collapse container" id="collapseUpdateBooking">
     <form action="./Servlets.ServletRoomBooking" method="post">
-        <h1>Update a order</h1>
+        <h1>Update an order</h1>
         <div>
             <label for="Update_orderID">Order ID</label>
             <input type="text" id="Update_orderID" name="Update_orderID">
@@ -276,8 +276,6 @@
             <p> The time must be between 08:00 and 21:59 </p>
         </div>
     </form>
-</div>
-</form>
 </div>
 
 <div id="searchResult" hidden>

@@ -244,6 +244,22 @@ textarea {
     margin-bottom: 0.3em;
 }
 
+
+.reservation {
+    width: 50%;
+    margin: 0.4em auto 0.4em;
+    border: solid black;
+}
+
+.reservation th {
+    padding-top: 0.3em;
+}
+
+.updateOrderButton button {
+    color: black;
+    margin-bottom: 0.3em;
+}
+
 #multiple-reservation-selection {
     margin: 1em auto 1em;
     color: black;

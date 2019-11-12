@@ -51,6 +51,7 @@ public abstract class AbstractUser {
     public void showOrders(PrintWriter out) {
         // TODO: Endre til å vise rom navn, kanskje lage en display() i Order?
         //Viser orders
+        int counter = 0;
         for (Order o : orders) {
             out.println(
                     /*
@@ -66,7 +67,7 @@ public abstract class AbstractUser {
                             "</div>" +
                             "</form>"
                      */
-                    "<div class=\"container\">\n" +
+                    "<div class=\"container reservation\">\n" +
                             "<form>\n" +
                             "<table>\n" +
                             "    <thead>\n" +
@@ -83,8 +84,14 @@ public abstract class AbstractUser {
                             "    </tbody>\n" +
                             "</table>\n" +
                             "</form>\n" +
+                            "<div class=\"updateOrderButton\">" +
+                            "    <button class=\"btn btn-success btn-lg\" data-toggle=\"collapse\" href=\"#collapseUpdateBooking\" role=\"button\"\n" +
+                            "            onclick=\"scrollToUpdate('" + o.getID() + "','" + o.getRoomName() + "')\" aria-controls=\"#collapseUpdateBooking\">Update a booking\n" +
+                            "    </button>" +
+                            "</div>" +
                             "</div>");
 
+            counter++;
         }
     }
 
