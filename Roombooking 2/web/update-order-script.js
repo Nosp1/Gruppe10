@@ -13,8 +13,10 @@ $(function() {
 });
 
 // Aktiveres når search-rooms knappen blir trykket på
-$('#navbar-search-button').on('click', function () {
+$('#navbar-search-button').on('click', function (evt) {
     console.log("navbar search button clicked")
+    // preventDefault stopper redirect
+    evt.preventDefault();
     // Hent roomID fra text-feltet i navbaren
     const roomId = $('#navbar-search-input').val();
     // Varsle brukeren om roomID er mindre enn 0
@@ -26,6 +28,9 @@ $('#navbar-search-button').on('click', function () {
     $("#searchResult").show();
 });
 $('#calendar input[type="date"]').val((new Date()).toISOString().substring(0, 10));
+$('#calendar input[type="date"]').on('change', function (evt) {
+    // console.log(evt.target.value);
+});
 
 $("#calendar button:nth-of-type(1)").on('click', function () {
     const strDate = $("#calendar input[type='date']").val();
@@ -56,6 +61,11 @@ function StartEndPair(pairStartTime, pairEndTime) {
     this.pairEndTime = pairEndTime;
 }
 
+function displayCalendar() {
+    $('#calendar input[type="date"]').val((new Date()).toISOString().substring(0, 10));
+    $("#calendar").show();
+}
+
 function showAllRooms() {
     console.log("Show all rooms clicked");
     const roomId = -1;
@@ -73,6 +83,7 @@ function getRoomInfo(roomId) {
     /* Konstruer en query for bruk av HTTP GET
        Vil f.eks bli 'roomID=1&date=2019-10-26
     */
+    //const query = `roomId=${roomId}&date=2019-11-13`;
     const query = `roomId=${roomId}&date=${date}`;
     console.log('/Roombooking_2_Web_exploded/Servlets.ServletSearch?' + query);
 
@@ -169,8 +180,6 @@ function getRoomInfo(roomId) {
                 console.log("startTime= ", startTime);
                 console.log("endTime= ", endTime);
                 formattedHTML += el;
-                formattedHTML += `<div class="quick-reserve"><a class="btn btn-success btn-lg" role="button"
-                                    onclick="scrollToReserve('${id}', '${mappedRooms[id]}', '${startTime}')">Reserve</a></div>`;
             });
             console.log("times= ", newRoom.availableTimes);
             // Closing div for every room-result in the loop
@@ -184,16 +193,17 @@ function getRoomInfo(roomId) {
     })
 }
 
-function scrollToUpdate(nthButton, newRoomName) {
-    showAllRooms();
+function scrollToUpdate(nthButton, newRoomName, setNewStartTime, setRoomID) {
+    displayCalendar();
+    getRoomInfo(setRoomID);
     console.log("button to scroll to= ", nthButton);
     let update = document.getElementById('collapseUpdateBooking');
     $(update).collapse('show');
     $("#Update_orderID").val(nthButton);
     document.getElementById("Update_roomName").innerText = newRoomName;
-    document.getElementById("Update_Timestamp_start_time").value = "08:00";
+    document.getElementById("Update_Timestamp_start_time").value = setNewStartTime;
 
-    document.getElementById("Update_Timestamp_end_time").value = "08:00";
+    document.getElementById("Update_Timestamp_end_time").value = setNewStartTime;
     // stepUp increments the minutes of a time-field by a set amount, in this case 120 minutes.
     document.getElementById("Update_Timestamp_end_time").stepUp(120);
 
@@ -201,7 +211,8 @@ function scrollToUpdate(nthButton, newRoomName) {
     document.getElementById("Update_Timestamp_start_date").value = date;
     document.getElementById("Update_Timestamp_end_date").value = date;
 
-    update.scrollIntoView({behavior: "smooth"});
+    update.scrollIntoView({block: "center", inline: "nearest", behavior: "smooth"});
+    //update.scrollIntoView({behavior: "smooth"});
 }
 
 function getCalendarDate() {

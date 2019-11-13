@@ -69,6 +69,7 @@ public abstract class AbstractUser {
                      */
                     "<div class=\"container reservation\">\n" +
                             "<form>\n" +
+                            "<h3> Order number: " + (counter+1) + "</h3>" +
                             "<table>\n" +
                             "    <thead>\n" +
                             "        <tr>\n" +
@@ -85,8 +86,8 @@ public abstract class AbstractUser {
                             "</table>\n" +
                             "</form>\n" +
                             "<div class=\"updateOrderButton\">" +
-                            "    <button class=\"btn btn-success btn-lg\" data-toggle=\"collapse\" href=\"#collapseUpdateBooking\" role=\"button\"\n" +
-                            "            onclick=\"scrollToUpdate('" + o.getID() + "','" + o.getRoomName() + "')\" aria-controls=\"#collapseUpdateBooking\">Update a booking\n" +
+                            "    <button class=\"btn btn-success btn-lg\" role=\"button\"\n" +
+                            "            onclick=\"scrollToUpdate('" + o.getID() + "','" + o.getRoomName() + "','" + o.getBookingStartTime() + "','" + o.getRoomID() + "')\">Update a booking\n" +
                             "    </button>" +
                             "</div>" +
                             "</div>");

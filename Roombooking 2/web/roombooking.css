@@ -238,6 +238,7 @@ textarea {
     border: solid black;
     width: 50%;
     padding-bottom: 0.3em;
+    background: linear-gradient(to top right, #ab9b7b 0%, #d2d0c5 100%) fixed;
 }
 
 .quick-reserve {
@@ -249,6 +250,10 @@ textarea {
     width: 50%;
     margin: 0.4em auto 0.4em;
     border: solid black;
+}
+
+.container reservation h3 {
+    text-align: left;
 }
 
 .reservation th {
