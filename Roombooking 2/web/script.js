@@ -14,7 +14,7 @@ $(function() {
 
 
 // Aktiveres når search-rooms knappen blir trykket på
-$('#navbar-search-button').on('click', function () {
+$('#navbar-search-button').on('click', function (evt) {
     console.log("navbar search button clicked")
     // preventDefault stopper redirect
     evt.preventDefault();
