@@ -118,7 +118,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
                         int userId = dbFunctionality.getUserId(userName, connection);
                         order = new Order(orderID, userId, room, timestampStart, timestampEnd);
                         dbFunctionality.addOrder(order, connection);
-                        out.println("<p>You have successfully booked" + room.getRoomName());
+                        out.println("<p>You have successfully booked " + room.getRoomName());
                         addRedirectOnUserType(out, user.getUserType());
                         y++;
                         //todo fix email
