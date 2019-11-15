@@ -16,11 +16,6 @@ form {
     display: inline-block;
     color: white;
 }
-
-table {
-    display: inline-block;
-    color: white;
-}
 input {
     color: black;
 }
@@ -140,20 +135,11 @@ textarea {
 }
 #reserveroomid {
     display: flex;
-    /*margin-bottom: 46px;*/
+    margin-bottom: 46px;
 }
 #Reserve_Room_ID {
     flex: 1;
 }
-
-#reserveRoomName {
-
-}
-
-#reserveRoomName h3 {
-    margin-top: 10px;
-}
-
 #label_roomid {
     padding-right: 30px;
 }
@@ -173,10 +159,6 @@ textarea {
 }
 #Reserve_Timestamp_end_date {
     flex: 1;
-}
-
-#Reserve_Timestamp_end_date {
-    background-color: #8e8e8e;
 }
 #label_end {
     padding-right: 11px;
@@ -228,28 +210,14 @@ textarea {
     border-color: #e6e6e6;
 }
 
-.room-result-container {
-    margin: 0.4em auto 0.4em;
-    color: black;
-}
-
-.room-result {
-    margin: 0.4em auto 0.4em;
-    border: solid black;
-    width: 50%;
-    padding-bottom: 0.3em;
-}
-
-.quick-reserve {
-    margin-bottom: 0.3em;
-}
-
-#multiple-reservation-selection {
-    margin: 1em auto 1em;
-    color: black;
-}
-
 #collapseExample input {
     width: 100%;
     clear: both;
+}
+
+
+
+    border-radius: 1em;
+    padding-top: 0.8em;
+    margin: auto auto 1em;
 }

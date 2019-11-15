@@ -4,7 +4,6 @@ import Classes.UserType;
 import javax.servlet.http.*;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Enumeration;
 
 /**
@@ -282,18 +281,5 @@ public abstract class AbstractServlet extends HttpServlet {
         userTypeCookie.setPath("/");
 
         return userTypeCookie;
-    }
-
-    void closeConnection(Connection connection) {
-        try {
-            assert connection != null;
-            if (connection.isClosed()) {
-                System.out.println("connection closed");
-            } else {
-                System.out.println(connection + "is not closed");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 }

@@ -5,15 +5,10 @@
     <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="roombooking.css">
     <meta charset="utf-8">
+
 </head>
 <body>
-<!-- Loading jQuery first to redirect non-admin users -->
-<script
-        src="https://code.jquery.com/jquery-3.4.1.js"
-        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
-        crossorigin="anonymous">
-</script>
-<script type="text/javascript" src="redirect-non-admin.js"></script>
+<script src="redirect-non-admin.js"></script>
 <!-- The Navigation bar for the webpage. -->
 <nav class="navbar navbar-default">
     <div class="container-fluid">
@@ -81,10 +76,9 @@
                 aria-controls="#collapseDeleteRoom">Delete a room
         </button>
         <!-- Reserve a room collapse button -->
-        <button class="btn btn-success btn-lg" id="reserve_Room" data-toggle="collapse" href="#collapseReserveRoom" role="button"
-                onclick="$('#reserve_Room')" aria-controls="#collapseReserveRoom">Reserve a room
+        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseReserveRoom" role="button"
+                onclick="$('#reserve_Room')"   aria-controls="#collapseReserveRoom">Reserve a room
         </button>
-
         <!-- Delete a room collapse button -->
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseCancelRoom" role="button"
                 aria-controls="#collapseCancelRoom">Cancel a booking
@@ -105,7 +99,7 @@
         </div>
     </form>
 </div>
-<!-- Form for Add a room -->
+<!-- Form for Add a room TODO: Ikke legg til roomID selv? burde autoinkrementere-->
 <div class="collapse container" id="collapseAddRoom">
     <form action="./Servlets.ServletRoomOptions" method="post">
         <h1>Add a room</h1>
@@ -166,12 +160,9 @@
 <div class="collapse container" id="collapseReserveRoom">
     <form action="./Servlets.ServletRoomBooking" method="post">
         <h1>Reserve a room</h1>
-        <div id="reserveRoomName">
-            <h3 id="Reserve_Room_Name"> No Room chosen</h3>
-        </div>
         <div id="reserveroomid">
-            <label style="display: none" for="Reserve_Room_ID" id="label_roomid"> Room ID</label>
-            <input type="hidden" id="Reserve_Room_ID" name="Reserve_Room_ID">
+            <label for="Reserve_Room_ID" id="label_roomid"> Room ID</label>
+            <input type="text" id="Reserve_Room_ID" name="Reserve_Room_ID">
         </div>
 
         <div id="reserve_start">
@@ -196,16 +187,13 @@
                        min="08:00" max="22:00" onfocusout="checkInputEnd(event)"/>
             </span>
         </div>
-
-        <div id="multiple-reservation-selection">
-            <select name="period">
-                <option selected value="0">Only one time</option>
-                <option value="1">Each week</option>
-                <option value="2">Each second week</option>
-                <option value="3">Each third week</option>
-                <option value="4">Each month</option>
-            </select>
-        </div>
+        <select name="period">
+            <option selected value="0">Only one time</option>
+            <option value="1">Each week</option>
+            <option value="2">Each second week</option>
+            <option value="3">Each third week</option>
+            <option value="4">Each month</option>
+        </select>
 
         <div class="book-start-datetimes" style="display: none;">
         </div>
@@ -289,6 +277,11 @@
     <button style="color: black;">Next day</button>
 </div>
 
+
+<script
+        src="https://code.jquery.com/jquery-3.4.1.js"
+        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+        crossorigin="anonymous"></script>
 <script src="bootstrap.js"></script>
 <script src="date-time-reserve.js"></script>
 <script src="date-time-update.js"></script>

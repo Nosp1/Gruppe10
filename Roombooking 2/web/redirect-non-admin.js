@@ -1,4 +1,4 @@
-$(document.head).ready(function() {
+$('head').ready(function() {
     var cookies = document.cookie;
     console.log(cookies);
     if(!cookies.includes("ADMIN")) {
