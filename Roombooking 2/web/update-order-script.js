@@ -1,7 +1,7 @@
 $.ajaxSetup({cache: false});
 
 $(function() {
-    $(document.body)
+    $(document).ready($("#collapseUpdateBooking")
         .append(`<div id="searchResult" hidden>
                     <div style="color: black">Room is available:</div>
                 </div>
@@ -9,9 +9,8 @@ $(function() {
                     <button style="color: black;">Previous day</button>
                     <input type="date">
                     <button style="color: black;">Next day</button>
-                </div>`);
+                </div>`));
 });
-
 
 // Aktiveres når search-rooms knappen blir trykket på
 $('#navbar-search-button').on('click', function (evt) {
@@ -51,102 +50,6 @@ $("#calendar button:nth-of-type(2)").on('click', function () {
     showAllRooms();
 });
 
-$('#ListOfRooms').on('submit', function (evt) {
-    evt.preventDefault();
-    showAllRooms();
-});
-
-function showAllRooms() {
-    console.log("Show all rooms clicked");
-    const roomId = -1;
-    getRoomInfo(roomId);
-    $("#calendar").show();
-    $("#searchResult").show();
-}
-
-// PASTE CODE JEG SLETTA --------------------------------------------
-$('#collapseReserveRoom > form').on('submit', function(evt) {
-    // evt.preventDefault();
-    $('.book-start-datetimes').html('');
-    $('.book-end-datetimes').html('');
-    console.log('SUBMIT!');
-    const fd = new FormData(evt.target);
-    for (let pair of fd.entries()) {
-        console.log(pair);
-    }
-    const startDate = $('#Reserve_Timestamp_start_date').val();
-    const startTime = $('#Reserve_Timestamp_start_time').val();
-    const endDate = $('#Reserve_Timestamp_end_date').val();
-    const endTime = $('#Reserve_Timestamp_end_time').val();
-    const periodMode = +$(evt.target).find('select[name="period"]').val();
-    const startDateTimes = getDatePeriodRange(startDate, startTime, periodMode);
-    const endDateTimes = getDatePeriodRange(endDate, endTime, periodMode);
-    startDateTimes.forEach(item => {
-        const el = $(`<input type="checkbox" name="start-datetimes" value="${item}" checked>`);
-        $('.book-start-datetimes').append(el);
-    });
-    endDateTimes.forEach(item => {
-        const el = $(`<input type="checkbox" name="end-datetimes" value="${item}" checked>`);
-        $('.book-end-datetimes').append(el);
-    });
-});
-
-function getAmountDaysBeforeSemesterEnd(currentDate) {
-    // const currentDate = new Date();
-    const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth() + 1;
-    let endDate;
-    if (currentMonth <= 7) {
-        endDate = new Date(currentYear, 6, 31);
-    } else {
-        endDate = new Date(currentYear, 11, 31);
-    }
-    const utc1 = Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
-    const utc2 = Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
-    const dayAmount = Math.floor((utc2 - utc1) / (1000 * 60 * 60 * 24));
-    return dayAmount;
-}
-
-function getDatePeriodRange(date, time, k)  {
-    const dateArr = date.split("-").map(item => +item);
-    const timeArr = time.split(":").map(item => +item);
-    const amountDays = getAmountDaysBeforeSemesterEnd(new Date(dateArr[0], dateArr[1] - 1, dateArr[2]));
-
-    const result = [];
-    i = 0;
-    do {
-        const delta = i * 7 * k;
-        const d = new Date(dateArr[0], dateArr[1] - 1, dateArr[2] + delta, timeArr[0], timeArr[1]);
-        let year = d.getFullYear();
-        let month = d.getMonth() + 1;
-        let day = d.getDate();
-        month = month < 10 ? ('0' + month) : month;
-        day = day < 10 ? ('0' + day) : day;
-        let hours = d.getHours();
-        let minutes = d.getMinutes();
-        hours = hours < 10 ? ('0' + hours) : hours;
-        minutes = minutes < 10 ? ('0' + minutes) : minutes;
-        const newDate = year + '-' + month + '-' + day;
-        const newTime = hours + ':' + minutes;
-        result.push(newDate + ' ' + newTime);
-        i++;
-        if (k === 0) {
-            break;
-        }
-    } while (i * 7 * k <= amountDays);
-    return result;
-}
-
-$('#reserve_Room').on('click', function (evt) {
-    evt.preventDefault();
-    console.log("show all rooms clicked");
-    const roomId = -1;
-    $("#calendar").show();
-    getRoomInfo(roomId);
-    $("#searchResult").show();
-});
-// PASTE CODE END --------------------------------------------
-
 function Room(roomID, roomName, availableTimes = []) {
     this.roomID = roomID;
     this.roomName = roomName;
@@ -158,10 +61,21 @@ function StartEndPair(pairStartTime, pairEndTime) {
     this.pairEndTime = pairEndTime;
 }
 
-let roomList = [];
+function displayCalendar() {
+    $('#calendar input[type="date"]').val((new Date()).toISOString().substring(0, 10));
+    $("#calendar").show();
+}
+
+function showAllRooms() {
+    console.log("Show all rooms clicked");
+    const roomId = -1;
+    getRoomInfo(roomId);
+    $("#calendar").show();
+    $("#searchResult").show();
+}
 
 function getRoomInfo(roomId) {
-    roomList = [];
+    let roomList = [];
     // if (roomId < 0) {
     // return alert("Room number is not correct! RoomID be higher than 0.");
     // }
@@ -169,6 +83,7 @@ function getRoomInfo(roomId) {
     /* Konstruer en query for bruk av HTTP GET
        Vil f.eks bli 'roomID=1&date=2019-10-26
     */
+    //const query = `roomId=${roomId}&date=2019-11-13`;
     const query = `roomId=${roomId}&date=${date}`;
     console.log('/Roombooking_2_Web_exploded/Servlets.ServletSearch?' + query);
 
@@ -265,8 +180,6 @@ function getRoomInfo(roomId) {
                 console.log("startTime= ", startTime);
                 console.log("endTime= ", endTime);
                 formattedHTML += el;
-                formattedHTML += `<div class="quick-reserve"><a class="btn btn-success btn-lg" role="button"
-                                    onclick="scrollToReserve('${id}', '${mappedRooms[id]}', '${startTime}')">Select</a></div>`;
             });
             console.log("times= ", newRoom.availableTimes);
             // Closing div for every room-result in the loop
@@ -280,23 +193,26 @@ function getRoomInfo(roomId) {
     })
 }
 
-function scrollToReserve(roomIDToScrollTo, newRoomName, startTimeToSet) {
-    console.log("id to scroll to= ", roomIDToScrollTo);
-    let reserve = document.getElementById('collapseReserveRoom');
-    $(reserve).collapse('show');
-    $("#Reserve_Room_ID").val(roomIDToScrollTo);
-    document.getElementById("Reserve_Room_Name").innerText = newRoomName;
-    document.getElementById("Reserve_Timestamp_start_time").value = startTimeToSet;
+function scrollToUpdate(nthButton, newRoomName, setNewStartTime, setRoomID) {
+    displayCalendar();
+    getRoomInfo(setRoomID);
+    console.log("button to scroll to= ", nthButton);
+    let update = document.getElementById('collapseUpdateBooking');
+    $(update).collapse('show');
+    $("#Update_orderID").val(nthButton);
+    document.getElementById("Update_roomName").innerText = newRoomName;
+    document.getElementById("Update_Timestamp_start_time").value = setNewStartTime;
 
-    document.getElementById("Reserve_Timestamp_end_time").value = startTimeToSet;
+    document.getElementById("Update_Timestamp_end_time").value = setNewStartTime;
     // stepUp increments the minutes of a time-field by a set amount, in this case 120 minutes.
-    document.getElementById("Reserve_Timestamp_end_time").stepUp(120);
+    document.getElementById("Update_Timestamp_end_time").stepUp(120);
 
     let date = getCalendarDate();
-    document.getElementById("Reserve_Timestamp_start_date").value = date;
-    document.getElementById("Reserve_Timestamp_end_date").value = date;
+    document.getElementById("Update_Timestamp_start_date").value = date;
+    document.getElementById("Update_Timestamp_end_date").value = date;
 
-    reserve.scrollIntoView({behavior: "smooth"});
+    update.scrollIntoView({block: "center", inline: "nearest", behavior: "smooth"});
+    //update.scrollIntoView({behavior: "smooth"});
 }
 
 function getCalendarDate() {

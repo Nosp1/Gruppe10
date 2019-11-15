@@ -176,7 +176,7 @@ public abstract class AbstractServlet extends HttpServlet {
         out.println("<!DOCTYPE html>\n" +
                 "<html lang=\"en\">\n" +
                 "<head>\n" +
-                "    <title>loggedIn</title>\n" +
+                "    <title>Logged In</title>\n" +
                 "    <link rel=\"stylesheet\" type=\"text/css\" href=\"css/bootstrap.css\">\n" +
                 "    <link rel=\"stylesheet\" type=\"text/css\" href=\"roombooking.css\">\n" +
                 "    <meta charset=\"utf-8\">\n" +
