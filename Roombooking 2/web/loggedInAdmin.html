@@ -5,7 +5,10 @@
     <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="roombooking.css">
     <meta charset="utf-8">
-
+    <script
+            src="https://code.jquery.com/jquery-3.4.1.js"
+            integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+            crossorigin="anonymous"></script>
 </head>
 <body>
 <script src="redirect-non-admin.js"></script>
@@ -87,6 +90,16 @@
         <!-- Update a booking collapse button -->
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseUpdateBooking" role="button"
                 aria-controls="#collapseUpdateBooking">Update a booking
+        </button>
+
+        <!-- Most active users collapse button -->
+        <button class="btn btn-success btn-lg" id="mostActiveUsers" data-toggle="collapse" href="#collapseMostActiveUsers" role="button"
+                aria-controls="#collapseMostActiveUsers">Most active users
+        </button>
+
+        <!-- Most booked room collapse button -->
+        <button class="btn btn-success btn-lg" id="mostBookedRoom" data-toggle="collapse" href="#collapseMostBookedRoom" role="button"
+                aria-controls="#collapseMostBookedRoom">Most booked room
         </button>
     </div>
 </div>
@@ -278,10 +291,6 @@
 </div>
 
 
-<script
-        src="https://code.jquery.com/jquery-3.4.1.js"
-        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
-        crossorigin="anonymous"></script>
 <script src="bootstrap.js"></script>
 <script src="date-time-reserve.js"></script>
 <script src="date-time-update.js"></script>

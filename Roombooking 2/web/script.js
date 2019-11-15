@@ -11,6 +11,7 @@ $(function() {
         "</div>");
 });
 
+
 $('#navbar-search-button').on('click', function() {
     const roomID = $('#navbar-search-input').val();
     if (roomID < 0) {
@@ -149,10 +150,6 @@ function getDatePeriodRange(date, time, k)  {
     });
 
 
-
-
-
-
 function getRoomInfo(roomId) {
    // if (roomId < 0) {
        // return alert("Room number is not correct! RoomID be higher than 0.");
@@ -233,3 +230,42 @@ function getRoomInfo(roomId) {
         }
     })
 }
+
+if (document.getElementById('mostBookedRoom')) {
+    document.getElementById('mostBookedRoom').addEventListener('click', () => {
+        if ($('[data-room-id]').length) {
+            $('[data-room-id]').remove();
+            return;
+        }
+        $.get('/Roombooking_2_Web_exploded/Servlets.ServletMostPopularRooms', response => {
+            const data = JSON.parse(response);
+            $('[data-room-id]').remove();
+            data.forEach(roomData => {
+                const text = `The most popular room is ${roomData.roomName} with amount of booking ${roomData.amount} `;
+                const el = $("<div>" + text + "</div>");
+                el.attr('data-room-id', roomData.roomId);
+                $('body').append(el);
+            });
+        });
+    });
+}
+
+if (document.getElementById('mostActiveUsers')) {
+    document.getElementById('mostActiveUsers').addEventListener('click', () => {
+            if ($('[data-user-id]').length) {
+                $('[data-user-id]').remove();
+                return;
+            }
+            $.get('/Roombooking_2_Web_exploded/Servlets.ServletMostPopularUsers', response => {
+            const data = JSON.parse(response);
+            data.forEach(userData => {
+                const text = `The most popular user is ${userData.userName} with amount of booking ${userData.amount} `;
+                const el = $("<div>" + text + "</div>");
+                el.attr('data-user-id', userData.userId);
+                $('body').append(el);
+            });
+        });
+    });
+}
+
+

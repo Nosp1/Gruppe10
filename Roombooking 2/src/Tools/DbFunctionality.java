@@ -489,7 +489,7 @@ public class DbFunctionality {
     public ResultSet getMostBookedRoom(int howMany, Connection connection) throws SQLException {
         PreparedStatement selectBookedRoom;
         //TODO: teste metoden og implementere i en Servlet
-        String select = "SELECT room_id, COUNT(*) as amount FROM `order` GROUP BY room_id ORDER BY amount DESC LIMIT ?";
+        String select = "SELECT order.room_id, rooms.room_name, COUNT(*) as amount FROM `order` LEFT JOIN rooms ON rooms.Room_ID = order.Room_ID GROUP BY room_id ORDER BY amount DESC LIMIT ?";
         selectBookedRoom = connection.prepareStatement(select);
         selectBookedRoom.setInt(1, howMany);
 
@@ -520,7 +520,7 @@ public class DbFunctionality {
     public ResultSet getMostActiveUsers(int howMany, Connection connection) throws SQLException {
         PreparedStatement selectActiveUsers;
         //TODO: teste metoden og implementere i en Servlet
-        String select = "SELECT user_id, COUNT(*) as amount FROM `order` GROUP BY user_id ORDER BY amount DESC LIMIT ?";
+        String select = "SELECT user.user_id, user.User_firstName, user.User_lastName, COUNT(*) as amount FROM `order` LEFT JOIN user ON user.User_ID = order.User_ID GROUP BY user_id ORDER BY amount DESC LIMIT ?";
         selectActiveUsers = connection.prepareStatement(select);
         selectActiveUsers.setInt(1, howMany);
 
