@@ -266,7 +266,7 @@ function getRoomInfo(roomId) {
                 console.log("endTime= ", endTime);
                 formattedHTML += el;
                 formattedHTML += `<div class="quick-reserve"><a class="btn btn-success btn-lg" role="button"
-                                    onclick="scrollToReserve('${id}', '${mappedRooms[id]}', '${startTime}')">Reserve</a></div>`;
+                                    onclick="scrollToReserve('${id}', '${mappedRooms[id]}', '${startTime}')">Select</a></div>`;
             });
             console.log("times= ", newRoom.availableTimes);
             // Closing div for every room-result in the loop
