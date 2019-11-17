@@ -8,7 +8,6 @@ import Classes.Rooms.AbstractRoom;
 import Classes.User.AbstractUser;
 import Tools.DbFunctionality;
 import Tools.DbTool;
-import org.apache.commons.dbutils.DbUtils;
 
 import javax.mail.Session;
 import javax.servlet.annotation.WebServlet;
@@ -139,12 +138,27 @@ public class ServletRoomBooking extends AbstractPostServlet {
                                 order.getBookingStartTime() + " to " + order.getBookingEndTime();
                         
                         System.out.println(notAvailableErrorMessage);
+                        // Deles opp etter new line for å vise beskjeden på hver sin linje
                         String[] parts = notAvailableErrorMessage.split("\\n");
                         for(String s : parts) {
                             out.println("<p>" + s + "</p>");
                         }
                         AbstractUser user = dbFunctionality.getUser(userName, connection);
-                        addRedirectOnUserType(out, user.getUserType());
+
+                        if(user.getUserType().toString().equals("ADMIN")) {
+                            out.println("<h4>Would you like to override it?</h4>");
+                            out.print("<form action=\"./Servlets.ServletOverride\" method=\"post\">" +
+                                    "        <div>\n" +
+                                    "            <input class=\"submit btn-default btn-lg\" type=\"submit\" name=\"confirm\" value=\"Yes\"></input>\n" +
+                                    "           </form>");
+                            httpSession.setAttribute("orderID", dbFunctionality.getOrderID(connection));
+                            httpSession.setAttribute("room", room);
+
+                            addRedirectOnUserTypeInline(out, user.getUserType());
+                            out.println("   </div>");
+                        } else {
+                            addRedirectOnUserType(out, user.getUserType());
+                        }
                     }
                 }
             }
@@ -232,18 +246,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            try {
-                DbUtils.closeQuietly(connection);
-                assert connection != null;
-                if (connection.isClosed()) {
-                    System.out.println("connection is closed ");
-                } else {
-                    System.out.println("connection is not closed");
-
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            closeConnection(connection);
         }
     }
 }
