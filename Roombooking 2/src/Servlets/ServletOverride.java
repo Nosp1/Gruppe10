@@ -36,10 +36,16 @@ public class ServletOverride extends AbstractPostServlet {
                 connection = dbTool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
 
+                // Sjekker om brukeren er en administrator, og returnerer feil om de ikke er det
+                AbstractUser user = dbFunctionality.getUser(userName, connection);
+                if (!isAdmin(user, connection)) {
+                    out.println("<h2> Error: you do not have access to admin.</h2>");
+                    addRedirectOnUserType(out, user.getUserType());
+                }
+
                 int orderID = (int) httpSession.getAttribute("orderID");
                 AbstractRoom room = (AbstractRoom) httpSession.getAttribute("room");
-
-                AbstractUser user = dbFunctionality.getUser(userName, connection);
+                
                 int userId = dbFunctionality.getUserId(userName, connection);
 
                 dbFunctionality.updateOrderOwner(orderID, userId, connection);
