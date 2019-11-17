@@ -143,6 +143,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
                         for(String s : parts) {
                             out.println("<p>" + s + "</p>");
                         }
+
                         AbstractUser user = dbFunctionality.getUser(userName, connection);
 
                         if(user.getUserType().toString().equals("ADMIN")) {
@@ -151,7 +152,8 @@ public class ServletRoomBooking extends AbstractPostServlet {
                                     "        <div>\n" +
                                     "            <input class=\"submit btn-default btn-lg\" type=\"submit\" name=\"confirm\" value=\"Yes\"></input>\n" +
                                     "           </form>");
-                            httpSession.setAttribute("orderID", dbFunctionality.getOrderID(connection));
+                            httpSession.setAttribute("order", dbFunctionality.getSpecificOrder(room.getRoomID(),
+                                                        order.getTimestampStart(), order.getTimestampEnd(), connection));
                             httpSession.setAttribute("room", room);
 
                             addRedirectOnUserTypeInline(out, user.getUserType());
