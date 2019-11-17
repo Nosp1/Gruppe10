@@ -558,9 +558,8 @@ public class DbFunctionality {
     }
 
     public void updateOrderInformation(Order order, Connection connection) throws SQLException {
+        System.out.println("update order information started");
         PreparedStatement updateOrderPS;
-
-        System.out.println("update order started");
 
         String updateOrder = "UPDATE `order` "
                 + "set Timestamp_start = ?, Timestamp_end = ?"
@@ -572,6 +571,18 @@ public class DbFunctionality {
         updateOrderPS.setInt(3, order.getID());
         updateOrderPS.execute();
 
+    }
+
+    public void updateOrderOwner(int orderID, int userID, Connection connection) throws SQLException {
+        System.out.println("updateOrderOwner started with: " + orderID + " and " + userID);
+        PreparedStatement updateOrderOwner;
+
+        String update = "UPDATE `order` set User_ID = ? WHERE Order_ID = ?;";
+
+        updateOrderOwner = connection.prepareStatement(update);
+        updateOrderOwner.setInt(1, userID);
+        updateOrderOwner.setInt(2, orderID-1);
+        updateOrderOwner.executeUpdate();
     }
 
     public ResultSet getMostActiveUsers(int howMany, Connection connection) throws SQLException {

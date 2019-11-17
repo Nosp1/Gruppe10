@@ -164,6 +164,7 @@
 
 <!-- Form for Reserve a room -->
 <div class="collapse container" id="collapseReserveRoom">
+
     <form action="./Servlets.ServletRoomBooking" method="post">
         <h1>Reserve a room</h1>
         <div id="reserveRoomName">
@@ -220,6 +221,12 @@
             <p> The time must be between 08:00 and 21:59 </p>
         </div>
     </form>
+
+    <div id="calendar" hidden>
+        <button style="color: black;">Previous day</button>
+        <input type="date">
+        <button style="color: black;">Next day</button>
+    </div>
 
 </div>
 <!-- Form for Cancel a booking -->
@@ -280,11 +287,6 @@
 
 <div id="searchResult" hidden>
     <div style="color: black">Room is available:</div>
-</div>
-<div id="calendar" hidden>
-    <button style="color: black;">Previous day</button>
-    <input type="date">
-    <button style="color: black;">Next day</button>
 </div>
 
 <script src="bootstrap.js"></script>

@@ -13,7 +13,9 @@ import java.util.Enumeration;
  * @author trym, brisdalen
  *
  */
-
+/* For the servlets to get redirected properly, the following annotation has to be provided:
+ @WebServlet(name = "Servlets.ServletName", urlPatterns = {"/Servlets.ServletName"})
+  */
 public abstract class AbstractServlet extends HttpServlet {
     /**
      * Method allows all children of  {@code AbstractServlet}
@@ -66,6 +68,17 @@ public abstract class AbstractServlet extends HttpServlet {
     }
 
     /**
+     *
+     * @param out The response body to write to
+     * @param redirectTo The html page you want to redirect to
+     */
+    void addRedirectButtonInline(PrintWriter out, String redirectTo) {
+        out.print("<button class=\"btn-default btn-lg submit\">\n" +
+                "                <a href=\"" + redirectTo + "\"> return</a>\n" +
+                "            </button>\n");
+    }
+
+    /**
      * Adds a redirection button back to the "home" page based on the user type
      * @param out
      * @param userType
@@ -79,6 +92,24 @@ public abstract class AbstractServlet extends HttpServlet {
 
             default:
                 addRedirectButton(out, "loggedIn.html");
+                break;
+        }
+    }
+
+    /**
+     * Adds a redirection button back to the "home" page based on the user type, without its own div
+     * @param out
+     * @param userType
+     */
+    void addRedirectOnUserTypeInline(PrintWriter out, UserType userType) {
+        switch(userType) {
+
+            case ADMIN:
+                addRedirectButtonInline(out, "loggedInAdmin.html");
+                break;
+
+            default:
+                addRedirectButtonInline(out, "loggedIn.html");
                 break;
         }
     }
