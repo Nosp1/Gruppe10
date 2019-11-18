@@ -62,11 +62,6 @@
                 aria-controls="#collapseEdit">Edit Profile Details
         </button>
 
-        <!-- Book grouproom collapse button -->
-        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseBook" role="button"
-                aria-controls="#collapseBookRoom">Book Grouproom
-        </button>
-
         <!-- My reservations collapse button -->
         <form action="./Servlets.ServletReservations" method="post">
             <button class="btn btn-success btn-lg" href="#collapseShow" role="button" name="action"
@@ -96,15 +91,6 @@
     </form>
 </div>
 
-<!-- Submit button for Book Grouproom -->
-<div class="collapse container" id="collapseBook">
-    <form action="./Servlets.ServletRoomOptions" method="post">
-        <h1>Book grouproom</h1>
-        <div>
-            <input class="submit btn-default btn-lg" type="submit" name="action" value="Show all rooms">
-        </div>
-    </form>
-</div>
 
 <!-- Submit button for My Reservations -->
 <div class="collapse container" id="collapseShow">
@@ -122,20 +108,21 @@
 
 <!-- Submit button for Report missing objects / false  -->
 <div class="collapse container" id="collapseReport">
-  <form action="./Servlets.ServletReport" method="post">
+    <form action="./Servlets.ServletReport" method="post">
         <h1>Report missing objects / false </h1>
-      <div>
-          <div>
-              <label for="Report_Room_ID">Room ID</label>
-          </div>
-          <input type="text" id="Report_Room_ID" name="Report_Room_ID">
-          <div>
-              <textarea rows="4" cols="50" placeholder="Skriv inn hva som mangler her" name="Report_TextArea"></textarea>
-          </div>
-      </div>
+        <div>
             <div>
-                <input class="submit btn-default btn-lg" type="submit" name="action" value="Report">
+                <label for="Report_Room_ID">Room ID</label>
             </div>
+            <input type="text" id="Report_Room_ID" name="Report_Room_ID">
+            <div>
+                <textarea rows="4" cols="50" placeholder="Skriv inn hva som mangler her"
+                          name="Report_TextArea"></textarea>
+            </div>
+        </div>
+        <div>
+            <input class="submit btn-default btn-lg" type="submit" name="action" value="Report">
+        </div>
     </form>
 </div>
 

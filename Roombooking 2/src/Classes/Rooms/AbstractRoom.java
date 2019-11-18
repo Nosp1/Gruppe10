@@ -12,6 +12,7 @@ public abstract class AbstractRoom {
     protected String roomBuilding;
     protected RoomType roomType;
     protected int maxCapacity;
+    protected int amount;
     protected boolean hasTavle;
     protected boolean hasProjektor;
 
@@ -22,6 +23,18 @@ public abstract class AbstractRoom {
         this.roomType = roomType;
         this.hasTavle = hasTavle;
         this.hasProjektor = hasProsjektor;
+    }
+    public AbstractRoom(int roomID, int amount) {
+        this.roomID = roomID;
+        this.amount = amount;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 
     public int getRoomID() {

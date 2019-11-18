@@ -73,7 +73,7 @@ public class DbFunctionality {
     }
 
     private void setUserType(int userID, String userType, PreparedStatement insertNewUser, PreparedStatement insertNewUserRegistry) throws SQLException {
-        switch(userType) {
+        switch (userType) {
             case "TEACHER":
                 insertNewUser.setInt(7, 2);
                 insertNewUserRegistry.setInt(1, userID);
@@ -178,10 +178,10 @@ public class DbFunctionality {
             //3 = admin
             if (userTypeID == 3) {
                 return new Admin(firstName, lastName, userName, password, dob);
-            //2 = teacher
-            } else if(userTypeID == 2) {
+                //2 = teacher
+            } else if (userTypeID == 2) {
                 return new Teacher(firstName, lastName, userName, password, dob);
-            // Ellers student
+                // Ellers student
             } else {
                 return new Student(firstName, lastName, userName, password, dob);
             }
@@ -226,7 +226,7 @@ public class DbFunctionality {
         Statement stmt = connection.createStatement();
         ResultSet result = stmt.executeQuery(select);
 
-        while(result.next()) {
+        while (result.next()) {
             return result.getInt("User_ID") + 1;
         }
 
@@ -353,7 +353,7 @@ public class DbFunctionality {
         String projektor = resultSet.getString("Projektor");
 
         boolean hasTavle;
-        switch(tavle) {
+        switch (tavle) {
 
             case "JA":
                 hasTavle = true;
@@ -365,7 +365,7 @@ public class DbFunctionality {
         }
 
         boolean hasProjektor;
-        switch(projektor) {
+        switch (projektor) {
 
             case "JA":
                 hasProjektor = true;
@@ -559,8 +559,16 @@ public class DbFunctionality {
     }
 
     // TODO: Dokumentere metodene under
-    public ResultSet getMostBookedRoom(Connection connection) throws SQLException {
-        return getMostBookedRoom(5, connection);
+    public AbstractRoom[] getMostBookedRoom(Connection connection) throws SQLException {
+         ResultSet mostBooked = getMostBookedRoom(5, connection);
+        AbstractRoom[] rooms = new AbstractRoom[5];
+        int counter = 0;
+        while (mostBooked.next()) {
+            int roomID = mostBooked.getInt(1);
+            int amount = mostBooked.getInt(2);
+            rooms[counter++] = new Grouproom(roomID,amount);
+        }
+        return rooms;
     }
 
     public ResultSet getMostBookedRoom(int howMany, Connection connection) throws SQLException {
@@ -573,8 +581,19 @@ public class DbFunctionality {
         return selectBookedRoom.executeQuery();
     }
 
-    public ResultSet getMostActiveUsers(Connection connection) throws SQLException {
-        return getMostActiveUsers(5, connection);
+    public AbstractUser[] getMostActiveUsers(Connection connection) throws SQLException {
+        ResultSet mostActive = getMostActiveUsers(5, connection);
+        AbstractUser[] users = new AbstractUser[5];
+        int counter = 0;
+        while(mostActive.next()) {
+            int userId = mostActive.getInt(1);
+            String firstName = mostActive.getString(2);
+            String lastName = mostActive.getString(3);
+            String userName = mostActive.getString(4);
+            int amount = mostActive.getInt(5);
+            users[counter++] = new Student(userId, firstName, lastName, userName, amount);
+        }
+        return users;
     }
 
     public void updateOrderInformation(Order order, Connection connection) throws SQLException {
@@ -608,10 +627,9 @@ public class DbFunctionality {
     public ResultSet getMostActiveUsers(int howMany, Connection connection) throws SQLException {
         PreparedStatement selectActiveUsers;
         //TODO: teste metoden og implementere i en Servlet
-        String select = "SELECT user_id, COUNT(*) as amount FROM `order` GROUP BY user_id ORDER BY amount DESC LIMIT ?";
+        String select = "SELECT user.user_id, user.User_firstName, user.User_lastName,user.User_email, COUNT(*) as amount FROM `order` LEFT JOIN user ON user.User_ID = `order`.User_ID GROUP BY user_id ORDER BY amount DESC LIMIT ?";
         selectActiveUsers = connection.prepareStatement(select);
         selectActiveUsers.setInt(1, howMany);
-
         return selectActiveUsers.executeQuery();
     }
 
@@ -713,8 +731,8 @@ public class DbFunctionality {
         //out.print(",[");
         json = json + ",[";
         int limit = roomNames.size();
-        for(int k = 0; k < limit; k++) {
-            if(k != limit-1) {
+        for (int k = 0; k < limit; k++) {
+            if (k != limit - 1) {
                 //out.print("\"" + roomNames.get(k) + "\",");
                 json = json + "\"" + roomNames.get(k) + "\",";
             } else {

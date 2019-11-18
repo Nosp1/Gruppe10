@@ -75,6 +75,7 @@ public class ServletReservations extends AbstractServlet {
             e.printStackTrace();
         } finally {
             DbUtils.closeQuietly(connection);
+            assert connection != null;
             closeConnection(connection);
         }
     }
