@@ -1,5 +1,6 @@
 package Servlets;
 
+import Classes.Order;
 import Classes.Rooms.AbstractRoom;
 import Classes.User.AbstractUser;
 import Tools.DbFunctionality;
@@ -43,12 +44,14 @@ public class ServletOverride extends AbstractPostServlet {
                     addRedirectOnUserType(out, user.getUserType());
                 }
 
-                int orderID = (int) httpSession.getAttribute("orderID");
+                Order order = (Order) httpSession.getAttribute("order");
+                System.out.println("[ServletOverride]Order ID: " + order.getID());
                 AbstractRoom room = (AbstractRoom) httpSession.getAttribute("room");
-                
-                int userId = dbFunctionality.getUserId(userName, connection);
 
-                dbFunctionality.updateOrderOwner(orderID, userId, connection);
+                int userId = dbFunctionality.getUserId(userName, connection);
+                System.out.println("[Servletoverride]UserID: " + userId);
+
+                dbFunctionality.updateOrderOwner(order.getID(), userId, connection);
                 out.println("<p>You have successfully booked " + room.getRoomName());
                 addRedirectOnUserType(out, user.getUserType());
             } else {

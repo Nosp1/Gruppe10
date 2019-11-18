@@ -415,6 +415,27 @@ public class DbFunctionality {
         // and store it in a ResultSet.
         ResultSet resultSet = selectOrder.executeQuery();
 
+        return returnOrder(resultSet, connection);
+    }
+
+    public Order getSpecificOrder(int requestedRoomID, Timestamp requestedTimestampStart, Timestamp requestedTimestampEnd, Connection connection) throws SQLException, ParseException {
+        System.out.println("getSpecificOrder started with: " + requestedRoomID + " " + requestedTimestampStart + " " + requestedTimestampEnd);
+        PreparedStatement selectOrder;
+        String select = "select * from `order` where Room_ID = ? AND Timestamp_start = ? AND Timestamp_end = ?;";
+
+        selectOrder = connection.prepareStatement(select);
+        selectOrder.setInt(1, requestedRoomID);
+        selectOrder.setTimestamp(2, requestedTimestampStart);
+        selectOrder.setTimestamp(3, requestedTimestampEnd);
+
+        ResultSet resultSet = selectOrder.executeQuery();
+
+        Order order = returnOrder(resultSet, connection);
+        System.out.println("Order returned: " + order.toString());
+        return returnOrder(resultSet, connection);
+    }
+
+    private Order returnOrder(ResultSet resultSet, Connection connection) throws SQLException, ParseException {
         // The resultSet's pointer starts at "nothing", so move it to the next (first, and only) element.
         resultSet.first();
         // Get and store the data in local variables,
@@ -431,7 +452,6 @@ public class DbFunctionality {
 
         return new Order(orderID, userID, room, timestampStart, timestampEnd);
     }
-
 
     public ResultSet getAllOrdersFromRoom(int roomID, Connection connection) throws SQLException {
         PreparedStatement selectOrders = null;
@@ -581,7 +601,7 @@ public class DbFunctionality {
 
         updateOrderOwner = connection.prepareStatement(update);
         updateOrderOwner.setInt(1, userID);
-        updateOrderOwner.setInt(2, orderID-1);
+        updateOrderOwner.setInt(2, orderID);
         updateOrderOwner.executeUpdate();
     }
 
