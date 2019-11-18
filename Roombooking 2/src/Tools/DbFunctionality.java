@@ -167,7 +167,7 @@ public class DbFunctionality {
             selectUser = connection.prepareStatement(select);
             selectUser.setString(1, requestedUserEmail);
             resultSet = selectUser.executeQuery();
-            resultSet.next();
+            resultSet.first();
             String firstName = resultSet.getString("User_firstName");
             String lastName = resultSet.getString("User_lastName");
             String userName = resultSet.getString("User_email");
@@ -210,7 +210,7 @@ public class DbFunctionality {
             getUser = connection.prepareStatement(query);
             getUser.setString(1, userEmail);
             resultSet = getUser.executeQuery();
-            resultSet.next();
+            resultSet.first();
             int result = Integer.parseInt(resultSet.getString(1));
             return result;
         } finally {
