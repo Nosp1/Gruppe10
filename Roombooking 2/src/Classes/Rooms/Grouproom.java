@@ -21,6 +21,10 @@ public class Grouproom extends AbstractRoom {
         super(roomID, roomName, roomBuilding, RoomType.GROUPROOM, tavle, prosjektor);
         setMaxCapacity(maxCapacity);
     }
+    public Grouproom (int roomID, int amount) {
+        super(roomID,amount);
+
+    }
 
     @Override
     public void setMaxCapacity(int maxCapacity) {

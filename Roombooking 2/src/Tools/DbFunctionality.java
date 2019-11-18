@@ -559,8 +559,16 @@ public class DbFunctionality {
     }
 
     // TODO: Dokumentere metodene under
-    public ResultSet getMostBookedRoom(Connection connection) throws SQLException {
-        return getMostBookedRoom(5, connection);
+    public AbstractRoom[] getMostBookedRoom(Connection connection) throws SQLException {
+         ResultSet mostBooked = getMostBookedRoom(5, connection);
+        AbstractRoom[] rooms = new AbstractRoom[5];
+        int counter = 0;
+        while (mostBooked.next()) {
+            int roomID = mostBooked.getInt(1);
+            int amount = mostBooked.getInt(2);
+            rooms[counter++] = new Grouproom(roomID,amount);
+        }
+        return rooms;
     }
 
     public ResultSet getMostBookedRoom(int howMany, Connection connection) throws SQLException {

@@ -81,7 +81,8 @@
                 aria-controls="#collapseDeleteRoom">Delete a room
         </button>
         <!-- Reserve a room collapse button -->
-        <button class="btn btn-success btn-lg" id="reserve_Room" data-toggle="collapse" href="#collapseReserveRoom" role="button"
+        <button class="btn btn-success btn-lg" id="reserve_Room" data-toggle="collapse" href="#collapseReserveRoom"
+                role="button"
                 onclick="$('#reserve_Room')" aria-controls="#collapseReserveRoom">Reserve a room
         </button>
 
@@ -93,6 +94,7 @@
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseUserStats" role="button"
                 aria-controls="#collapseUserStats"> Statistics
         </button>
+
 
         <!-- Update a booking collapse button
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseUpdateBooking" role="button"
@@ -298,6 +300,14 @@
             <input class="submit btn-default btn-lg" type="submit" name="action" value="Get most active users"/>
         </div>
     </form>
+    <div>
+        <form action="./Servlets.ServletStats" method="post">
+            <h1>Get most booked Room</h1>
+            <div>
+                <input class="submit btn-default btn-lg" type="submit" name="action" value="Get most booked room"/>
+            </div>
+        </form>
+    </div>
 </div>
 <div id="searchResult" hidden>
     <div style="color: black">Room is available:</div>
