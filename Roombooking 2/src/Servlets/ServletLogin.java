@@ -72,7 +72,7 @@ public class ServletLogin extends AbstractServlet {
                     UserType userType = user.getUserType();
                     response.addCookie(generateUserTypeCookie(userName, userType, response));
                     response.addCookie(generatePersistentUserTypeCookie(userName, userType, response, 60));
-                    //TODO: Bjørnar kandu fikse sånn at når man trykker på Home(roombooking i venstrehjørne) ikke bli redirected til gammel side uten admin funcs
+
                     switch(userType) {
 
                         case ADMIN:
