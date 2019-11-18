@@ -20,6 +20,7 @@ public abstract class AbstractUser {
     protected String password;
     protected UserType userType;
     protected ArrayList<Order> orders;
+    protected int amount;
 
 
     /*
@@ -37,8 +38,14 @@ public abstract class AbstractUser {
     }
 
     public AbstractUser(int userID, ArrayList<Order> orderList) {
-        this.userName = userName;
         this.orders = orderList;
+    }
+
+    public AbstractUser(int id, String firstName, String lastName, String userName, int amount) {
+        this.userName = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.amount = amount;
     }
 
     public void showOrders() {
@@ -48,25 +55,20 @@ public abstract class AbstractUser {
         }
     }
 
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
     public void showOrders(PrintWriter out) {
         // TODO: Endre til å vise rom navn, kanskje lage en display() i Order?
         //Viser orders
         int counter = 0;
         for (Order o : orders) {
             out.println(
-                    /*
-                    "<div class=\"container\">\n" +
-                            "<form>\n" +
-                            "<table>\n" +
-                            "        <tr>\n" +
-                            "            <td> \n " + " RoomID " + " " + o.getRoomID() + "</td>" + " " + " \n" +
-                            "            <td> \n " + " " + " From " + " " + o.getTimestampStart() + "  " + "</td>\n" +
-                                        "<td> \n" + " " + " To " + " " + o.getTimestampEnd() + " " + "</td>\n" +
-                            "        </tr>\n" +
-                            "</table>" +
-                            "</div>" +
-                            "</form>"
-                     */
                     "<div class=\"container reservation\">\n" +
                             "<form>\n" +
                             "<h3> Order number: " + (counter+1) + "</h3>" +

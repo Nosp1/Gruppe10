@@ -1,6 +1,7 @@
 package Servlets;
 
 
+import Classes.User.AbstractUser;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @WebServlet(name = "Servlets.ServletStats", urlPatterns = {"/Servlets.ServletStats"})
@@ -33,11 +35,30 @@ public class ServletStats extends AbstractServlet {
                 connection = dbTool.dbLogIn(out);
 
                 DbFunctionality dbFunctionality = new DbFunctionality();
-                char[] mostActive = dbFunctionality.getMostActiveUsers(connection);
-                for (char s : mostActive) {
-                    out.println(s);
-                }
+                AbstractUser[] users = dbFunctionality.getMostActiveUsers(connection);
+                int counter = 0;
+                out.println("<h1>" + "The most active users: " + " </h1>");
+                for (AbstractUser s : users) {
+                    out.println("<div class=\"container stats\">\n" +
+                            "<form>\n" +
+                            "<table>\n" +
+                            "    <thead>\n" +
+                            "        <tr>\n" +
+                            "            <th colspan=\"2\"> Ranking: " + (counter + 1) + " " + s.getUserName() + "</th>\n" +
+                            "        </tr>\n" +
+                            "    </thead>\n" +
+                            "    <tbody>\n" +
+                            "        <tr>\n" +
+                            "            <td>Amount: " + s.getAmount() + "</td>\n" +
+                            "        </tr>\n" +
+                            "    </tbody>\n" +
+                            "</table>\n" +
+                            "</form>\n" +
+                            "</div>" +
+                            "</div>");
+                    counter++;
 
+                }
             } else {
                 out.println("something went wrong");
             }
@@ -50,3 +71,4 @@ public class ServletStats extends AbstractServlet {
         }
     }
 }
+
