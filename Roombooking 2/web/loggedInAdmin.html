@@ -89,6 +89,10 @@
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseCancelRoom" role="button"
                 aria-controls="#collapseCancelRoom">Cancel a booking
         </button>
+        <!-- Get most active user collapse button -->
+        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseUserStats" role="button"
+                aria-controls="#collapseUserStats"> Statistics
+        </button>
 
         <!-- Update a booking collapse button -->
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseUpdateBooking" role="button"
@@ -284,7 +288,15 @@
         </div>
     </form>
 </div>
-
+<!-- Form for Geting most active user -->
+<div class="collapse container" id="collapseUserStats">
+    <form action="./Servlets.ServletStats" id="collapseStatsForm" method="post">
+        <h1>Get most active users </h1>
+        <div>
+            <input class="submit btn-default btn-lg" type="submit" name="action" value="Get most active users"/>
+        </div>
+    </form>
+</div>
 <div id="searchResult" hidden>
     <div style="color: black">Room is available:</div>
 </div>
