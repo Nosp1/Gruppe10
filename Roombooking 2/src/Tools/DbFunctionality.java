@@ -559,41 +559,71 @@ public class DbFunctionality {
     }
 
     // TODO: Dokumentere metodene under
-    public AbstractRoom[] getMostBookedRoom(Connection connection) throws SQLException {
-         ResultSet mostBooked = getMostBookedRoom(5, connection);
-        AbstractRoom[] rooms = new AbstractRoom[5];
-        int counter = 0;
-        while (mostBooked.next()) {
-            int roomID = mostBooked.getInt(1);
-            int amount = mostBooked.getInt(2);
-            rooms[counter++] = new Grouproom(roomID,amount);
+    public ArrayList<AbstractRoom> getMostBookedRoom(Connection connection) throws SQLException {
+        ResultSet mostBooked = null;
+        try {
+            mostBooked = getMostBookedRoom(5, connection);
+            ArrayList<AbstractRoom> rooms = new ArrayList<>();
+            int counter = 0;
+            int limit = 5;
+            while (mostBooked.next()) {
+                int roomID = mostBooked.getInt(1);
+                int amount = mostBooked.getInt(2);
+                rooms.add(new Grouproom(roomID, amount));
+            }
+            if(rooms.size() < limit) {
+                return rooms;
+            } else {
+                return (ArrayList<AbstractRoom>) rooms.subList(0, 5);
+            }
+        } finally {
+            assert mostBooked != null;
+            if (mostBooked.isClosed()) {
+                System.out.println(mostBooked + "is closed");
+            } else {
+                mostBooked.close();
+            }
         }
-        return rooms;
     }
 
     public ResultSet getMostBookedRoom(int howMany, Connection connection) throws SQLException {
-        PreparedStatement selectBookedRoom;
-        //TODO: teste metoden og implementere i en Servlet
-        String select = "SELECT room_id, COUNT(*) as amount FROM `order` GROUP BY room_id ORDER BY amount DESC LIMIT ?";
-        selectBookedRoom = connection.prepareStatement(select);
-        selectBookedRoom.setInt(1, howMany);
+        PreparedStatement selectBookedRoom = null;
+        try {
+            //TODO: teste metoden og implementere i en Servlet
+            String select = "SELECT room_id, COUNT(*) as amount FROM `order` GROUP BY room_id ORDER BY amount DESC LIMIT ?";
+            selectBookedRoom = connection.prepareStatement(select);
+            selectBookedRoom.setInt(1, howMany);
 
-        return selectBookedRoom.executeQuery();
+            return selectBookedRoom.executeQuery();
+        } finally {
+            assert selectBookedRoom != null;
+            selectBookedRoom.closeOnCompletion();
+        }
     }
 
     public AbstractUser[] getMostActiveUsers(Connection connection) throws SQLException {
-        ResultSet mostActive = getMostActiveUsers(5, connection);
-        AbstractUser[] users = new AbstractUser[5];
-        int counter = 0;
-        while(mostActive.next()) {
-            int userId = mostActive.getInt(1);
-            String firstName = mostActive.getString(2);
-            String lastName = mostActive.getString(3);
-            String userName = mostActive.getString(4);
-            int amount = mostActive.getInt(5);
-            users[counter++] = new Student(userId, firstName, lastName, userName, amount);
+        ResultSet mostActive = null;
+        try {
+            mostActive = getMostActiveUsers(5, connection);
+            AbstractUser[] users = new AbstractUser[5];
+            int counter = 0;
+            while (mostActive.next()) {
+                int userId = mostActive.getInt(1);
+                String firstName = mostActive.getString(2);
+                String lastName = mostActive.getString(3);
+                String userName = mostActive.getString(4);
+                int amount = mostActive.getInt(5);
+                users[counter++] = new Student(userId, firstName, lastName, userName, amount);
+            }
+            return users;
+        } finally {
+            assert mostActive != null;
+            if (mostActive.isClosed()) {
+                System.out.println(mostActive + "is closed");
+            } else {
+                mostActive.close();
+            }
         }
-        return users;
     }
 
     public void updateOrderInformation(Order order, Connection connection) throws SQLException {

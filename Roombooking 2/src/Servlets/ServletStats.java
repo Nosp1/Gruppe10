@@ -13,9 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  *  Servlet Stats handles the query and prints the statistical results stored in our database
@@ -28,7 +30,7 @@ import java.sql.SQLException;
 public class ServletStats extends AbstractServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Connection connection;
+        Connection connection = null;
         try (PrintWriter out = response.getWriter()) {
             //Prints Start of html and top Navbar.
             printLoggedInNav(out);
@@ -81,7 +83,7 @@ public class ServletStats extends AbstractServlet {
                 connection = dbTool.dbLogIn(out);
                 //run query on the database
                 DbFunctionality dbFunctionality = new DbFunctionality();
-                AbstractRoom[] rooms = dbFunctionality.getMostBookedRoom(connection);
+                ArrayList<AbstractRoom> rooms = dbFunctionality.getMostBookedRoom(connection);
                 //initialise counter
                 int counter = 0;
                 //prints the beginning of body
@@ -113,14 +115,22 @@ public class ServletStats extends AbstractServlet {
             } else {
                 out.println("something went wrong");
             }
-
-           addHomeLoggedInButton(out);
+            System.out.println("got here");
+            //prints return button to logged in homepage
+            addRedirectButton(out,"loggedInAdmin.html");
             addBootStrapFunctionality(out);
             loadJSScripts(out);
             out.print("</body>");
             out.print("</html>");
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                assert connection != null;
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
