@@ -167,7 +167,7 @@ public class DbFunctionality {
             selectUser = connection.prepareStatement(select);
             selectUser.setString(1, requestedUserEmail);
             resultSet = selectUser.executeQuery();
-            resultSet.next();
+            resultSet.first();
             String firstName = resultSet.getString("User_firstName");
             String lastName = resultSet.getString("User_lastName");
             String userName = resultSet.getString("User_email");
@@ -210,7 +210,7 @@ public class DbFunctionality {
             getUser = connection.prepareStatement(query);
             getUser.setString(1, userEmail);
             resultSet = getUser.executeQuery();
-            resultSet.next();
+            resultSet.first();
             int result = Integer.parseInt(resultSet.getString(1));
             return result;
         } finally {
@@ -574,7 +574,12 @@ public class DbFunctionality {
             if(rooms.size() < limit) {
                 return rooms;
             } else {
-                return (ArrayList<AbstractRoom>) rooms.subList(0, 5);
+                ArrayList<AbstractRoom> returnArray = new ArrayList<>();
+                for(int i = 0; i < 5; i++) {
+                    returnArray.add(rooms.get(i));
+                }
+
+                return returnArray;
             }
         } finally {
             assert mostBooked != null;
@@ -712,6 +717,7 @@ public class DbFunctionality {
     }
 
     public void searchOrders(int roomId, String date, PrintWriter out, Connection connection) throws SQLException {
+        System.out.println("[DbFunc]searchOrders started");
         String strSelect = null;
         if (roomId < 0) {
             strSelect = "SELECT * FROM `order` WHERE DATE_FORMAT(Timestamp_start, '%Y-%m-%d') = '" + date + "'";
@@ -741,6 +747,7 @@ public class DbFunctionality {
             String roomNumbers = "";
             int j = 0;
             while (resultSet.next()) {
+                System.out.println("[DbFunc] while-loop started");
                 if (j > 0) {
                     roomNumbers = roomNumbers + ",";
                 }
@@ -749,29 +756,35 @@ public class DbFunctionality {
                 roomNames.add(resultSet.getString("Room_name"));
             }
             if (i == 0) {
+                System.out.println("[DbFunc]i == 0");
                 //out.print("[" + roomNumbers + "]");
                 json = json + "[" + roomNumbers + "]";
             } else {
+                System.out.println("[DbFunc] i != 0");
                 //out.print(",[" + roomNumbers + "]");
                 json = json + ",[" + roomNumbers + "]";
             }
         }
-        // Create a list of room names in the JSON object
-
-        //out.print(",[");
-        json = json + ",[";
-        int limit = roomNames.size();
-        for (int k = 0; k < limit; k++) {
-            if (k != limit - 1) {
-                //out.print("\"" + roomNames.get(k) + "\",");
-                json = json + "\"" + roomNames.get(k) + "\",";
-            } else {
-                //out.print("\"" + roomNames.get(k) + "\"");
-                json = json + "\"" + roomNames.get(k) + "\"";
+        // Create a list of room names in the JSON object, if more than one room is requested
+        if(roomId < 0) {
+            //out.print(",[");
+            json = json + ",[";
+            int limit = roomNames.size();
+            System.out.println("[DbFunc] limit: " + limit);
+            for (int k = 0; k < limit; k++) {
+                if (k != limit - 1) {
+                    System.out.println("[DbFunc]if line 740");
+                    //out.print("\"" + roomNames.get(k) + "\",");
+                    json = json + "\"" + roomNames.get(k) + "\",";
+                } else {
+                    System.out.println("[DbFunc]else line 744");
+                    //out.print("\"" + roomNames.get(k) + "\"");
+                    json = json + "\"" + roomNames.get(k) + "\"";
+                }
             }
+            //out.print("]");
+            json = json + "]";
         }
-        //out.print("]");
-        json = json + "]";
 
         // Closing JSON bracket
         //out.print("]");
