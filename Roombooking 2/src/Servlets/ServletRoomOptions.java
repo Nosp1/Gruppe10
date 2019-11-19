@@ -4,7 +4,6 @@ import Classes.Rooms.AbstractRoom;
 import Classes.Rooms.Auditorium;
 import Classes.Rooms.Grouproom;
 import Classes.User.AbstractUser;
-import Classes.UserType;
 import Tools.DbFunctionality;
 import Tools.DbTool;
 import org.apache.commons.dbutils.DbUtils;
@@ -61,7 +60,20 @@ public class ServletRoomOptions extends AbstractPostServlet {
                     //retrieves the room capacity from the text-box Room Capacity
                     int maxCapacity = Integer.parseInt(request.getParameter("maxCapacity"));
                     System.out.println("maxCapacity: " + maxCapacity);
-                    String roomType = request.getParameter("typeRooms").toUpperCase();
+                    String roomType = request.getParameter("typeRooms");
+
+                    if(roomType == null) {
+                        if(maxCapacity <= 12) {
+                            roomType = "GROUPROOM";
+                        } else if(maxCapacity >= 13 && maxCapacity <= 30) {
+                            roomType = "CLASSROOM";
+                        } else {
+                            roomType = "AUDITORIUM";
+                        }
+                    } else {
+                        roomType = roomType.toUpperCase();
+                    }
+
                     boolean hasTavle = false;
                     boolean hasProjektor = false;
                 /*retrieves the checkbox values for "hasTavle" and "hasProsjektor", not sent
