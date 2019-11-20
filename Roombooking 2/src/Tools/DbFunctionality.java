@@ -344,6 +344,7 @@ public class DbFunctionality {
         int roomID = resultSet.getInt("Room_ID");
         //System.out.println("getOrder orderID: " + orderID);
         String roomName = resultSet.getString("Room_name");
+        System.out.println("[DbFunc getRoom]roomName: " + roomName);
         //System.out.println("getOrder userID: " + userID);
         String roomBuilding = resultSet.getString("Room_building");
         //System.out.println("getOrder roomID: " + roomID);
@@ -726,6 +727,8 @@ public class DbFunctionality {
         }
         PreparedStatement statement = connection.prepareStatement(strSelect);
         ResultSet resultSet = statement.executeQuery(strSelect);
+        resultSet.first();
+        AbstractRoom room = getRoom(resultSet.getInt("Room_ID"), connection);
         ArrayList<String> roomNames = new ArrayList<>();
         // Opening JSON bracket
         String json = "[";
@@ -737,7 +740,7 @@ public class DbFunctionality {
                 json = json + ",";
             }
             //out.print("{\"roomId\":" + resultSet.getInt("Room_ID") + ",\"start\": \"" + resultSet.getTimestamp("Timestamp_start") + "\", \"end\": \"" + resultSet.getTimestamp("Timestamp_end") + "\"}");
-            json = json + "{\"roomId\":" + resultSet.getInt("Room_ID") + ",\"start\": \"" + resultSet.getTimestamp("Timestamp_start") + "\", \"end\": \"" + resultSet.getTimestamp("Timestamp_end") + "\"}";
+            json = json + "{\"roomId\":" + resultSet.getInt("Room_ID") + ",\"roomName\": \"" + room.getRoomName() + ",\"start\": \"" + resultSet.getTimestamp("Timestamp_start") + "\", \"end\": \"" + resultSet.getTimestamp("Timestamp_end") + "\"}";
             i++;
         }
         if (roomId < 0) {
