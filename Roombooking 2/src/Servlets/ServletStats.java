@@ -46,7 +46,7 @@ public class ServletStats extends AbstractServlet {
                 connection = dbTool.dbLogIn(out);
                 //Runs query towards the database
                 DbFunctionality dbFunctionality = new DbFunctionality();
-                AbstractUser[] users = dbFunctionality.getMostActiveUsers(connection);
+                ArrayList<AbstractUser> users = dbFunctionality.getMostActiveUsers(connection);
                 //initialise counter
                 int counter = 0;
                 //print the content inside the body:
@@ -74,6 +74,7 @@ public class ServletStats extends AbstractServlet {
                     counter++;
 
                 }
+
                 //prints the most used rooms
             } else if (action.contains("get most booked room")) {
                 //establish connection to the database
