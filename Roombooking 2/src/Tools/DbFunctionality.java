@@ -737,20 +737,20 @@ public class DbFunctionality {
         }
         PreparedStatement statement = connection.prepareStatement(strSelect);
         ResultSet resultSet = statement.executeQuery(strSelect);
-        resultSet.first();
-        AbstractRoom room = getRoom(resultSet.getInt("Room_ID"), connection);
+        //resultSet.first();
         ArrayList<String> roomNames = new ArrayList<>();
         // Opening JSON bracket
         String json = "[";
         //out.print("[");
         int i = 0;
         while (resultSet.next()) {
+            AbstractRoom room = getRoom(resultSet.getInt("Room_ID"), connection);
             if (i > 0) {
                 //out.print(",");
                 json = json + ",";
             }
             //out.print("{\"roomId\":" + resultSet.getInt("Room_ID") + ",\"start\": \"" + resultSet.getTimestamp("Timestamp_start") + "\", \"end\": \"" + resultSet.getTimestamp("Timestamp_end") + "\"}");
-            json = json + "{\"roomId\":" + resultSet.getInt("Room_ID") + ",\"roomName\": \"" + room.getRoomName() + ",\"start\": \"" + resultSet.getTimestamp("Timestamp_start") + "\", \"end\": \"" + resultSet.getTimestamp("Timestamp_end") + "\"}";
+            json = json + "{\"roomId\":" + resultSet.getInt("Room_ID") + ",\"roomName\": \"" + room.getRoomName() + "\",\"start\": \"" + resultSet.getTimestamp("Timestamp_start") + "\", \"end\": \"" + resultSet.getTimestamp("Timestamp_end") + "\"}";
             i++;
         }
         if (roomId < 0) {
