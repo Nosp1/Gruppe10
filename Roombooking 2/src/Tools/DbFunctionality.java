@@ -391,7 +391,6 @@ public class DbFunctionality {
             insertNewOrder.setTimestamp(3, order.getTimestampStart());
             insertNewOrder.setTimestamp(4, order.getTimestampEnd());
             insertNewOrder.execute();
-            // TODO ADD RECIEPT METHOD
         } finally {
             assert insertNewOrder != null;
             insertNewOrder.closeOnCompletion();
@@ -517,7 +516,6 @@ public class DbFunctionality {
         }
     }
 
-    //TODO closing works for this.
     public int getRoomID(Connection connection) throws SQLException {
         PreparedStatement selectRoomID = null;
         ResultSet resultSet = null;
@@ -560,20 +558,32 @@ public class DbFunctionality {
     }
 
     // TODO: Dokumentere metodene under
+
+    /**
+     * calls GetMostBookedRoom five times and constructs an ArrayList of Abstract rooms,
+     * @param connection is parsed from Servlet
+     * @return ArrayList with the five most booked rooms
+     * @throws SQLException when query fails
+     */
     public ArrayList<AbstractRoom> getMostBookedRoom(Connection connection) throws SQLException {
         ResultSet mostBooked = null;
         try {
+            //runs getMostBooked five times
             mostBooked = getMostBookedRoom(5, connection);
+            //initialises new ArrayList for storing of rooms
             ArrayList<AbstractRoom> rooms = new ArrayList<>();
-            int counter = 0;
+            //limit of the list
             int limit = 5;
+            //gets the room information and adds it to list
             while (mostBooked.next()) {
                 int roomID = mostBooked.getInt(1);
                 int amount = mostBooked.getInt(2);
                 rooms.add(new Grouproom(roomID, amount));
             }
+            //returns list if room is less than limit
             if(rooms.size() < limit) {
                 return rooms;
+                //returns a new list of five if there are more than five rooms
             } else {
                 ArrayList<AbstractRoom> returnArray = new ArrayList<>();
                 for(int i = 0; i < 5; i++) {
@@ -595,7 +605,6 @@ public class DbFunctionality {
     public ResultSet getMostBookedRoom(int howMany, Connection connection) throws SQLException {
         PreparedStatement selectBookedRoom = null;
         try {
-            //TODO: teste metoden og implementere i en Servlet
             String select = "SELECT room_id, COUNT(*) as amount FROM `order` GROUP BY room_id ORDER BY amount DESC LIMIT ?";
             selectBookedRoom = connection.prepareStatement(select);
             selectBookedRoom.setInt(1, howMany);
@@ -672,7 +681,6 @@ public class DbFunctionality {
 
     public ResultSet getMostActiveUsers(int howMany, Connection connection) throws SQLException {
         PreparedStatement selectActiveUsers;
-        //TODO: teste metoden og implementere i en Servlet
         String select = "SELECT user.user_id, user.User_firstName, user.User_lastName,user.User_email, COUNT(*) as amount FROM `order` LEFT JOIN user ON user.User_ID = `order`.User_ID GROUP BY user_id ORDER BY amount DESC LIMIT ?";
         selectActiveUsers = connection.prepareStatement(select);
         selectActiveUsers.setInt(1, howMany);
