@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 /**
  *  Servlet Stats handles the query and prints the statistical results stored in our database
- *  prints the most active users or the most active rooms.
+ *  prints the most active users or the most booked rooms.
  *
  * @author trym
  *
