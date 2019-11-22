@@ -112,7 +112,6 @@ public class ServletRoomBooking extends AbstractPostServlet {
                     if (available) {
                         // henter vi orderID, lager Order objektet på nytt og legger det til databasen.
                         int orderID = dbFunctionality.getOrderID(connection);
-                        // TODO ADD AUTOMATIC USERID
                         AbstractUser user = dbFunctionality.getUser(userName, connection);
                         int userId = dbFunctionality.getUserId(userName, connection);
                         order = new Order(orderID, userId, room, timestampStart, timestampEnd);
@@ -122,7 +121,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
                         y++;
                         //todo fix email
                         if (y > 1) {
-                            System.out.println("ignoreing email to many bookings");
+                            System.out.println("ignoring email to many bookings");
                         } else {
                             // Etter reservasjonen er lagt til i databasen sender vi en kvittering på epost.
                             Session session = tlsEmail.NoReplyEmail(user.getUserName());

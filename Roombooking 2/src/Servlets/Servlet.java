@@ -85,7 +85,6 @@ public class Servlet extends AbstractPostServlet {
                     dbFunctionality.addUser(newUser, connection);
                     out.println("<p> You have successfully registered</p>");
                     // Creates a redirect button and creates 2 cookies depending on the userType, sending you to different pages
-                    //TODO: kanskje til SWITCH seinere, om det blir flere userTypes?
                     if(userType.contains("ADMIN")) {
                         addRedirectButton(out, "loggedInAdmin.html");
                         response.addCookie(generateUserTypeCookie(email, UserType.ADMIN, response));

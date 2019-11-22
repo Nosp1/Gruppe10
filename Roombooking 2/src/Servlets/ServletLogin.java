@@ -54,7 +54,7 @@ public class ServletLogin extends AbstractServlet {
                 DbFunctionality dbFunctionality = new DbFunctionality();
                 //checks whether the users Email matches the stored password
                 if (dbFunctionality.checkUser(lowercaseUsername, password, connection)) {
-                    // If successful login TODO: make it pop-up
+                    // If successful login
                     System.out.println("success!");
                     invalidateOldSession(request);
 

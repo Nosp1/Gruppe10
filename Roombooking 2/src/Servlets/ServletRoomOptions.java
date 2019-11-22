@@ -159,7 +159,6 @@ public class ServletRoomOptions extends AbstractPostServlet {
 
             } else if (action.contains("gotoprofile")) {
                 ServletContext servletContext = getServletContext();
-                //todo Send session with Username
                 HttpSession session = request.getSession();
                 session.setAttribute("userEmail", userName);
                 servletContext.getRequestDispatcher("/profile.html").forward(request, response);
