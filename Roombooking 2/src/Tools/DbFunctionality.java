@@ -607,21 +607,31 @@ public class DbFunctionality {
         }
     }
 
-    public AbstractUser[] getMostActiveUsers(Connection connection) throws SQLException {
+    public ArrayList<AbstractUser> getMostActiveUsers(Connection connection) throws SQLException {
         ResultSet mostActive = null;
         try {
             mostActive = getMostActiveUsers(5, connection);
-            AbstractUser[] users = new AbstractUser[5];
+            ArrayList<AbstractUser> users = new ArrayList<>();
             int counter = 0;
+            int limit = 5;
             while (mostActive.next()) {
                 int userId = mostActive.getInt(1);
                 String firstName = mostActive.getString(2);
                 String lastName = mostActive.getString(3);
                 String userName = mostActive.getString(4);
                 int amount = mostActive.getInt(5);
-                users[counter++] = new Student(userId, firstName, lastName, userName, amount);
+                users.add( new Student(userId, firstName, lastName, userName, amount));
             }
-            return users;
+            if (users.size() < limit) {
+                return users;
+            } else {
+                ArrayList<AbstractUser> returnArray = new ArrayList<>();
+                for (int i = 0; i < 5; i++) {
+                    returnArray.add(users.get(i));
+                }
+                return returnArray;
+            }
+
         } finally {
             assert mostActive != null;
             if (mostActive.isClosed()) {
