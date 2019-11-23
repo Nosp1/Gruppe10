@@ -163,6 +163,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
                     }
                 }
             }
+
             if (action.contains("update")) {
                 // ID på hvilken order du vil endre hentes fra request.
                 String formOrderID = request.getParameter("Update_orderID");

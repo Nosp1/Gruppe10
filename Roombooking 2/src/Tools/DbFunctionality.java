@@ -495,7 +495,6 @@ public class DbFunctionality {
 
     }
 
-
     /**
      * @param orderID    The ID of the Order you want to delete
      * @param connection The Connection object with the connection to the database

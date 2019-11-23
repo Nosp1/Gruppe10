@@ -74,6 +74,16 @@ function showAllRooms() {
     $("#searchResult").show();
 }
 
+function cancelOrder(orderID) {
+    if(window.confirm("Do you really wish to cancel this order?")) {
+        let query = `action=cancel&orderID=${orderID}`;
+        console.log("[uos]cancelOrder query: " + '/Roombooking_2_Web_exploded/Servlets.ServletReservations?' + query);
+        $.post('/Roombooking_2_Web_exploded/Servlets.ServletReservations?' + query);
+
+        setTimeout(function() {location.reload()}, 1000);
+    }
+}
+
 function getRoomInfo(roomId) {
     let roomList = [];
     // if (roomId < 0) {
@@ -84,7 +94,7 @@ function getRoomInfo(roomId) {
        Vil f.eks bli 'roomID=1&date=2019-10-26
     */
     //const query = `roomId=${roomId}&date=2019-11-13`;
-    const query = `roomId=${roomId}&date=${date}`;
+    let query = `roomId=${roomId}&date=${date}`;
     console.log('/Roombooking_2_Web_exploded/Servlets.ServletSearch?' + query);
 
     $.get('/Roombooking_2_Web_exploded/Servlets.ServletSearch?' + query, function (response) {

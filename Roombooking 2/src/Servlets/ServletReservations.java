@@ -59,7 +59,24 @@ public class ServletReservations extends AbstractServlet {
                 user.showOrders(out);
                 addBootStrapFunctionality(out);
                 out.println("<script src=\"update-order-script.js\"></script>");
-            } else {
+            }
+
+
+            if(action.contains("cancel")) {
+                System.out.println("[ServletReservations]Cancel started");
+                int orderID = Integer.parseInt(request.getParameter("orderID"));
+                System.out.println("[ServletReservations]orderID received: " + orderID);
+
+                DbTool dbTool = new DbTool();
+                //Establishes connection to database
+                connection = dbTool.dbLogIn(out);
+                DbFunctionality dbFunctionality = new DbFunctionality();
+
+                dbFunctionality.deleteOrder(orderID, connection);
+                System.out.println("[ServletReservations]order deleted.");
+            }
+
+            else {
                 //adds a return button if the login fails.
 
                 addHomeButton(out);

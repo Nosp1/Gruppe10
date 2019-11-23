@@ -46,7 +46,7 @@ $("#calendar button:nth-of-type(2)").on('click', function () {
     showRoomsKeepUI();
 });
 
-$('#ListOfRooms').on('submit', function (evt) {
+$('#ListOfRooms').on('click', function (evt) {
     evt.preventDefault();
     showAllRooms();
 });

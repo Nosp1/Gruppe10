@@ -69,7 +69,7 @@ public abstract class AbstractUser {
         int counter = 0;
         for (Order o : orders) {
             out.println(
-                    "<div class=\"container reservation\">\n" +
+                    "<div class=\"container-reservation-order\">\n" +
                             "<form>\n" +
                             "<h3> Order number: " + (counter+1) + "</h3>" +
                             "<table>\n" +
@@ -87,10 +87,17 @@ public abstract class AbstractUser {
                             "    </tbody>\n" +
                             "</table>\n" +
                             "</form>\n" +
-                            "<div class=\"updateOrderButton\">" +
+                            "<div class=\"updateOrderButtonContainer\">" +
+                            "<span class=\"updateOrderButton\">" +
                             "    <button class=\"btn btn-success btn-lg\" role=\"button\"\n" +
-                            "            onclick=\"scrollToUpdate('" + o.getID() + "','" + o.getRoomName() + "','" + o.getBookingStartTime() + "','" + o.getRoomID() + "')\">Update a booking\n" +
+                            "            onclick=\"scrollToUpdate('" + o.getID() + "','" + o.getRoomName() + "','" + o.getBookingStartTime() + "','" + o.getRoomID() + "')\">Update this reservation\n" +
                             "    </button>" +
+                            "</span>" +
+                            "<span class =\"cancelOrderButton\">" +
+                            "   <button class=\"btn btn-success btn-lg\" role=\"button\"\n" +
+                            "            onclick=\"cancelOrder(" + o.getID() + ")\">Cancel this reservation\n" +
+                            "    </button>" +
+                            "</span>" +
                             "</div>" +
                             "</div>");
 
