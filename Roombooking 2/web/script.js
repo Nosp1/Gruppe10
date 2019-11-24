@@ -207,6 +207,7 @@ function getRoomInfo(roomId) {
         let roomIds = null;
         let roomNames = null;
         let first = true;
+
         data.forEach(room => {
             if (Array.isArray(room)) {
                 if(first) {
@@ -240,11 +241,14 @@ function getRoomInfo(roomId) {
             let newRoom = new Room();
             console.log('id = ', id);
             newRoom.roomID = id;
-            mappedRooms[id] = roomNames[counter];
-            newRoom.roomName = mappedRooms[id];
-            counter++;
-            console.log("newRoom id=", newRoom.roomID);
-            console.log("id to name=", mappedRooms[id]);
+            if(roomId < 0) {
+                mappedRooms[id] = roomNames[counter];
+                newRoom.roomName = mappedRooms[id];
+                counter++;
+
+                console.log("newRoom id=", newRoom.roomID);
+                console.log("id to name=", mappedRooms[id]);
+            }
             //$("#searchResult > div:last-child").append($(`<div style="color: black; margin-top: 10px;">Room = ${id}</div>`));
             formattedHTML += `<div class="room-result">`;
             formattedHTML += `<div style="color: black; margin-top: 10px;">${mappedRooms[id]}</div>`;
