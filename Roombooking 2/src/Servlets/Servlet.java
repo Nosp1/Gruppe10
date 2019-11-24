@@ -17,6 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -53,7 +54,8 @@ public class Servlet extends AbstractPostServlet {
                 //establish connection to database
                 Connection connection = dbtool.dbLogIn(out);
                 DbFunctionality dbFunctionality = new DbFunctionality();
-
+                HttpSession newSession = generateNewSession(request,20);
+                newSession.setAttribute("userEmail", email);
                 //generates a new user with the information from the form register
                 // Create a new user, and assign a role depending on the userType
 
@@ -83,7 +85,6 @@ public class Servlet extends AbstractPostServlet {
                     dbFunctionality.addUser(newUser, connection);
                     out.println("<p> You have successfully registered</p>");
                     // Creates a redirect button and creates 2 cookies depending on the userType, sending you to different pages
-                    //TODO: kanskje til SWITCH seinere, om det blir flere userTypes?
                     if(userType.contains("ADMIN")) {
                         addRedirectButton(out, "loggedInAdmin.html");
                         response.addCookie(generateUserTypeCookie(email, UserType.ADMIN, response));

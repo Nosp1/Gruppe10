@@ -5,6 +5,7 @@ import Classes.UserType;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  *
@@ -20,6 +21,7 @@ public abstract class AbstractUser {
     protected String password;
     protected UserType userType;
     protected ArrayList<Order> orders;
+    protected int amount;
 
 
     /*
@@ -37,8 +39,14 @@ public abstract class AbstractUser {
     }
 
     public AbstractUser(int userID, ArrayList<Order> orderList) {
-        this.userName = userName;
         this.orders = orderList;
+    }
+
+    public AbstractUser(int id, String firstName, String lastName, String userName, int amount) {
+        this.userName = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.amount = amount;
     }
 
     public void showOrders() {
@@ -48,23 +56,56 @@ public abstract class AbstractUser {
         }
     }
 
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
     public void showOrders(PrintWriter out) {
+        // TODO: Endre til å vise rom navn, kanskje lage en display() i Order?
         //Viser orders
+        int counter = 0;
+        Collections.reverse(orders);
         for (Order o : orders) {
             out.println(
-                    "<div class=\"container\">\n" +
+                    "<div class=\"container-reservation-order\">\n" +
                             "<form>\n" +
+                            "<h3> Order number: " + (counter+1) + "</h3>" +
                             "<table>\n" +
+                            "    <thead>\n" +
                             "        <tr>\n" +
-                            "            <td> \n " + " RoomID " + " " + o.getRoomID() + "</td>" + " " + " \n" +
-                            "            <td> \n " + " " + " From " + " " + o.getTimestampStart() + "  " + "</td>\n" +
-                                        "<td> \n" + " " + " To " + " " + o.getTimestampEnd() + " " + "</td>\n" +
+                            "            <th colspan=\"2\">Room: " + o.getRoomName() + "</th>\n" +
                             "        </tr>\n" +
-                            "</table>" +
+                            "    </thead>\n" +
+                            "    <tbody>\n" +
+                            "        <tr>\n" +
+                            "            <td>From: " + o.getBookingStart() + "</td>\n" +
+                                            // &nbsp betyr mellomrom
+                            "            <td>&nbspTo: " + o.getBookingEnd() + "</td>" +
+                            "        </tr>\n" +
+                            "    </tbody>\n" +
+                            "</table>\n" +
+                            "</form>\n" +
+                            "<div class=\"updateOrderButtonContainer\">" +
+                            "<span class=\"updateOrderButton\">" +
+                            "    <button class=\"btn btn-success btn-lg\" role=\"button\"\n" +
+                            "            onclick=\"scrollToUpdate('" + o.getID() + "','" + o.getRoomName() + "','" + o.getBookingStartTime() + "','" + o.getRoomID() + "','" + (counter+1) + "')\">Update this reservation\n" +
+                            "    </button>" +
+                            "</span>" +
+                            "<span class =\"cancelOrderButton\">" +
+                            "   <button class=\"btn btn-success btn-lg\" role=\"button\"\n" +
+                            "            onclick=\"cancelOrder(" + o.getID() + ")\">Cancel this reservation\n" +
+                            "    </button>" +
+                            "</span>" +
                             "</div>" +
-                            "</form>");
+                            "</div>");
 
+            counter++;
         }
+        Collections.reverse(orders);
     }
 
     @Override

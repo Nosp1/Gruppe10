@@ -15,6 +15,9 @@ public class Student extends AbstractUser {
         super(firstName,lastName,userName,dob,password,UserType.STUDENT);
 
     }
+    public Student(int id, String firstName, String lastName, String userName, int amount) {
+        super(id, firstName, lastName,userName, amount);
+    }
 
     public Student(int userId , ArrayList<Order> orderList) {
         super(userId,orderList);

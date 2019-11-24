@@ -1,8 +1,6 @@
 package Servlets;
 
-/**
- * @Author Henriette Andersen, Hanne Sjursen
- */
+
 
 
 import Reports.Report;
@@ -19,6 +17,9 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * @author Henriette Andersen, Hanne Sjursen
+ */
 @WebServlet(name = "Servlets.ServletReport", urlPatterns = {"/Servlets.ServletReport"})
 public class ServletReport extends AbstractPostServlet {
     @Override
@@ -29,7 +30,8 @@ public class ServletReport extends AbstractPostServlet {
 
             //prints start of html tags.
             printLoggedInNav(out);
-            out.println("<h2 class=\"report_processing\">Your report is under process../>");
+            out.println("<h2 class=\"report_processing\">Your report is sent</h2>");
+            out.println("<h2>Thank you for submitting a report</h2>");
             //gets the username -> email in this case.
             HttpSession session = request.getSession();
             String userName = (String) session.getAttribute("userEmail");
@@ -53,9 +55,11 @@ public class ServletReport extends AbstractPostServlet {
                 dbFunctionality.insertReport(newReport, connection);
             } else {
                 //adds a return button if the Report fails.
-
-                addHomeButton(out);
+                out.println("An error occured in sending the report, please try again");
+                addHomeLoggedInButton(out);
             }
+            out.println("  ");
+            addHomeLoggedInButton(out);
         } catch (IOException | SQLException e) {
             e.printStackTrace();
         }

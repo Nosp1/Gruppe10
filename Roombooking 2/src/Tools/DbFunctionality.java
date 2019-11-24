@@ -2,6 +2,7 @@ package Tools;
 
 import Classes.Order;
 import Classes.Rooms.AbstractRoom;
+import Classes.Rooms.Grouproom;
 import Classes.User.AbstractUser;
 import Classes.User.Admin;
 import Classes.User.Student;
@@ -58,23 +59,6 @@ public class DbFunctionality {
             insertNewUserRegistry = conn.prepareStatement(insUserRegistry);
             int userID = getNewUserID(conn);
             setUserType(userID, userType, insertNewUser, insertNewUserRegistry);
-            /*switch(userType) {
-                case "TEACHER":
-                    insertNewUser.setInt(7, 2);
-                    insertNewUserRegistry.setInt(userID, 2);
-                    break;
-
-                case "ADMIN":
-                    insertNewUser.setInt(7, 3);
-                    insertNewUserRegistry.setInt(userID, 3);
-                    break;
-
-                default:
-                    insertNewUser.setInt(7, 1);
-                    insertNewUserRegistry.setInt(userID, 1);
-                    break;
-            }*/
-            //insertNewUser.setString(7, String.valueOf(user.getUserType()));
             insertNewUser.execute();
             insertNewUserRegistry.execute();
 
@@ -89,7 +73,7 @@ public class DbFunctionality {
     }
 
     private void setUserType(int userID, String userType, PreparedStatement insertNewUser, PreparedStatement insertNewUserRegistry) throws SQLException {
-        switch(userType) {
+        switch (userType) {
             case "TEACHER":
                 insertNewUser.setInt(7, 2);
                 insertNewUserRegistry.setInt(1, userID);
@@ -179,11 +163,11 @@ public class DbFunctionality {
         ResultSet resultSet = null;
         try {
             //select the User from the User table with the corresponding User_ID
-            String select = "select * from user where User_email = ?";
+            String select = "select * from `user` where User_email = ?";
             selectUser = connection.prepareStatement(select);
             selectUser.setString(1, requestedUserEmail);
             resultSet = selectUser.executeQuery();
-            resultSet.next();
+            resultSet.first();
             String firstName = resultSet.getString("User_firstName");
             String lastName = resultSet.getString("User_lastName");
             String userName = resultSet.getString("User_email");
@@ -191,10 +175,13 @@ public class DbFunctionality {
             String password = resultSet.getString("User_password");
             int userTypeID = resultSet.getInt("User_type_ID");
 
+            //3 = admin
             if (userTypeID == 3) {
                 return new Admin(firstName, lastName, userName, password, dob);
-            } else if(userTypeID == 2) {
+                //2 = teacher
+            } else if (userTypeID == 2) {
                 return new Teacher(firstName, lastName, userName, password, dob);
+                // Ellers student
             } else {
                 return new Student(firstName, lastName, userName, password, dob);
             }
@@ -223,7 +210,7 @@ public class DbFunctionality {
             getUser = connection.prepareStatement(query);
             getUser.setString(1, userEmail);
             resultSet = getUser.executeQuery();
-            resultSet.next();
+            resultSet.first();
             int result = Integer.parseInt(resultSet.getString(1));
             return result;
         } finally {
@@ -239,7 +226,7 @@ public class DbFunctionality {
         Statement stmt = connection.createStatement();
         ResultSet result = stmt.executeQuery(select);
 
-        while(result.next()) {
+        while (result.next()) {
             return result.getInt("User_ID") + 1;
         }
 
@@ -271,7 +258,7 @@ public class DbFunctionality {
     public void addRoom(AbstractRoom room, Connection connection) throws SQLException {
         PreparedStatement insertNewRoom = null;
         try {
-            String ins = "insert into Rooms (Room_ID, Room_name, Room_building, Room_maxCapacity, Tavle, Prosjektor) values (?,?,?,?,?,?)";
+            String ins = "insert into Rooms (Room_ID, Room_name, Room_building, Room_maxCapacity, Tavle, Projektor) values (?,?,?,?,?,?)";
             insertNewRoom = connection.prepareStatement(ins);
             insertNewRoom.setInt(1, room.getRoomID());
             insertNewRoom.setString(2, room.getRoomName());
@@ -341,6 +328,58 @@ public class DbFunctionality {
         }
     }
 
+    public AbstractRoom getRoom(int requestedRoomID, Connection connection) throws SQLException {
+        System.out.println("getRoom started. requestedRoomID: " + requestedRoomID);
+        PreparedStatement selectOrder;
+        // Select the Order from the Order table with the corresponding Order_ID
+        String select = "select * from rooms where Room_ID = ?";
+        selectOrder = connection.prepareStatement(select);
+        selectOrder.setInt(1, requestedRoomID);
+        // and store it in a ResultSet.
+        ResultSet resultSet = selectOrder.executeQuery();
+
+        // The resultSet's pointer starts at "nothing", so move it to the next (first, and only) element.
+        resultSet.first();
+        // Get and store the data in local variables,
+        int roomID = resultSet.getInt("Room_ID");
+        //System.out.println("getOrder orderID: " + orderID);
+        String roomName = resultSet.getString("Room_name");
+        System.out.println("[DbFunc getRoom]roomName: " + roomName);
+        //System.out.println("getOrder userID: " + userID);
+        String roomBuilding = resultSet.getString("Room_building");
+        //System.out.println("getOrder roomID: " + roomID);
+        int roomMaxCapacity = resultSet.getInt("Room_maxCapacity");
+
+        String tavle = resultSet.getString("Tavle");
+        String projektor = resultSet.getString("Projektor");
+
+        boolean hasTavle;
+        switch (tavle) {
+
+            case "JA":
+                hasTavle = true;
+                break;
+
+            default:
+                hasTavle = false;
+                break;
+        }
+
+        boolean hasProjektor;
+        switch (projektor) {
+
+            case "JA":
+                hasProjektor = true;
+                break;
+
+            default:
+                hasProjektor = false;
+                break;
+        }
+
+        return new Grouproom(roomID, roomName, roomBuilding, roomMaxCapacity, hasTavle, hasProjektor);
+    }
+
     public void addOrder(Order order, Connection connection) throws SQLException {
         PreparedStatement insertNewOrder = null;
         System.out.println("addOrder started");
@@ -352,7 +391,6 @@ public class DbFunctionality {
             insertNewOrder.setTimestamp(3, order.getTimestampStart());
             insertNewOrder.setTimestamp(4, order.getTimestampEnd());
             insertNewOrder.execute();
-            // TODO ADD RECIEPT METHOD
         } finally {
             assert insertNewOrder != null;
             insertNewOrder.closeOnCompletion();
@@ -377,21 +415,43 @@ public class DbFunctionality {
         // and store it in a ResultSet.
         ResultSet resultSet = selectOrder.executeQuery();
 
+        return returnOrder(resultSet, connection);
+    }
+
+    public Order getSpecificOrder(int requestedRoomID, Timestamp requestedTimestampStart, Timestamp requestedTimestampEnd, Connection connection) throws SQLException, ParseException {
+        System.out.println("getSpecificOrder started with: " + requestedRoomID + " " + requestedTimestampStart + " " + requestedTimestampEnd);
+        PreparedStatement selectOrder;
+        String select = "select * from `order` where Room_ID = ? AND Timestamp_start = ? AND Timestamp_end = ?;";
+
+        selectOrder = connection.prepareStatement(select);
+        selectOrder.setInt(1, requestedRoomID);
+        selectOrder.setTimestamp(2, requestedTimestampStart);
+        selectOrder.setTimestamp(3, requestedTimestampEnd);
+
+        ResultSet resultSet = selectOrder.executeQuery();
+
+        Order order = returnOrder(resultSet, connection);
+        System.out.println("Order returned: " + order.toString());
+        return returnOrder(resultSet, connection);
+    }
+
+    private Order returnOrder(ResultSet resultSet, Connection connection) throws SQLException, ParseException {
         // The resultSet's pointer starts at "nothing", so move it to the next (first, and only) element.
         resultSet.first();
         // Get and store the data in local variables,
         int orderID = resultSet.getInt("Order_ID");
-        System.out.println("getOrder orderID: " + orderID);
+        //System.out.println("getOrder orderID: " + orderID);
         int userID = resultSet.getInt("User_ID");
-        System.out.println("getOrder userID: " + userID);
+        //System.out.println("getOrder userID: " + userID);
         int roomID = resultSet.getInt("Room_ID");
-        System.out.println("getOrder roomID: " + roomID);
+        //System.out.println("getOrder roomID: " + roomID);
         Timestamp timestampStart = resultSet.getTimestamp("Timestamp_start");
         Timestamp timestampEnd = resultSet.getTimestamp("Timestamp_end");
 
-        return new Order(orderID, userID, roomID, timestampStart, timestampEnd);
-    }
+        AbstractRoom room = getRoom(roomID, connection);
 
+        return new Order(orderID, userID, room, timestampStart, timestampEnd);
+    }
 
     public ResultSet getAllOrdersFromRoom(int roomID, Connection connection) throws SQLException {
         PreparedStatement selectOrders = null;
@@ -435,7 +495,6 @@ public class DbFunctionality {
 
     }
 
-
     /**
      * @param orderID    The ID of the Order you want to delete
      * @param connection The Connection object with the connection to the database
@@ -456,7 +515,6 @@ public class DbFunctionality {
         }
     }
 
-    //TODO closing works for this.
     public int getRoomID(Connection connection) throws SQLException {
         PreparedStatement selectRoomID = null;
         ResultSet resultSet = null;
@@ -499,28 +557,102 @@ public class DbFunctionality {
     }
 
     // TODO: Dokumentere metodene under
-    public ResultSet getMostBookedRoom(Connection connection) throws SQLException {
-        return getMostBookedRoom(5, connection);
+
+    /**
+     * calls GetMostBookedRoom five times and constructs an ArrayList of Abstract rooms,
+     * @param connection is parsed from Servlet
+     * @return ArrayList with the five most booked rooms
+     * @throws SQLException when query fails
+     */
+    public ArrayList<AbstractRoom> getMostBookedRoom(Connection connection) throws SQLException {
+        ResultSet mostBooked = null;
+        try {
+            //runs getMostBooked five times
+            mostBooked = getMostBookedRoom(5, connection);
+            //initialises new ArrayList for storing of rooms
+            ArrayList<AbstractRoom> rooms = new ArrayList<>();
+            //limit of the list
+            int limit = 5;
+            //gets the room information and adds it to list
+            while (mostBooked.next()) {
+                int roomID = mostBooked.getInt(1);
+                int amount = mostBooked.getInt(2);
+                rooms.add(new Grouproom(roomID, amount));
+            }
+            //returns list if room is less than limit
+            if(rooms.size() < limit) {
+                return rooms;
+                //returns a new list of five if there are more than five rooms
+            } else {
+                ArrayList<AbstractRoom> returnArray = new ArrayList<>();
+                for(int i = 0; i < 5; i++) {
+                    returnArray.add(rooms.get(i));
+                }
+
+                return returnArray;
+            }
+        } finally {
+            assert mostBooked != null;
+            if (mostBooked.isClosed()) {
+                System.out.println(mostBooked + "is closed");
+            } else {
+                mostBooked.close();
+            }
+        }
     }
 
     public ResultSet getMostBookedRoom(int howMany, Connection connection) throws SQLException {
-        PreparedStatement selectBookedRoom;
-        //TODO: teste metoden og implementere i en Servlet
-        String select = "SELECT room_id, COUNT(*) as amount FROM `order` GROUP BY room_id ORDER BY amount DESC LIMIT ?";
-        selectBookedRoom = connection.prepareStatement(select);
-        selectBookedRoom.setInt(1, howMany);
+        PreparedStatement selectBookedRoom = null;
+        try {
+            String select = "SELECT room_id, COUNT(*) as amount FROM `order` GROUP BY room_id ORDER BY amount DESC LIMIT ?";
+            selectBookedRoom = connection.prepareStatement(select);
+            selectBookedRoom.setInt(1, howMany);
 
-        return selectBookedRoom.executeQuery();
+            return selectBookedRoom.executeQuery();
+        } finally {
+            assert selectBookedRoom != null;
+            selectBookedRoom.closeOnCompletion();
+        }
     }
 
-    public ResultSet getMostActiveUsers(Connection connection) throws SQLException {
-        return getMostActiveUsers(5, connection);
+    public ArrayList<AbstractUser> getMostActiveUsers(Connection connection) throws SQLException {
+        ResultSet mostActive = null;
+        try {
+            mostActive = getMostActiveUsers(5, connection);
+            ArrayList<AbstractUser> users = new ArrayList<>();
+            int counter = 0;
+            int limit = 5;
+            while (mostActive.next()) {
+                int userId = mostActive.getInt(1);
+                String firstName = mostActive.getString(2);
+                String lastName = mostActive.getString(3);
+                String userName = mostActive.getString(4);
+                int amount = mostActive.getInt(5);
+                users.add( new Student(userId, firstName, lastName, userName, amount));
+            }
+            if (users.size() < limit) {
+                return users;
+            } else {
+                ArrayList<AbstractUser> returnArray = new ArrayList<>();
+                for (int i = 0; i < 5; i++) {
+                    returnArray.add(users.get(i));
+                }
+                return returnArray;
+            }
+
+        } finally {
+            assert mostActive != null;
+            if (mostActive.isClosed()) {
+                System.out.println(mostActive + "is closed");
+            } else {
+                mostActive.close();
+            }
+        }
     }
 
     public void updateOrderInformation(Order order, Connection connection) throws SQLException {
+        System.out.println("update order information started");
         PreparedStatement updateOrderPS;
-
-        System.out.println("update order started");
 
         String updateOrder = "UPDATE `order` "
                 + "set Timestamp_start = ?, Timestamp_end = ?"
@@ -534,13 +666,23 @@ public class DbFunctionality {
 
     }
 
+    public void updateOrderOwner(int orderID, int userID, Connection connection) throws SQLException {
+        System.out.println("updateOrderOwner started with: " + orderID + " and " + userID);
+        PreparedStatement updateOrderOwner;
+
+        String update = "UPDATE `order` set User_ID = ? WHERE Order_ID = ?;";
+
+        updateOrderOwner = connection.prepareStatement(update);
+        updateOrderOwner.setInt(1, userID);
+        updateOrderOwner.setInt(2, orderID);
+        updateOrderOwner.executeUpdate();
+    }
+
     public ResultSet getMostActiveUsers(int howMany, Connection connection) throws SQLException {
         PreparedStatement selectActiveUsers;
-        //TODO: teste metoden og implementere i en Servlet
-        String select = "SELECT user_id, COUNT(*) as amount FROM `order` GROUP BY user_id ORDER BY amount DESC LIMIT ?";
+        String select = "SELECT user.user_id, user.User_firstName, user.User_lastName,user.User_email, COUNT(*) as amount FROM `order` LEFT JOIN user ON user.User_ID = `order`.User_ID GROUP BY user_id ORDER BY amount DESC LIMIT ?";
         selectActiveUsers = connection.prepareStatement(select);
         selectActiveUsers.setInt(1, howMany);
-
         return selectActiveUsers.executeQuery();
     }
 
@@ -568,7 +710,10 @@ public class DbFunctionality {
             int roomID = resultSet.getInt("Room_ID");
             Timestamp timestampStart = resultSet.getTimestamp("Timestamp_start");
             Timestamp timestampEnd = resultSet.getTimestamp("Timestamp_end");
-            Order order = new Order(orderID, userID, roomID, timestampStart, timestampEnd);
+
+            AbstractRoom room = getRoom(roomID, connection);
+
+            Order order = new Order(orderID, userID, room, timestampStart, timestampEnd);
             orders.add(order);
         }
         //returns the list of order objects.
@@ -590,6 +735,7 @@ public class DbFunctionality {
     }
 
     public void searchOrders(int roomId, String date, PrintWriter out, Connection connection) throws SQLException {
+        System.out.println("[DbFunc]searchOrders started");
         String strSelect = null;
         if (roomId < 0) {
             strSelect = "SELECT * FROM `order` WHERE DATE_FORMAT(Timestamp_start, '%Y-%m-%d') = '" + date + "'";
@@ -598,13 +744,21 @@ public class DbFunctionality {
         }
         PreparedStatement statement = connection.prepareStatement(strSelect);
         ResultSet resultSet = statement.executeQuery(strSelect);
-        out.print("[");
+        //resultSet.first();
+        ArrayList<String> roomNames = new ArrayList<>();
+        // Opening JSON bracket
+        String json = "[";
+        //out.print("[");
         int i = 0;
         while (resultSet.next()) {
+            System.out.println("[DbFunc]resultSet while loop started");
+            AbstractRoom room = getRoom(resultSet.getInt("Room_ID"), connection);
             if (i > 0) {
-                out.print(",");
+                //out.print(",");
+                json = json + ",";
             }
-            out.print("{\"roomId\":" + resultSet.getInt("Room_ID") + ",\"start\": \"" + resultSet.getTimestamp("Timestamp_start") + "\", \"end\": \"" + resultSet.getTimestamp("Timestamp_end") + "\"}");
+            //out.print("{\"roomId\":" + resultSet.getInt("Room_ID") + ",\"start\": \"" + resultSet.getTimestamp("Timestamp_start") + "\", \"end\": \"" + resultSet.getTimestamp("Timestamp_end") + "\"}");
+            json = json + "{\"roomId\":" + resultSet.getInt("Room_ID") + ",\"roomName\": \"" + room.getRoomName() + "\",\"start\": \"" + resultSet.getTimestamp("Timestamp_start") + "\", \"end\": \"" + resultSet.getTimestamp("Timestamp_end") + "\"}";
             i++;
         }
         if (roomId < 0) {
@@ -614,21 +768,50 @@ public class DbFunctionality {
             String roomNumbers = "";
             int j = 0;
             while (resultSet.next()) {
+                System.out.println("[DbFunc] while-loop started");
                 if (j > 0) {
                     roomNumbers = roomNumbers + ",";
                 }
                 j++;
                 roomNumbers = roomNumbers + String.valueOf(resultSet.getInt("Room_ID"));
+                roomNames.add(resultSet.getString("Room_name"));
             }
             if (i == 0) {
-                out.print("[" + roomNumbers + "]");
+                System.out.println("[DbFunc]i == 0");
+                //out.print("[" + roomNumbers + "]");
+                json = json + "[" + roomNumbers + "]";
             } else {
-                out.print(",[" + roomNumbers + "]");
-
+                System.out.println("[DbFunc] i != 0");
+                //out.print(",[" + roomNumbers + "]");
+                json = json + ",[" + roomNumbers + "]";
             }
         }
+        // Create a list of room names in the JSON object, if more than one room is requested
+        if(roomId < 0) {
+            //out.print(",[");
+            json = json + ",[";
+            int limit = roomNames.size();
+            System.out.println("[DbFunc] limit: " + limit);
+            for (int k = 0; k < limit; k++) {
+                if (k != limit - 1) {
+                    System.out.println("[DbFunc]if line 740");
+                    //out.print("\"" + roomNames.get(k) + "\",");
+                    json = json + "\"" + roomNames.get(k) + "\",";
+                } else {
+                    System.out.println("[DbFunc]else line 744");
+                    //out.print("\"" + roomNames.get(k) + "\"");
+                    json = json + "\"" + roomNames.get(k) + "\"";
+                }
+            }
+            //out.print("]");
+            json = json + "]";
+        }
 
-        out.print("]");
+        // Closing JSON bracket
+        //out.print("]");
+        json = json + ("]");
+        System.out.println(json);
+        out.print(json);
     }
 
     public void insertReport(Report userReport, Connection connection) throws SQLException {

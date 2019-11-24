@@ -12,7 +12,7 @@ import java.sql.*;
  * @author brisdalen
  */
 public class DbTool {
-    Connection connection;
+    private Connection connection;
 
     public Connection dbLogIn(PrintWriter out) {
         try {

@@ -54,7 +54,7 @@ public class ServletLogin extends AbstractServlet {
                 DbFunctionality dbFunctionality = new DbFunctionality();
                 //checks whether the users Email matches the stored password
                 if (dbFunctionality.checkUser(lowercaseUsername, password, connection)) {
-                    // If successful login TODO: make it pop-up
+                    // If successful login
                     System.out.println("success!");
                     invalidateOldSession(request);
 
@@ -64,7 +64,6 @@ public class ServletLogin extends AbstractServlet {
                     out.print("<br>");
                     //redirects the user to the loggedIn.html
                     ServletContext servletContext = getServletContext();
-
                     HttpSession newSession = generateNewSession(request, 20);
                     newSession.setAttribute("userEmail", userName);
                     /* Generate 2 cookies, both containing userType information. The first one will persist for
@@ -86,7 +85,6 @@ public class ServletLogin extends AbstractServlet {
                     }
 
                     debugSession(request);
-
                     //if the login fails
                     try {
                         System.out.println("attempting to close");
