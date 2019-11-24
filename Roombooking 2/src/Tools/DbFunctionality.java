@@ -751,6 +751,7 @@ public class DbFunctionality {
         //out.print("[");
         int i = 0;
         while (resultSet.next()) {
+            System.out.println("[DbFunc]resultSet while loop started");
             AbstractRoom room = getRoom(resultSet.getInt("Room_ID"), connection);
             if (i > 0) {
                 //out.print(",");

@@ -56,6 +56,23 @@ public abstract class AbstractServlet extends HttpServlet {
                 "            </button>\n");
     }
 
+    void addHiddenCalendar(PrintWriter out) {
+        out.println("<div id=\"calendar\" hidden>");
+        printCalendarRemains(out);
+    }
+
+    void addCalendar(PrintWriter out) {
+        out.println("<div id=\"calendar\">");
+        printCalendarRemains(out);
+    }
+
+    private void printCalendarRemains(PrintWriter out) {
+        out.print("<button id=\"previousDay\" style=\"color: black;\">Previous day</button>" +
+                "<input type=\"date\">" +
+                "<button id=\"nextDay\" style=\"color: black;\">Next day</button>" +
+                "</div>");
+    }
+
     /**
      *
      * @param out The response body to write to

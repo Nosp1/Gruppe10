@@ -56,6 +56,7 @@ public class ServletReservations extends AbstractServlet {
                 AbstractUser user = new Student(userID, dbFunctionality.getOrderListByUserID(userID, connection));
 
                 out.println("<h2>Here are your reservations:</h2>");
+                addHiddenCalendar(out);
                 user.showOrders(out);
                 addBootStrapFunctionality(out);
                 out.println("<script src=\"update-order-script.js\"></script>");

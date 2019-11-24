@@ -4,11 +4,6 @@ $(function() {
     $(document).ready($("#collapseUpdateBooking")
         .append(`<div id="searchResult" hidden>
                     <div style="color: black">Room is available:</div>
-                </div>
-                <div id="calendar" hidden>
-                    <button style="color: black;">Previous day</button>
-                    <input type="date">
-                    <button style="color: black;">Next day</button>
                 </div>`));
 });
 
@@ -37,8 +32,7 @@ $("#calendar button:nth-of-type(1)").on('click', function () {
     const arr = strDate.split("-").map(item => +item);
     const date = new Date(arr[0], arr[1] - 1, arr[2]);
     $('#calendar input[type="date"]').val(date.toISOString().substring(0, 10));
-    //console.log(date, typeof date);
-    showAllRooms();
+    console.log(date, typeof date);
 });
 
 $("#calendar button:nth-of-type(2)").on('click', function () {
@@ -46,8 +40,7 @@ $("#calendar button:nth-of-type(2)").on('click', function () {
     const arr = strDate.split("-").map(item => +item);
     const date = new Date(arr[0], arr[1] - 1, arr[2] + 2);
     $('#calendar input[type="date"]').val(date.toISOString().substring(0, 10));
-    //console.log(date, typeof date);
-    showAllRooms();
+    console.log(date, typeof date);
 });
 
 function Room(roomID, roomName, availableTimes = []) {
@@ -63,7 +56,33 @@ function StartEndPair(pairStartTime, pairEndTime) {
 
 function displayCalendar() {
     $('#calendar input[type="date"]').val((new Date()).toISOString().substring(0, 10));
-    $("#calendar").show();
+    $("#calendar").fadeIn(400);
+}
+
+function toggleCalAndResults() {
+    if($("#searchResult").is(":hidden")) {
+        showCalAndResults();
+    } else {
+        hideCalAndResults();
+    }
+}
+
+function showCalAndResults() {
+    console.log("showCalAndResults started");
+    $('#calendar input[type="date"]').val((new Date()).toISOString().substring(0, 10));
+    $("#calendar").fadeIn(400);
+    $("#searchResult").fadeIn(400);
+}
+
+function hideCalAndResults() {
+    console.log("hideCalAndResult started");
+    $("#calendar").fadeOut(400);
+    $("#searchResult").fadeOut(400);
+}
+
+function showRoomKeepUI(roomID) {
+    let allrooms = roomID;
+    getRoomInfo(allrooms);
 }
 
 function showAllRooms() {
@@ -146,14 +165,14 @@ function getRoomInfo(roomId) {
             let newRoom = new Room();
             console.log('id = ', id);
             newRoom.roomID = id;
-            mappedRooms[id] = roomNames[counter];
+            //mappedRooms[id] = roomNames[counter];
             newRoom.roomName = mappedRooms[id];
             counter++;
             console.log("newRoom id=", newRoom.roomID);
             console.log("id to name=", mappedRooms[id]);
             //$("#searchResult > div:last-child").append($(`<div style="color: black; margin-top: 10px;">Room = ${id}</div>`));
             formattedHTML += `<div class="room-result">`;
-            formattedHTML += `<div style="color: black; margin-top: 10px;">${mappedRooms[id]}</div>`;
+            formattedHTML += `<div style="color: black; margin-top: 10px;"><h4>Available at:</h4></div>`;
             const data = rooms[id];
             let leftTimeBorder = "08:00";
             let rightTimeBorder = "22:00";
@@ -204,7 +223,7 @@ function getRoomInfo(roomId) {
 }
 
 function scrollToUpdate(nthButton, newRoomName, setNewStartTime, setRoomID) {
-    displayCalendar();
+    showCalAndResults();
     getRoomInfo(setRoomID);
     console.log("button to scroll to= ", nthButton);
     let update = document.getElementById('collapseUpdateBooking');
