@@ -68,10 +68,6 @@
             </button>
         </form>
 
-        <!-- Cancel a booking collapse button -->
-        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseCancelRoom" role="button"
-                aria-controls="#collapseCancelRoom">Cancel a booking
-        </button>
         <!-- Get most active user collapse button -->
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseUserStats" role="button"
                 aria-controls="#collapseUserStats"> Statistics
@@ -146,23 +142,6 @@
     <button style="color: black;">Previous day</button>
     <input type="date">
     <button style="color: black;">Next day</button>
-</div>
-
-<!-- Form for Cancel a booking -->
-<div class="collapse container" id="collapseCancelRoom">
-    <form action="./Servlets.ServletRoomOptions" method="post">
-        <h1>
-            Cancel booking
-        </h1>
-        <div>
-            <label for="Cancel_Order_ID">Order ID</label>
-            <input type="text" id="Cancel_Order_ID" name="Cancel_Order_ID">
-        </div>
-
-        <div>
-            <input class="submit btn-default btn-lg" type="submit" name="action" value="cancel">
-        </div>
-    </form>
 </div>
 
 <!-- Form for getting most active user or most booked room -->
