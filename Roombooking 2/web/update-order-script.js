@@ -4,13 +4,10 @@ $(function() {
     $(document).ready($("#collapseUpdateBooking")
         .append(`<div id="searchResult" hidden>
                     <div style="color: black">Room is available:</div>
-                </div>
-                <div id="calendar" hidden>
-                    <button style="color: black;">Previous day</button>
-                    <input type="date">
-                    <button style="color: black;">Next day</button>
                 </div>`));
 });
+
+let selectedRoomID = 0;
 
 // Aktiveres når search-rooms knappen blir trykket på
 $('#navbar-search-button').on('click', function (evt) {
@@ -38,7 +35,8 @@ $("#calendar button:nth-of-type(1)").on('click', function () {
     const date = new Date(arr[0], arr[1] - 1, arr[2]);
     $('#calendar input[type="date"]').val(date.toISOString().substring(0, 10));
     //console.log(date, typeof date);
-    showAllRooms();
+    console.log("[uos]selectedRoomID: ", selectedRoomID);
+    getRoomInfo(selectedRoomID);
 });
 
 $("#calendar button:nth-of-type(2)").on('click', function () {
@@ -47,7 +45,8 @@ $("#calendar button:nth-of-type(2)").on('click', function () {
     const date = new Date(arr[0], arr[1] - 1, arr[2] + 2);
     $('#calendar input[type="date"]').val(date.toISOString().substring(0, 10));
     //console.log(date, typeof date);
-    showAllRooms();
+    console.log("[uos]selectedRoomID: ", selectedRoomID);
+    getRoomInfo(selectedRoomID);
 });
 
 function Room(roomID, roomName, availableTimes = []) {
@@ -63,7 +62,33 @@ function StartEndPair(pairStartTime, pairEndTime) {
 
 function displayCalendar() {
     $('#calendar input[type="date"]').val((new Date()).toISOString().substring(0, 10));
-    $("#calendar").show();
+    $("#calendar").fadeIn(400);
+}
+
+function toggleCalAndResults() {
+    if($("#searchResult").is(":hidden")) {
+        showCalAndResults();
+    } else {
+        hideCalAndResults();
+    }
+}
+
+function showCalAndResults() {
+    console.log("showCalAndResults started");
+    $('#calendar input[type="date"]').val((new Date()).toISOString().substring(0, 10));
+    $("#calendar").fadeIn(400);
+    $("#searchResult").fadeIn(400);
+}
+
+function hideCalAndResults() {
+    console.log("hideCalAndResult started");
+    $("#calendar").fadeOut(400);
+    $("#searchResult").fadeOut(400);
+}
+
+function showRoomKeepUI(roomID) {
+    let allrooms = roomID;
+    getRoomInfo(allrooms);
 }
 
 function showAllRooms() {
@@ -72,6 +97,16 @@ function showAllRooms() {
     getRoomInfo(roomId);
     $("#calendar").show();
     $("#searchResult").show();
+}
+
+function cancelOrder(orderID) {
+    if(window.confirm("Do you really wish to cancel this order?")) {
+        let query = `action=cancel&orderID=${orderID}`;
+        console.log("[uos]cancelOrder query: " + '/Roombooking_2_Web_exploded/Servlets.ServletReservations?' + query);
+        $.post('/Roombooking_2_Web_exploded/Servlets.ServletReservations?' + query);
+
+        setTimeout(function() {location.reload()}, 1000);
+    }
 }
 
 function getRoomInfo(roomId) {
@@ -84,7 +119,7 @@ function getRoomInfo(roomId) {
        Vil f.eks bli 'roomID=1&date=2019-10-26
     */
     //const query = `roomId=${roomId}&date=2019-11-13`;
-    const query = `roomId=${roomId}&date=${date}`;
+    let query = `roomId=${roomId}&date=${date}`;
     console.log('/Roombooking_2_Web_exploded/Servlets.ServletSearch?' + query);
 
     $.get('/Roombooking_2_Web_exploded/Servlets.ServletSearch?' + query, function (response) {
@@ -102,24 +137,7 @@ function getRoomInfo(roomId) {
         }
         let roomIds = null;
         let roomNames = null;
-        let first = true;
-        data.forEach(room => {
-            if (Array.isArray(room)) {
-                if(first) {
-                    roomIds = room;
-                    first = false;
-                } else {
-                    roomNames = room;
-                    console.log("roomNames=",roomNames);
-                }
-                return;
-            }
-            if (!rooms[room.roomId]) {
-                rooms[room.roomId] = [room];
-            } else {
-                rooms[room.roomId].push(room);
-            }
-        });
+
         if (roomIds) {
             roomIds.forEach(roomId => {
                 if (!rooms[roomId]) {
@@ -136,14 +154,14 @@ function getRoomInfo(roomId) {
             let newRoom = new Room();
             console.log('id = ', id);
             newRoom.roomID = id;
-            mappedRooms[id] = roomNames[counter];
+            //mappedRooms[id] = roomNames[counter];
             newRoom.roomName = mappedRooms[id];
             counter++;
             console.log("newRoom id=", newRoom.roomID);
             console.log("id to name=", mappedRooms[id]);
             //$("#searchResult > div:last-child").append($(`<div style="color: black; margin-top: 10px;">Room = ${id}</div>`));
             formattedHTML += `<div class="room-result">`;
-            formattedHTML += `<div style="color: black; margin-top: 10px;">${mappedRooms[id]}</div>`;
+            formattedHTML += `<div style="color: black; margin-top: 10px;"><h4>Available at:</h4></div>`;
             const data = rooms[id];
             let leftTimeBorder = "08:00";
             let rightTimeBorder = "22:00";
@@ -193,14 +211,15 @@ function getRoomInfo(roomId) {
     })
 }
 
-function scrollToUpdate(nthButton, newRoomName, setNewStartTime, setRoomID) {
-    displayCalendar();
+function scrollToUpdate(nthButton, newRoomName, setNewStartTime, setRoomID, orderNumber) {
+    selectedRoomID = setRoomID;
+    showCalAndResults();
     getRoomInfo(setRoomID);
     console.log("button to scroll to= ", nthButton);
     let update = document.getElementById('collapseUpdateBooking');
     $(update).collapse('show');
     $("#Update_orderID").val(nthButton);
-    document.getElementById("Update_roomName").innerText = newRoomName;
+    document.getElementById("Update_roomName").innerText = orderNumber;
     document.getElementById("Update_Timestamp_start_time").value = setNewStartTime;
 
     document.getElementById("Update_Timestamp_end_time").value = setNewStartTime;

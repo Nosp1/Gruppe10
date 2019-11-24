@@ -228,6 +228,10 @@ textarea {
     border-color: #e6e6e6;
 }
 
+#calendar {
+    margin-top: 0.4em;
+}
+
 .room-result-container {
     margin: 0.4em auto 0.4em;
     color: black;
@@ -260,7 +264,15 @@ textarea {
     padding-top: 0.3em;
 }
 
-.updateOrderButton button {
+.container-reservation-order {
+    margin: 0.4em auto 0.4em;
+    border: solid black;
+    width: 50%;
+    padding-bottom: 0.3em;
+    background: linear-gradient(to top right, #ab9b7b 0%, #d2d0c5 100%) fixed;
+}
+
+.updateOrderButtonContainer button {
     color: black;
     margin-bottom: 0.3em;
 }

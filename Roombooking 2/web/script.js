@@ -4,11 +4,6 @@ $(function() {
     $(document.body)
         .append(`<div id="searchResult" hidden>
                     <div style="color: black">Room is available:</div>
-                </div>
-                <div id="calendar" hidden>
-                    <button style="color: black;">Previous day</button>
-                    <input type="date">
-                    <button style="color: black;">Next day</button>
                 </div>`);
 });
 
@@ -39,7 +34,7 @@ $("#calendar button:nth-of-type(1)").on('click', function () {
     const date = new Date(arr[0], arr[1] - 1, arr[2]);
     $('#calendar input[type="date"]').val(date.toISOString().substring(0, 10));
     //console.log(date, typeof date);
-    showAllRooms();
+    showRoomsKeepUI();
 });
 
 $("#calendar button:nth-of-type(2)").on('click', function () {
@@ -48,20 +43,44 @@ $("#calendar button:nth-of-type(2)").on('click', function () {
     const date = new Date(arr[0], arr[1] - 1, arr[2] + 2);
     $('#calendar input[type="date"]').val(date.toISOString().substring(0, 10));
     //console.log(date, typeof date);
-    showAllRooms();
+    showRoomsKeepUI();
 });
 
-$('#ListOfRooms').on('submit', function (evt) {
+$('#ListOfRooms').on('click', function (evt) {
     evt.preventDefault();
     showAllRooms();
 });
 
+function showRoomsKeepUI() {
+    let allrooms = -1;
+    getRoomInfo(allrooms);
+}
+
 function showAllRooms() {
     console.log("Show all rooms clicked");
     const roomId = -1;
+    toggleCalAndResults();
     getRoomInfo(roomId);
-    $("#calendar").show();
-    $("#searchResult").show();
+}
+
+function toggleCalAndResults() {
+    if($("#searchResult").is(":hidden")) {
+        showCalAndResults();
+    } else {
+        hideCalAndResults();
+    }
+}
+
+function showCalAndResults() {
+    console.log("showCalAndResults started");
+    $("#calendar").fadeIn(400);
+    $("#searchResult").fadeIn(400);
+}
+
+function hideCalAndResults() {
+    console.log("hideCalAndResult started");
+    $("#calendar").fadeOut(400);
+    $("#searchResult").fadeOut(400);
 }
 
 // PASTE CODE JEG SLETTA --------------------------------------------
@@ -188,6 +207,7 @@ function getRoomInfo(roomId) {
         let roomIds = null;
         let roomNames = null;
         let first = true;
+
         data.forEach(room => {
             if (Array.isArray(room)) {
                 if(first) {
@@ -221,11 +241,14 @@ function getRoomInfo(roomId) {
             let newRoom = new Room();
             console.log('id = ', id);
             newRoom.roomID = id;
-            mappedRooms[id] = roomNames[counter];
-            newRoom.roomName = mappedRooms[id];
-            counter++;
-            console.log("newRoom id=", newRoom.roomID);
-            console.log("id to name=", mappedRooms[id]);
+            if(roomId < 0) {
+                mappedRooms[id] = roomNames[counter];
+                newRoom.roomName = mappedRooms[id];
+                counter++;
+
+                console.log("newRoom id=", newRoom.roomID);
+                console.log("id to name=", mappedRooms[id]);
+            }
             //$("#searchResult > div:last-child").append($(`<div style="color: black; margin-top: 10px;">Room = ${id}</div>`));
             formattedHTML += `<div class="room-result">`;
             formattedHTML += `<div style="color: black; margin-top: 10px;">${mappedRooms[id]}</div>`;

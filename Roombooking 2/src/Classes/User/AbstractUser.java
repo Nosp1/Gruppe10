@@ -5,6 +5,7 @@ import Classes.UserType;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  *
@@ -67,9 +68,10 @@ public abstract class AbstractUser {
         // TODO: Endre til å vise rom navn, kanskje lage en display() i Order?
         //Viser orders
         int counter = 0;
+        Collections.reverse(orders);
         for (Order o : orders) {
             out.println(
-                    "<div class=\"container reservation\">\n" +
+                    "<div class=\"container-reservation-order\">\n" +
                             "<form>\n" +
                             "<h3> Order number: " + (counter+1) + "</h3>" +
                             "<table>\n" +
@@ -80,22 +82,30 @@ public abstract class AbstractUser {
                             "    </thead>\n" +
                             "    <tbody>\n" +
                             "        <tr>\n" +
-                            "            <td>From: " + o.getTimestampStart() + "</td>\n" +
+                            "            <td>From: " + o.getBookingStart() + "</td>\n" +
                                             // &nbsp betyr mellomrom
-                            "            <td>&nbspTo: " + o.getTimestampEnd() + "</td>" +
+                            "            <td>&nbspTo: " + o.getBookingEnd() + "</td>" +
                             "        </tr>\n" +
                             "    </tbody>\n" +
                             "</table>\n" +
                             "</form>\n" +
-                            "<div class=\"updateOrderButton\">" +
+                            "<div class=\"updateOrderButtonContainer\">" +
+                            "<span class=\"updateOrderButton\">" +
                             "    <button class=\"btn btn-success btn-lg\" role=\"button\"\n" +
-                            "            onclick=\"scrollToUpdate('" + o.getID() + "','" + o.getRoomName() + "','" + o.getBookingStartTime() + "','" + o.getRoomID() + "')\">Update a booking\n" +
+                            "            onclick=\"scrollToUpdate('" + o.getID() + "','" + o.getRoomName() + "','" + o.getBookingStartTime() + "','" + o.getRoomID() + "','" + (counter+1) + "')\">Update this reservation\n" +
                             "    </button>" +
+                            "</span>" +
+                            "<span class =\"cancelOrderButton\">" +
+                            "   <button class=\"btn btn-success btn-lg\" role=\"button\"\n" +
+                            "            onclick=\"cancelOrder(" + o.getID() + ")\">Cancel this reservation\n" +
+                            "    </button>" +
+                            "</span>" +
                             "</div>" +
                             "</div>");
 
             counter++;
         }
+        Collections.reverse(orders);
     }
 
     @Override

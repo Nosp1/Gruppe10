@@ -154,6 +154,22 @@ public class Order {
         return timestampEnd;
     }
 
+    /**
+     *
+     * @return a string of the booking start in the format of "YYYY-mm-dd HH:mm"
+     */
+    public String getBookingStart() {
+        return getBookingDate() + " " + getBookingStartTime();
+    }
+
+    /**
+     *
+     * @return a string of the booking end in the format of "YYYY-mm-dd HH:mm"
+     */
+    public String getBookingEnd() {
+        return getBookingDate() + " " + getBookingEndTime();
+    }
+
     public String getBookingDate() {
         return timestampStart.toString().substring(0, 10);
     }

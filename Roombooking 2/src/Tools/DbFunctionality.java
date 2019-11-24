@@ -344,6 +344,7 @@ public class DbFunctionality {
         int roomID = resultSet.getInt("Room_ID");
         //System.out.println("getOrder orderID: " + orderID);
         String roomName = resultSet.getString("Room_name");
+        System.out.println("[DbFunc getRoom]roomName: " + roomName);
         //System.out.println("getOrder userID: " + userID);
         String roomBuilding = resultSet.getString("Room_building");
         //System.out.println("getOrder roomID: " + roomID);
@@ -493,7 +494,6 @@ public class DbFunctionality {
         }
 
     }
-
 
     /**
      * @param orderID    The ID of the Order you want to delete
@@ -744,18 +744,21 @@ public class DbFunctionality {
         }
         PreparedStatement statement = connection.prepareStatement(strSelect);
         ResultSet resultSet = statement.executeQuery(strSelect);
+        //resultSet.first();
         ArrayList<String> roomNames = new ArrayList<>();
         // Opening JSON bracket
         String json = "[";
         //out.print("[");
         int i = 0;
         while (resultSet.next()) {
+            System.out.println("[DbFunc]resultSet while loop started");
+            AbstractRoom room = getRoom(resultSet.getInt("Room_ID"), connection);
             if (i > 0) {
                 //out.print(",");
                 json = json + ",";
             }
             //out.print("{\"roomId\":" + resultSet.getInt("Room_ID") + ",\"start\": \"" + resultSet.getTimestamp("Timestamp_start") + "\", \"end\": \"" + resultSet.getTimestamp("Timestamp_end") + "\"}");
-            json = json + "{\"roomId\":" + resultSet.getInt("Room_ID") + ",\"start\": \"" + resultSet.getTimestamp("Timestamp_start") + "\", \"end\": \"" + resultSet.getTimestamp("Timestamp_end") + "\"}";
+            json = json + "{\"roomId\":" + resultSet.getInt("Room_ID") + ",\"roomName\": \"" + room.getRoomName() + "\",\"start\": \"" + resultSet.getTimestamp("Timestamp_start") + "\", \"end\": \"" + resultSet.getTimestamp("Timestamp_end") + "\"}";
             i++;
         }
         if (roomId < 0) {

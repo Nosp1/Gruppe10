@@ -59,12 +59,14 @@
 </nav>
 <div class="container">
     <div class="jumbotron">
+
         <h1 id="welcome" class="special-text">Welcome to Roombooking</h1>
-        <!-- Browse Rooms collapse button -->
-        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseBrowse" role="button"
-                aria-expanded="false"
-                aria-controls="#collapseBrowse">Reserve a Room
-        </button>
+
+        <!-- Reserve a room collapse button -->
+        <form action="./Servlets.ServletRoomOptions" id="ListOfRooms" method="post">
+            <input class="btn btn-success btn-lg" type="submit" name="action" value="Reserve a room"/>
+        </form>
+
         <!-- Go to profile collapse button -->
         <form action="./Servlets.ServletRoomOptions" method="post">
             <button type="submit" name="action" class="btn btn-success btn-lg" role="button" value="gotoprofile">Go to
@@ -80,14 +82,8 @@
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseDeleteRoom" role="button"
                 aria-controls="#collapseDeleteRoom">Delete a room
         </button>
-        <!-- Reserve a room collapse button
-        <button class="btn btn-success btn-lg" id="reserve_Room" data-toggle="collapse" href="#collapseReserveRoom"
-                role="button"
-                onclick="$('#reserve_Room')" aria-controls="#collapseReserveRoom">Reserve a room
-        </button>
-        -->
 
-        <!-- Delete a room collapse button -->
+        <!-- Cancel a booking collapse button -->
         <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseCancelRoom" role="button"
                 aria-controls="#collapseCancelRoom">Cancel a booking
         </button>
@@ -96,23 +92,9 @@
                 aria-controls="#collapseUserStats"> Statistics
         </button>
 
-
-        <!-- Update a booking collapse button
-        <button class="btn btn-success btn-lg" data-toggle="collapse" href="#collapseUpdateBooking" role="button"
-                onclick="showAllRooms()" aria-controls="#collapseUpdateBooking">Update a booking
-        </button>
-        -->
     </div>
 </div>
-<!-- Submit button for Browse -->
-<div class="collapse container" id="collapseBrowse">
-    <form action="./Servlets.ServletRoomOptions" id="ListOfRooms" method="post">
-        <h1>Click beneath to show all rooms</h1>
-        <div>
-            <input class="submit btn-default btn-lg" type="submit" name="action" value="Show all rooms"/>
-        </div>
-    </form>
-</div>
+<!----------------------------------- Forms and actions ----------------------------------->
 <!-- Form for Add a room -->
 <div class="collapse container" id="collapseAddRoom">
     <form action="./Servlets.ServletRoomOptions" method="post">
@@ -230,13 +212,14 @@
         </div>
     </form>
 
-    <div id="calendar" hidden>
-        <button style="color: black;">Previous day</button>
-        <input type="date">
-        <button style="color: black;">Next day</button>
-    </div>
-
 </div>
+
+<div id="calendar" hidden>
+    <button style="color: black;">Previous day</button>
+    <input type="date">
+    <button style="color: black;">Next day</button>
+</div>
+
 <!-- Form for Cancel a booking -->
 <div class="collapse container" id="collapseCancelRoom">
     <form action="./Servlets.ServletRoomOptions" method="post">
@@ -254,46 +237,7 @@
     </form>
 </div>
 
-<!-- Form for Updating a booking
-<div class="collapse container" id="collapseUpdateBooking">
-    <form action="./Servlets.ServletRoomBooking" method="post">
-        <h1>Update an order</h1>
-        <div>
-            <label for="Update_orderID">Order ID</label>
-            <input type="text" id="Update_orderID" name="Update_orderID">
-        </div>
-
-        <div>
-            <label for="Update_Timestamp_start_date" for="Update_Timestamp_start_time">Update the booking start</label>
-            <input type="date" id="Update_Timestamp_start_date" name="Update_Timestamp_start_date"
-                   onfocusout="update_updateEndDate()"/>
-            <span class="validateUpdateTime">
-                <input type="time" id="Update_Timestamp_start_time" class="UpdateTime" name="Update_Timestamp_start_time"
-                       min="08:00" max="22:00" onfocusout="update_checkInputStart(event)"/>
-            </span>
-        </div>
-
-        <div>
-            <label for="Update_Timestamp_end_date" for="Update_Timestamp_end_time">Update the booking end</label>
-            <input type="date" id="Update_Timestamp_end_date" name="Update_Timestamp_end_date" onfocusout="update_updateEndDate()"
-                   readonly="readonly"/>
-            <span class="validateUpdateTime">
-                <input type="time" id="Update_Timestamp_end_time" class="UpdateTime" name="Update_Timestamp_end_time"
-                       min="08:00" max="22:00" onfocusout="update_checkInputEnd(event)"/>
-            </span>
-        </div>
-
-        <div>
-            <input class="submit btn-default btn-lg" type="submit" name="action" value="Update room">
-        </div>
-
-        <div class="timeLimitMessage" style="display: none;">
-            <p> The time must be between 08:00 and 21:59 </p>
-        </div>
-    </form>
-</div>
--->
-<!-- Form for Geting most active user -->
+<!-- Form for getting most active user or most booked room -->
 <div class="collapse container" id="collapseUserStats">
     <form action="./Servlets.ServletStats" id="collapseStatsForm" method="post">
         <h1>Get most active users </h1>
@@ -310,6 +254,7 @@
         </form>
     </div>
 </div>
+
 <div id="searchResult" hidden>
     <div style="color: black">Room is available:</div>
 </div>

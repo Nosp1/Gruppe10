@@ -51,6 +51,7 @@ public class ServletReservations extends AbstractServlet {
                 DbFunctionality dbFunctionality = new DbFunctionality();
 
                 printUpdateOrderPanel(out);
+                addHiddenCalendar(out);
 
                 int userID = dbFunctionality.getUserId(userName, connection);
                 AbstractUser user = new Student(userID, dbFunctionality.getOrderListByUserID(userID, connection));
@@ -59,7 +60,24 @@ public class ServletReservations extends AbstractServlet {
                 user.showOrders(out);
                 addBootStrapFunctionality(out);
                 out.println("<script src=\"update-order-script.js\"></script>");
-            } else {
+            }
+
+
+            if(action.contains("cancel")) {
+                System.out.println("[ServletReservations]Cancel started");
+                int orderID = Integer.parseInt(request.getParameter("orderID"));
+                System.out.println("[ServletReservations]orderID received: " + orderID);
+
+                DbTool dbTool = new DbTool();
+                //Establishes connection to database
+                connection = dbTool.dbLogIn(out);
+                DbFunctionality dbFunctionality = new DbFunctionality();
+
+                dbFunctionality.deleteOrder(orderID, connection);
+                System.out.println("[ServletReservations]order deleted.");
+            }
+
+            else {
                 //adds a return button if the login fails.
 
                 addHomeButton(out);
@@ -90,7 +108,12 @@ public class ServletReservations extends AbstractServlet {
                 "        </div>\n" +
                 "\n" +
                 "        <div>\n" +
-                "            <h3 id=\"Update_roomName\">No Order chosen\n" +
+                "            <span style=\"display:inline\" id=\"Update_OrderNumAndName\">" +
+                "               <h3 style=\"display:inline\">Order number</h3>" +
+                "               <h3 style=\"display:inline\" id=\"Update_orderNumber\"></h3>" +
+                "               <h3 style=\"display:inline\">&nbsp:&nbsp</h3>" +
+                "               <h3 style=\"display:inline\" id=\"Update_roomName\">No Order chosen</h3>" +
+                "            </span>" +
                 "        </div>\n" +
                 "\n" +
                 "        <div>\n" +
