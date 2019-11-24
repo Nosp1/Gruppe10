@@ -51,12 +51,12 @@ public class ServletReservations extends AbstractServlet {
                 DbFunctionality dbFunctionality = new DbFunctionality();
 
                 printUpdateOrderPanel(out);
+                addHiddenCalendar(out);
 
                 int userID = dbFunctionality.getUserId(userName, connection);
                 AbstractUser user = new Student(userID, dbFunctionality.getOrderListByUserID(userID, connection));
 
                 out.println("<h2>Here are your reservations:</h2>");
-                addHiddenCalendar(out);
                 user.showOrders(out);
                 addBootStrapFunctionality(out);
                 out.println("<script src=\"update-order-script.js\"></script>");
@@ -108,7 +108,12 @@ public class ServletReservations extends AbstractServlet {
                 "        </div>\n" +
                 "\n" +
                 "        <div>\n" +
-                "            <h3 id=\"Update_roomName\">No Order chosen\n" +
+                "            <span style=\"display:inline\" id=\"Update_OrderNumAndName\">" +
+                "               <h3 style=\"display:inline\">Order number</h3>" +
+                "               <h3 style=\"display:inline\" id=\"Update_orderNumber\"></h3>" +
+                "               <h3 style=\"display:inline\">&nbsp:&nbsp</h3>" +
+                "               <h3 style=\"display:inline\" id=\"Update_roomName\">No Order chosen</h3>" +
+                "            </span>" +
                 "        </div>\n" +
                 "\n" +
                 "        <div>\n" +

@@ -131,7 +131,6 @@ public abstract class AbstractServlet extends HttpServlet {
         }
     }
 
-
     boolean isAdmin (AbstractUser user, Connection connection) {
         // Sjekker om brukeren er en administrator, og returnerer feil om de ikke er det
         UserType userType = user.getUserType();

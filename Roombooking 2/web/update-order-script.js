@@ -7,6 +7,8 @@ $(function() {
                 </div>`));
 });
 
+let selectedRoomID = 0;
+
 // Aktiveres når search-rooms knappen blir trykket på
 $('#navbar-search-button').on('click', function (evt) {
     console.log("navbar search button clicked")
@@ -32,7 +34,9 @@ $("#calendar button:nth-of-type(1)").on('click', function () {
     const arr = strDate.split("-").map(item => +item);
     const date = new Date(arr[0], arr[1] - 1, arr[2]);
     $('#calendar input[type="date"]').val(date.toISOString().substring(0, 10));
-    console.log(date, typeof date);
+    //console.log(date, typeof date);
+    console.log("[uos]selectedRoomID: ", selectedRoomID);
+    getRoomInfo(selectedRoomID);
 });
 
 $("#calendar button:nth-of-type(2)").on('click', function () {
@@ -40,7 +44,9 @@ $("#calendar button:nth-of-type(2)").on('click', function () {
     const arr = strDate.split("-").map(item => +item);
     const date = new Date(arr[0], arr[1] - 1, arr[2] + 2);
     $('#calendar input[type="date"]').val(date.toISOString().substring(0, 10));
-    console.log(date, typeof date);
+    //console.log(date, typeof date);
+    console.log("[uos]selectedRoomID: ", selectedRoomID);
+    getRoomInfo(selectedRoomID);
 });
 
 function Room(roomID, roomName, availableTimes = []) {
@@ -131,24 +137,7 @@ function getRoomInfo(roomId) {
         }
         let roomIds = null;
         let roomNames = null;
-        let first = true;
-        data.forEach(room => {
-            if (Array.isArray(room)) {
-                if(first) {
-                    roomIds = room;
-                    first = false;
-                } else {
-                    roomNames = room;
-                    console.log("roomNames=",roomNames);
-                }
-                return;
-            }
-            if (!rooms[room.roomId]) {
-                rooms[room.roomId] = [room];
-            } else {
-                rooms[room.roomId].push(room);
-            }
-        });
+
         if (roomIds) {
             roomIds.forEach(roomId => {
                 if (!rooms[roomId]) {
@@ -222,14 +211,15 @@ function getRoomInfo(roomId) {
     })
 }
 
-function scrollToUpdate(nthButton, newRoomName, setNewStartTime, setRoomID) {
+function scrollToUpdate(nthButton, newRoomName, setNewStartTime, setRoomID, orderNumber) {
+    selectedRoomID = setRoomID;
     showCalAndResults();
     getRoomInfo(setRoomID);
     console.log("button to scroll to= ", nthButton);
     let update = document.getElementById('collapseUpdateBooking');
     $(update).collapse('show');
     $("#Update_orderID").val(nthButton);
-    document.getElementById("Update_roomName").innerText = newRoomName;
+    document.getElementById("Update_roomName").innerText = orderNumber;
     document.getElementById("Update_Timestamp_start_time").value = setNewStartTime;
 
     document.getElementById("Update_Timestamp_end_time").value = setNewStartTime;
