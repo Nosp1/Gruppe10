@@ -56,6 +56,12 @@ public abstract class AbstractServlet extends HttpServlet {
                 "            </button>\n");
     }
 
+    void addProfileButton(PrintWriter out) {
+        out.println("<button class=\"btn-default btn-lg submit\">\n" +
+                "                <a href=\"profile.html\"> return</a>\n" +
+                "            </button>\n");
+    }
+
     void addHiddenCalendar(PrintWriter out) {
         out.println("<div id=\"calendar\" hidden>");
         printCalendarRemains(out);
