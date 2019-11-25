@@ -178,6 +178,11 @@ textarea {
 #Reserve_Timestamp_end_date {
     background-color: #8e8e8e;
 }
+
+#Update_Timestamp_end_date {
+    background-color: #8e8e8e;
+}
+
 #label_end {
     padding-right: 11px;
 }

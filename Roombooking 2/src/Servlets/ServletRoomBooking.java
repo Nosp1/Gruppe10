@@ -227,7 +227,7 @@ public class ServletRoomBooking extends AbstractPostServlet {
                     String availableMessage = "Order successfully updated!";
                     System.out.println(availableMessage);
                     out.println(availableMessage);
-                    addHomeLoggedInButton(out);
+                    addProfileButton(out);
                     addBootStrapFunctionality(out);
                     try {
                         connection.close();
