@@ -52,13 +52,13 @@ public abstract class AbstractServlet extends HttpServlet {
      */
     void addHomeLoggedInButton (PrintWriter out) {
         out.println("<button class=\"btn-default btn-lg submit\">\n" +
-                "                <a href=\"loggedIn.html\"> return</a>\n" +
+                "                <a href=\"loggedIn.html\"> Return</a>\n" +
                 "            </button>\n");
     }
 
     void addProfileButton(PrintWriter out) {
         out.println("<button class=\"btn-default btn-lg submit\">\n" +
-                "                <a href=\"profile.html\"> return</a>\n" +
+                "                <a href=\"profile.html\"> Return</a>\n" +
                 "            </button>\n");
     }
 

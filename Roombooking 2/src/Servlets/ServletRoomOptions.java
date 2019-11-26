@@ -176,7 +176,8 @@ public class ServletRoomOptions extends AbstractPostServlet {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            DbUtils.closeQuietly(connection);
+            //DbUtils.closeQuietly(connection);
+            assert connection != null;
             closeConnection(connection);
         }
     }

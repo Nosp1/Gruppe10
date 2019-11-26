@@ -79,8 +79,7 @@ public class ServletReservations extends AbstractServlet {
 
             else {
                 //adds a return button if the login fails.
-
-                addHomeButton(out);
+                addProfileButton(out);
             }
 
             //prints script to establish connection between bootstrap and html
